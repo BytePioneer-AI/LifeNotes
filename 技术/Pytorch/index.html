@@ -1,0 +1,1228 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>Pytorch - ChongWen</title>
+
+  
+    <meta name="description" content="记录机器学习基础知识、Pytorch基础使用。这次去年6月份的笔记了，当时开始转战AI了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pytorch">
+<meta property="og:url" content="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/Pytorch/index.html">
+<meta property="og:site_name" content="ChongWen">
+<meta property="og:description" content="记录机器学习基础知识、Pytorch基础使用。这次去年6月份的笔记了，当时开始转战AI了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250217220106089.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/blog_migrate/49b2519de99bde1178448db4224affc8.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/blog_migrate/847645da3c0f9fcdce6429eec6c1b1ec.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/blog_migrate/8c79e31acad5b59b7f81da60dd64fa1e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/91e6947e06e348f5bcaa6a913acd4b59.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/d06dfa079e1d4bb08eff43fa8dfce4c2.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ffc82ea6aca0401e9ca53f2e3b6b78ab.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/698f58fcec3a426e8a090f482a4a3bed.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/4667d489cea24f64b0229b2657edbba9.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/adc498ac986a49b5b7de8d23e0fd3d5c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/6584c29f9379448ca5edc92240a86ba5.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/059afedb0b6945b698a2244bf5d601fc.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/f95e0fb88cf94769997bf388924b4ac0.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/fe4f97521fe5487e875a88f3cfbab849.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/218945986b4f45e8a302dc007a25c71a.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/53c6d6dd372b45cd9259f5d226b3abee.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/44eee1088775470ebc96be2a9f0f3a18.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/823f447544454b7d8fa019db2f719936.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/cfd57ce476ab497586c3b34b179cc598.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/f06c0c96982247fa9ef74302a4a4f2ce.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/8e97ca7cebfe419cb0c410dfb39cb2dc.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/62b925cc8c4f491d971ab8e4d68f454e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/e2b68cefb2bc41f3ae1f755c37372a78.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/4220514e1851498fbdd48172d8af5860.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/d136711d7ace4c1ba6a904da13926fc9.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/08dab2ee7b9c4c21ab8538cdd29becae.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/888789f047a2452c87092f94c21f4094.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/a4401152dd6e424887c72ec9498dfa91.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/81358695b028439a9fb09de0d953a6ce.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/98e807b8ef904cb6a53de7d0b79bb95d.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/0dc425ddf9bb45b09a4d6e0ebb780fa1.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/7e89f33132a149199b01374c64cda118.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/593e73042cf448f39e10c7ed2076cee2.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/272164457d544870b08ef322ab8982dc.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/7335692ac0ae4205a57b6be85064bcda.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/e4f9b16314c94d9cb00bac1a3d983f6c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/6ca35b2a13294555a157f0d05d27f2f6.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/887f1e5e781f404785bd322c465b2005.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ab90bdc3e0c64cbca76709781d5fc975.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ca0c4d4e543645afaf90dd90c5beec98.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/5d9f56db529d446ca188a768294a8a6c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/65cf3f9df7fa4097a6ed0103912e4c96.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/490089b468984781b1d888dcf581e466.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/8d4276379e35473dbdd8efc6d1973fb9.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/0179cbf9fc36487eb2fa7edbdab8e893.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/4c1a693e13e44754baae1beb989c6c32.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/dfe3069ea3444e20894d6a4dee261910.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/56b018a807d14c5a90d4fc64e3c0695b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/93b21a6259b144b0988d58790291200f.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/1f40382191524881bc76a7e2780c3e6e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/0cff96f7d53d42eaa5ea3ca585a4a079.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/cbd9e80dddb7499199357b10b6753cb8.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/abdbdb594080492c946b9be432cce36a.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/20c0f65f287f43e4b45c76c02cf92036.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/134b5a8174eb44cab16666eba3f51786.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/d1e15e55a0324438b381674f8570dad2.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/3c34916bcb214ed2adf21e3ebe7259fb.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/d572169514e54449b4272defab210d1b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/7821f0713f0b405bbfbe4dc76fb6344b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/f34623f007f54b4d97ab6e2d66859f9c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/1c4cb5fe13c14b8da08b39ca221a38da.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/b44879f818f044eab83f52f5126c4002.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/e3185d54078f4b769eb315426a66c3ae.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ac50c755dc624bcaa79548b1a77d5342.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/2cc74d1a83e74f82ab4b316f8f1440ba.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/2311e01a88574df399ea97a1f978c074.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/b952f0437dd64303a975d9be6e75f1b5.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ccbe933d62b94738a7cc89bb4bc03d48.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ef45d61074624808b6e948d04facb995.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/5e63ad2c2a48493e8ca29c2065a5e616.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/c480948fce284a04b80f6b29c2133f6d.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/cba266c3fab84c87aecdef5de6e7b788.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/50b9aa30364a40d69f69d9f5b0fe835c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/7aefb0d05fc64874b1dce20d24fd00f3.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/bc4a22df53a34d21b097e371cd3e4718.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/968d169793b94a38b1bd4cabfb53c1b3.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/f67bce1f541a45b7a76ece50f8f3d4d6.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/ce444461faef44488bb7df05e8e387de.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/cc96a2ebf351433cb7bacb60df578201.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/90f634a3fec74c5c982074e226e7f22c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/d2b068919aa44028b932b256ab9b0bc1.png">
+<meta property="article:published_time" content="2025-02-18T23:31:30.000Z">
+<meta property="article:modified_time" content="2025-09-04T09:57:03.000Z">
+<meta property="article:author" content="ChongWen">
+<meta property="article:tag" content="机器学习基础">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250217220106089.png">
+  
+  
+  
+  <meta name="keywords" content="机器学习基础,AI">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/Pytorch/"><span class="title">Pytorch</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/hexo-stellar/"><span class="title">博客配置笔记</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/"><span class="title">【昇腾】LLaMA-Factory 训练 Qwen</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-02-18T23:31:30.000Z">2025-02-18</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-09-04T09:57:03.000Z">2025-09-04</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：7.1k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：30分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI/">AI</a>&nbsp; <a class="cap breadcrumb-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/">机器学习基础</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>Pytorch</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p>记录机器学习基础知识、Pytorch基础使用。这次去年6月份的笔记了，当时开始转战AI了。</p>
+<span id="more"></span>
+
+<meta name="referrer" content="no-referrer"/>
+
+
+<h1 id="Pytorch"><a href="#Pytorch" class="headerlink" title="Pytorch"></a>Pytorch</h1><h2 id="1-基础"><a href="#1-基础" class="headerlink" title="1. 基础"></a>1. 基础</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250217220106089.png" alt="image-20250217220106089"></p>
+<h3 id="1-1-名词"><a href="#1-1-名词" class="headerlink" title="1.1 名词"></a>1.1 名词</h3><ul>
+<li><p><strong>特征</strong></p>
+<ul>
+<li>特征是数据中的各个<strong>属性</strong>或变量，它们用于描述数据的不同方面。在机器学习中，每个特征都是一个输入变量，可以是数值型、类别型、文本型等。</li>
+<li>比如：对于一个房价预测模型，特征可能包括房屋面积、房间数量、地理位置等。</li>
+</ul>
+</li>
+<li><p><strong>纬度</strong></p>
+<ul>
+<li>纬度是指数据集中特征的数量。每个特征代表一个维度。</li>
+<li>比如：一个具有3个特征的数据集可以被视为在3维空间中，每个数据点都有3个坐标（即3个特征）。</li>
+</ul>
+</li>
+<li><p><strong>纬度诅咒</strong></p>
+<ul>
+<li><p>特征向量很多的数据，会引发纬度诅咒。在高纬度空间中，会导致数据稀疏、计算复杂度增加、模型过拟合等。</p>
+</li>
+<li><p>例如，假设我们有1000个特征，数据在1000维空间中会非常稀疏，距离度量也变得不再有意义。</p>
+</li>
+<li><blockquote>
+<p>在高维空间中数据分析和建模面临的一系列问题和挑战。随着数据维度的增加，数据在高维空间中的稀疏性也增加，导致许多传统方法在高维空间中表现不佳。</p>
+<p>根本问题：数据量（有特征的）少，导致在高纬空间稀疏性增加。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>特征选择和降维</strong></p>
+<ul>
+<li><p>可以通过特征选择（去除不相关或冗余的特征）和降维技术（如主成分分析PCA）来降低纬度。</p>
+<blockquote>
+<p>案例</p>
+<p><strong>数据集：鸢尾花数据集（Iris Dataset）</strong></p>
+<ul>
+<li>特征：花萼长度、花萼宽度、花瓣长度、花瓣宽度。</li>
+<li>纬度：4（因为有4个特征）。</li>
+</ul>
+<p>在这个数据集中，每朵花的数据点位于一个4维空间中。假设我们使用这些特征来训练一个分类模型来区分不同种类的鸢尾花：</p>
+<ul>
+<li>如果我们引入更多特征（如花的颜色、花朵数量等），纬度将增加。</li>
+<li>通过特征选择，我们可以选择对分类效果影响较大的特征来简化模型。</li>
+<li>如果特征数量过多，可能需要使用降维技术来减少纬度，同时保留数据的主要信息。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>向量和坐标</strong></p>
+<blockquote>
+<p>在向量空间中，每个数据点可以被表示为一个向量。</p>
+<p>一个向量的每<strong>一个分量</strong>对应数据点的<strong>一个特征</strong>。例如：</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-2-人工智能系统的演变"><a href="#1-2-人工智能系统的演变" class="headerlink" title="1.2 人工智能系统的演变"></a>1.2 人工智能系统的演变</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/blog_migrate/49b2519de99bde1178448db4224affc8.png" alt="在这里插入图片描述"></p>
+<ol>
+<li><p><code>Rule-based systems</code>（基于规则的系统）：基于规则，手动设计多个规则，输入可以根据规则来输出。</p>
+<blockquote>
+<p>基于规则的系统是最早的人工智能方法之一，这种系统通过人工编写的规则来处理输入并生成输出。</p>
+<p><strong>工作流程</strong>：</p>
+<ol>
+<li><strong>输入</strong>：系统接收输入数据。</li>
+<li><strong>手工设计的程序</strong>：专家编写的规则程序处理输入。</li>
+<li><strong>输出</strong>：生成结果。</li>
+</ol>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>依赖专家知识：规则由领域专家编写。</li>
+<li>缺乏适应性：难以应对复杂、多变的任务。</li>
+<li>可解释性强：由于规则是手工编写的，系统的决策过程容易理解。</li>
+</ul>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li>简单决策系统：如税务计算、简单的诊断系统。</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>Classic machine learning</code>（经典机器学习）：手动从输入中提取特征（最终变成一个向量 ），把输入和输出建立一个映射函数，f(x)&#x3D;y的公式，最后输出</p>
+<blockquote>
+<p>经典机器学习方法通过使用预定义的特征和算法从数据中学习模型。</p>
+<p><strong>工作流程</strong>：</p>
+<ol>
+<li><strong>输入</strong>：系统接收输入数据。</li>
+<li><strong>手工设计的特征</strong>：专家从数据中提取重要特征（feature engineering）。</li>
+<li><strong>特征映射</strong>：使用机器学习算法（如线性回归、决策树等）对特征进行映射，从而生成输出。</li>
+<li><strong>输出</strong>：生成结果。</li>
+</ol>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>特征工程：特征的选择和设计对模型性能影响很大。</li>
+<li>依赖领域知识：特征设计需要专家知识。</li>
+<li>灵活性较强：可应用于各种类型的数据和任务。</li>
+</ul>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li>图像识别、文本分类、预测分析等。</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>Representation learning</code>（表示学习）：把非结构化的输入，通过复杂的算法，提取出特征（向量）。然后根据映射函数得到输出。</p>
+<blockquote>
+<p>通过自动学习特征表示，将输入映射到输出。</p>
+<p><strong>输入</strong>：系统接收输入数据。</p>
+<p><strong>初始特征提取</strong>：从输入数据中提取初始特征，这些特征可能是手工设计的，也可能是从数据中自动学习得到的。</p>
+<p><strong>特征转换</strong>：通过不同的方法（如降维、聚类、编码等）将初始特征转换为新的特征表示。</p>
+<p><strong>特征映射</strong>：使用这些新的特征表示进行映射，生成输出。</p>
+<p><strong>输出</strong>：生成结果。</p>
+</blockquote>
+</li>
+<li><p>Depping Learning（深度学习）：表征学习的一种实现方式，通过多层神经网络来学习数据的多层次表示，具有强大的特征提取和任务优化能力。</p>
+<blockquote>
+<ol>
+<li><strong>输入</strong>：系统接收输入数据。</li>
+<li><strong>简单特征</strong>：初始层提取简单特征。</li>
+<li><strong>更多抽象特征的附加层</strong>：通过多层神经网络提取 更加抽象和复杂的特征。</li>
+<li><strong>特征映射</strong>：最终使用这些抽象特征进行映射，生成输出。</li>
+<li><strong>输出</strong>：生成结果。</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<h3 id="1-3-反向传播"><a href="#1-3-反向传播" class="headerlink" title="1.3 反向传播"></a>1.3 反向传播</h3><p>实际上就是求偏导数</p>
+<p>用计算图表示，每一步都是原子计算。</p>
+<p>从下到上求e，是前推的过程。<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/blog_migrate/847645da3c0f9fcdce6429eec6c1b1ec.png" alt="在这里插入图片描述"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/blog_migrate/8c79e31acad5b59b7f81da60dd64fa1e.png" alt="在这里插入图片描述"></p>
+<h2 id="2-线型模型"><a href="#2-线型模型" class="headerlink" title="2. 线型模型"></a>2. 线型模型</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/91e6947e06e348f5bcaa6a913acd4b59.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<ol>
+<li><p>有一些数据集。</p>
+</li>
+<li><p>先用线性模型，y&#x3D;wx+b。权重w。</p>
+</li>
+<li><p>随机一个权重，得到一个线型模型。</p>
+</li>
+<li><p>根据随机的线型模型，用输入获取输出y’。计算真实输出和y’的距离。</p>
+<p>也就是说，通过某个方法找到当前模型和真实数据之间的误差。 也就是<code>Loss</code></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/d06dfa079e1d4bb08eff43fa8dfce4c2.png" alt="在这里插入图片描述"></p>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>   计算均方差 。w&#x3D;3时</p>
+<p>   <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ffc82ea6aca0401e9ca53f2e3b6b78ab.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<pre><code>w=2时。
+</code></pre>
+<p>   <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/698f58fcec3a426e8a090f482a4a3bed.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p>注意：</p>
+<p>对所有的样本：<strong>平均平方误差</strong>：<code>Mean Sequare Error</code>（**<code>MSE</code>**）</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/4667d489cea24f64b0229b2657edbba9.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/adc498ac986a49b5b7de8d23e0fd3d5c.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据样本</span></span><br><span class="line">x_data = [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]</span><br><span class="line">y_data = [<span class="number">2.0</span>, <span class="number">4.0</span>, <span class="number">6.0</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 线型模型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * w</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 损失函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss</span>(<span class="params">x, y</span>):</span><br><span class="line">    y_pred = forward(x)</span><br><span class="line">    <span class="keyword">return</span> (y_pred - y) * (y_pred - y)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测的权重w，作为图的x轴</span></span><br><span class="line">w_list = []</span><br><span class="line"><span class="comment"># 每个权重w对应的损失值，作为图的y轴</span></span><br><span class="line">mse_list = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在某个范围内，穷举权重w</span></span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> np.arange(<span class="number">0.0</span>, <span class="number">4.1</span>, <span class="number">0.1</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;w=&#x27;</span>, w)</span><br><span class="line">    l_sum = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 遍历每个样本，计算损失值</span></span><br><span class="line">    <span class="keyword">for</span> x_val, y_val <span class="keyword">in</span> <span class="built_in">zip</span>(x_data, y_data):</span><br><span class="line">        <span class="comment"># 预测值</span></span><br><span class="line">        y_pred_val = forward(x_val)</span><br><span class="line">        <span class="comment"># 损失值</span></span><br><span class="line">        loss_val = loss(x_val, y_val)</span><br><span class="line">        <span class="comment"># 累加损失值</span></span><br><span class="line">        l_sum += loss_val</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;\t<span class="subst">&#123;x_val&#125;</span> <span class="subst">&#123;y_val&#125;</span> <span class="subst">&#123;y_pred_val&#125;</span> <span class="subst">&#123;loss_val&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="comment">#     三个样本的平均损失值</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;MSE = <span class="subst">&#123;l_sum / <span class="number">3</span>&#125;</span>&quot;</span>)</span><br><span class="line">    w_list.append(w)</span><br><span class="line">    mse_list.append(l_sum / <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">plt.plot(w_list, mse_list)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;Loss&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>加上常数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">x_data = [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]</span><br><span class="line">y_data = [<span class="number">3.0</span>, <span class="number">5.0</span>, <span class="number">7.0</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * w + b</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss</span>(<span class="params">x, y</span>):</span><br><span class="line">    y_pred = forward(x)</span><br><span class="line">    <span class="keyword">return</span> (y_pred - y) * (y_pred - y)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">w_list = []</span><br><span class="line">b_list = []</span><br><span class="line">mse_list = []</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> np.arange(<span class="number">0.0</span>, <span class="number">4.1</span>, <span class="number">0.1</span>):</span><br><span class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> np.arange(<span class="number">0.0</span>, <span class="number">4.1</span>, <span class="number">0.1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;w&#x27;</span>, w, <span class="string">&#x27;b&#x27;</span>, b)</span><br><span class="line">        l_sum = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> x_val, y_val <span class="keyword">in</span> <span class="built_in">zip</span>(x_data, y_data):</span><br><span class="line">            y_pred_val = forward(x_val)</span><br><span class="line">            loss_val = loss(x_val, y_val)</span><br><span class="line">            l_sum += loss_val</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;\t&#x27;</span>, x_val, y_val, y_pred_val, loss_val)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;MSE=&#x27;</span>, l_sum / <span class="number">3</span>)</span><br><span class="line">        w_list.append(w)</span><br><span class="line">        b_list.append(b)</span><br><span class="line">        mse_list.append((l_sum) / <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.add_subplot(<span class="number">111</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line"><span class="comment"># 绘制线框图</span></span><br><span class="line">ax.plot(w_list, b_list, mse_list, <span class="string">&#x27;o-&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(w_list)</span><br><span class="line"><span class="comment"># 设置标签</span></span><br><span class="line">ax.set_xlabel(<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">ax.set_ylabel(<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line">ax.set_zlabel(<span class="string">&#x27;Loss&#x27;</span>)</span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</blockquote>
+<h2 id="3-梯度下降"><a href="#3-梯度下降" class="headerlink" title="3. 梯度下降"></a>3. 梯度下降</h2><h3 id="3-1-意义"><a href="#3-1-意义" class="headerlink" title="3.1 意义"></a>3.1 意义</h3><blockquote>
+<p> 从线型模型，大概了解到了数据集、模型、Loss之间的关系。</p>
+<p> 那么模型的权重w，怎么快速求得，是一个问题。根本问题：如何最小化损失函数</p>
+<p> 假设Loss是光滑凹凸曲线，在这个曲线上，对某个w求偏导，可以知道当前w的方向。（导数&gt;0,增函数；导数&lt;0,减函数），那么沿着这个方向不断的测试w，可以得到最小Loss的w。（理想状态下）</p>
+<p> 事实上，Loss曲线是不光滑的非凸函数，只能找到局部最优。</p>
+</blockquote>
+<ul>
+<li>cost（cost function，损失函数）</li>
+<li>学习率：相当于w移动的距离</li>
+<li>每次迭代，都向着下降最快的方向走，典型的贪心。这是局部最优结果</li>
+</ul>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/6584c29f9379448ca5edc92240a86ba5.png" alt="在这里插入图片描述"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/059afedb0b6945b698a2244bf5d601fc.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>鞍点：不能继续迭代的点（梯度是0 ，走不动了），在一个水平线 或 从一个面上看是最低从另一个面看最高<ul>
+<li><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/f95e0fb88cf94769997bf388924b4ac0.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-公式"><a href="#3-2-公式" class="headerlink" title="3.2 公式"></a>3.2 公式</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/fe4f97521fe5487e875a88f3cfbab849.png" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">x_data = [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]</span><br><span class="line">y_data = [<span class="number">2.0</span>, <span class="number">4.0</span>, <span class="number">6.0</span>]</span><br><span class="line"></span><br><span class="line">w = <span class="number">1</span></span><br><span class="line"><span class="comment"># 学习率</span></span><br><span class="line">rate = <span class="number">0.01</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * w</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 损失函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cost</span>(<span class="params">xs, ys</span>):</span><br><span class="line">    cost = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(xs, ys):</span><br><span class="line">        y_pred = forward(x)</span><br><span class="line">        cost += (y_pred - y) ** <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> cost / <span class="built_in">len</span>(xs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 求梯度</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gradient</span>(<span class="params">xs, ys</span>):</span><br><span class="line">    grad = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(xs, ys):</span><br><span class="line">        grad += <span class="number">2</span> * x * (x * w - y)</span><br><span class="line">    <span class="keyword">return</span> grad / <span class="built_in">len</span>(xs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">l_list = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    cost_val = cost(x_data, y_data)</span><br><span class="line">    grad_val = gradient(x_data, y_data)</span><br><span class="line">    w = w - grad_val * rate</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Epoch:&#x27;</span>, epoch, <span class="string">&#x27;w=&#x27;</span>, w, <span class="string">&#x27;loss=&#x27;</span>, cost_val)</span><br><span class="line">    l_list.append(cost_val)</span><br><span class="line"></span><br><span class="line">plt.plot(<span class="built_in">range</span>(<span class="number">100</span>), l_list)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/218945986b4f45e8a302dc007a25c71a.png" alt="在这里插入图片描述"></p>
+<h3 id="3-3-随机梯度下降-Stochastic"><a href="#3-3-随机梯度下降-Stochastic" class="headerlink" title="3.3 随机梯度下降 Stochastic"></a>3.3 随机梯度下降 Stochastic</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/53c6d6dd372b45cd9259f5d226b3abee.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<ul>
+<li>梯度下降：cost，用<strong>平均损失</strong>作为梯度下降更新的依据。比如N个样本，就需要计算N样本的损失</li>
+<li>随机梯度下降：从N个样本中随机选一个，就成了拿<strong>单个样本</strong>的损失作为梯度下降的更新依据。</li>
+</ul>
+<blockquote>
+<p><strong>随机梯度下降的好处</strong></p>
+<p>加入在鞍点的情况下。使用cost会停止不同。但是如果只用一个样本，样本都是有噪声的，也就有了一个随机噪声，这个噪声可能就会帮助向前推动，有可能就会跳过鞍点，找到最优值</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/44eee1088775470ebc96be2a9f0f3a18.png" alt="在这里插入图片描述"></p>
+</blockquote>
+</blockquote>
+<p>全部样本都计算损失（样本独立算损失，不是想之前那个求平均）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">x_data = [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]</span><br><span class="line">y_data = [<span class="number">2.0</span>, <span class="number">4.0</span>, <span class="number">6.0</span>]</span><br><span class="line"></span><br><span class="line">w = <span class="number">1</span></span><br><span class="line"><span class="comment"># 学习率</span></span><br><span class="line">rate = <span class="number">0.01</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * w</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 损失函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="keyword">return</span> (forward(x) - y) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 求梯度</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gradient</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * x * (x * w - y)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">l_list = []</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(x_data, y_data):</span><br><span class="line">        grad_val = gradient(x, y)</span><br><span class="line">        w = w - grad_val * rate</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;grad:&#x27;</span>, x, y, grad_val)</span><br><span class="line">        loss_val = loss(x, y)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Epoch: &quot;</span>, epoch, <span class="string">&quot;w=&quot;</span>, w, <span class="string">&quot;loss=&quot;</span>, loss_val)</span><br><span class="line">    l_list.append(loss_val)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 因为每个样本都做了一次，所以是100*3</span></span><br><span class="line">plt.plot(<span class="built_in">range</span>(<span class="number">100</span>), l_list)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>存在的问题：</p>
+<blockquote>
+<ul>
+<li>梯度下降：cost一次计算时，样本之间的损失没有关联（最后是损失的和），可以并行计算。</li>
+<li>随机梯度下降：样本之间的损失是有关系的，因为当前样本计算的权重w，依赖上一个样本的w。这时的计算是不能并行的</li>
+</ul>
+<p>梯度下降：效率高、性能低</p>
+<p>随机梯度下降：效率低、性能高（比梯度下降拿到的最优值更好）</p>
+</blockquote>
+<h3 id="3-4-Mini-Batch"><a href="#3-4-Mini-Batch" class="headerlink" title="3.4 Mini-Batch"></a>3.4 Mini-Batch</h3><p>小批量梯度下降</p>
+<blockquote>
+<p>一种常用的梯度下降优化算法，它结合了批量梯度下降（Batch Gradient Descent）和随机梯度下降（Stochastic Gradient Descent, SGD）的优点，提供了一种在速度和稳定性之间折中的方法。</p>
+<p>每次不对全部的N个点求损失的均值，而对某些点M(M&lt;N)</p>
+</blockquote>
+<p>注意：这里老师【刘二大人】和其他博主讲的是相反，其他博主是说梯度下降（即批量梯度下降）效率最慢，结果好。随机梯度下降是从N个点中选择一个点，效率最好，结果差（实际上刘二老师也说的是选一个，但是代码中，实际上还是都选了。。）。</p>
+<p>这里等之后有时间或其他机会，再研究。</p>
+<h2 id="5-反向传播"><a href="#5-反向传播" class="headerlink" title="5. 反向传播"></a>5. 反向传播</h2><ol>
+<li><p>拿之前线性方程的举例。现在的<code>X</code>是<code>N</code>纬矩阵，<code>W</code>是<code>M✖️N</code>纬矩阵，<code>H=W*X</code>，是<code>M</code>纬矩阵。</p>
+</li>
+<li><p>H就是中间结果（隐藏层），H也是下一层的输入X’，再下一层H’&#x3D;W’ * X’，最后得到loss。这是一个前推的过程</p>
+</li>
+<li><p>得到loss之后，就需要求梯度、更新参数。</p>
+</li>
+<li><p>最终需要求的梯度是：loss对w对偏导（对于中间产生的H即X’, 也需要求loss对X’的偏导，因为他是中间结果，他的上一层，需要这个结果）</p>
+</li>
+<li><p>loss对W对偏导，可以链式拆分：loss对H的偏导*H对W对偏导。</p>
+</li>
+<li><p>就这样逐层计算。当前层的链式计算表达式，其中可以用到后一层的结果，这是反向传播的过程<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/823f447544454b7d8fa019db2f719936.png" alt="在这里插入图片描述"></p>
+</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/cfd57ce476ab497586c3b34b179cc598.png" alt="在这里插入图片描述"></p>
+<p>解决了下面的问题：</p>
+<blockquote>
+<p> <strong>梯度计算</strong>:</p>
+<ul>
+<li><strong>问题</strong>: 神经网络中包含多个隐藏层，每一层都有大量的参数（权重和偏置）。要调整这些参数使得网络的输出与期望输出尽可能接近，需要计算损失函数关于<strong>每个参数</strong>的梯度。参数x是一个N纬矩阵，如果按照一纬线型的方式求loss、梯度下降，那么计算量很庞大。</li>
+<li><strong>解决</strong>: 反向传播算法使用链式法则（链式求导法则）来<strong>高效地计算</strong>损失函数关于每个参数的梯度。这些梯度用于更新参数，使得损失函数的值在训练过程中逐渐减小。</li>
+</ul>
+<p> <strong>权重更新</strong>:</p>
+<ul>
+<li><strong>问题</strong>: 一旦计算了梯度，需要使用这些梯度来更新网络中的权重，以减少预测误差。</li>
+</ul>
+<p> <strong>效率问题</strong>:</p>
+<ul>
+<li><strong>问题</strong>: 直接计算每个参数的梯度在深度神经网络中可能会非常耗时且复杂，特别是当网络层数较多时。</li>
+<li><strong>解决</strong>: 反向传播通过逐层计算梯度，利用前向传播时保存的<strong>中间结果</strong>，可以有效地减少计算量。具体来说，通过<strong>逐层计算误差的传播</strong>，从输出层到输入层<strong>反向传播误差</strong>，使得梯度计算更加高效。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p> 反向传播的核心步骤</p>
+<ol>
+<li><strong>前向传播</strong>:</li>
+</ol>
+<ul>
+<li>输入数据通过网络，从输入层经过各个隐藏层，到达输出层，计算出网络的预测值。</li>
+</ul>
+<ol start="2">
+<li><strong>损失计算</strong>:</li>
+</ol>
+<ul>
+<li>根据网络的预测值和真实值，计算损失函数值。</li>
+</ul>
+<ol start="3">
+<li><strong>反向传播</strong>:</li>
+</ol>
+<ul>
+<li>从输出层开始，<strong>逐层计算</strong>损失函数关于每个参数的梯度，<strong>反向</strong>传播到输入层。</li>
+</ul>
+<ol start="4">
+<li><strong>权重更新</strong>:</li>
+</ol>
+<ul>
+<li>使用梯度和优化算法（如梯度下降），更新每个参数的值。</li>
+</ul>
+</blockquote>
+<p>前向传播目的是计算损失，反向传播目的是计算梯度来更新参数。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/f06c0c96982247fa9ef74302a4a4f2ce.png" alt="在这里插入图片描述"></p>
+<h2 id="5-Pytorch"><a href="#5-Pytorch" class="headerlink" title="5. Pytorch"></a>5. Pytorch</h2><blockquote>
+<p>Pytorch基础：</p>
+<ul>
+<li>Tensor存放数据，可以是标量、向量、矩阵、高阶矩阵。就说任何类似的数值都行</li>
+<li>w是Tensor(张量类型)，Tensor中包含data和grad，data和grad也是Tensor。grad初始为None，调用l.backward()方法后w.grad为Tensor，故更新w.data时需使用<code>w.grad.data</code></li>
+<li>如果w需要计算梯度，那构建的计算图中，跟w相关的tensor都默认需要计算梯度。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">&quot;KMP_DUPLICATE_LIB_OK&quot;</span>] = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line">a = torch.tensor([<span class="number">1.0</span>])</span><br><span class="line">a.requires_grad = <span class="literal">True</span> <span class="comment"># 或者 a.requires_grad_()</span></span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line"><span class="built_in">print</span>(a.data)</span><br><span class="line"><span class="built_in">print</span>(a.<span class="built_in">type</span>())             <span class="comment"># a的类型是tensor</span></span><br><span class="line"><span class="built_in">print</span>(a.data.<span class="built_in">type</span>())        <span class="comment"># a.data的类型是tensor</span></span><br><span class="line"><span class="built_in">print</span>(a.grad)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(a.grad))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>反向传播主要体现在，<code>l.backward()</code>。调用该方法后w.grad由None更新为Tensor类型，且w.grad.data的值用于后续w.data的更新。</li>
+<li>l.backward()会把计算图中所有需要梯度(grad)的地方都会求出来，然后把梯度都存在对应的待求的参数中，最终计算图被释放。</li>
+<li>取tensor中的data是不会构建计算图的。<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/8e97ca7cebfe419cb0c410dfb39cb2dc.png" alt="在这里插入图片描述"></li>
+</ul>
+</blockquote>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">&quot;KMP_DUPLICATE_LIB_OK&quot;</span>] = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">x_data = [<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]</span><br><span class="line">y_data = [<span class="number">2.0</span>, <span class="number">4.0</span>, <span class="number">6.0</span>]</span><br><span class="line"></span><br><span class="line">w = torch.tensor([<span class="number">0.1</span>])</span><br><span class="line"><span class="comment"># 需要计算梯度</span></span><br><span class="line">w.requires_grad = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意这里的w是一个tensor，所以x也要是一个tensor（如果不是，那么会自动转换类型）</span></span><br><span class="line"><span class="comment"># 并且，这不是一个乘法，而代表一个计算图</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * w</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这也是一个计算图</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss</span>(<span class="params">x, y</span>):</span><br><span class="line">    y_pred = forward(x)</span><br><span class="line">    <span class="keyword">return</span> (y_pred - y) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">l_list = []</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    <span class="keyword">for</span> x, y <span class="keyword">in</span> <span class="built_in">zip</span>(x_data, y_data):</span><br><span class="line">        l = loss(x, y)</span><br><span class="line">        <span class="comment"># 反向传播。backward自动根据计算图，把所有需要梯度的地方都求出来。梯度会存到w中</span></span><br><span class="line">        <span class="comment"># 执行完毕，计算图会被释放。下次loss会创建一个新的计算图。</span></span><br><span class="line">        l.backward()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\tgrad:&#x27;</span>, x, y, w.grad.item())</span><br><span class="line">        <span class="comment"># 这里我们需要的是值，所以用data。如果用w，那么会得到一个tensor，而不是一个值</span></span><br><span class="line">        w.data = w.data - <span class="number">0.01</span> * w.grad.data</span><br><span class="line">        w.grad.data.zero_()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Epoch: &quot;</span>, epoch, <span class="string">&quot;w=&quot;</span>, w, <span class="string">&quot;loss=&quot;</span>, l.data)</span><br><span class="line">    l_list.append(l.data)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 因为每个样本都做了一次，所以是100*3</span></span><br><span class="line">plt.plot(<span class="built_in">range</span>(<span class="number">100</span>), l_list)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</blockquote>
+<h2 id="6-逻辑斯蒂回归"><a href="#6-逻辑斯蒂回归" class="headerlink" title="6. 逻辑斯蒂回归"></a>6. 逻辑斯蒂回归</h2><h3 id="6-1-二分类问题与sigmoid函数"><a href="#6-1-二分类问题与sigmoid函数" class="headerlink" title="6.1 二分类问题与sigmoid函数"></a>6.1 二分类问题与sigmoid函数</h3><blockquote>
+<p>二分类问题：假如手写字体识别的例子，判断数字是0-9的概率。实际上求的是P(y)&#x3D;1的概率（即手写数字是某个数字的概率）。<br>由于我们求的是概率，那么我们的输出值，需要限定在[0,1]区间。<br>使用下面这个函数，将结果带入<br> <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/62b925cc8c4f491d971ab8e4d68f454e.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/e2b68cefb2bc41f3ae1f755c37372a78.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/4220514e1851498fbdd48172d8af5860.png" alt="在这里插入图片描述"><br>这种函数被称为：sigmoid函数</p>
+</blockquote>
+<h3 id="6-2-损失函数和交叉熵"><a href="#6-2-损失函数和交叉熵" class="headerlink" title="6.2 损失函数和交叉熵"></a>6.2 损失函数和交叉熵</h3><blockquote>
+<p>前言：在线程回归中，我们计算损失是求y‘和y的距离，这是几何意义。但是在概率上就不能这样了，要计算的是两个概率分布的差距。</p>
+<p> 例如：<br> 有两个分布D、T，用下面的公式可以计算两个分布之间的差距，越 <strong>大</strong> 越好</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/d136711d7ace4c1ba6a904da13926fc9.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>加负号之后就成了越小越好</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/08dab2ee7b9c4c21ab8538cdd29becae.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/888789f047a2452c87092f94c21f4094.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p>在代码上，只需要修改y_pred的结果 和 损失</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/a4401152dd6e424887c72ec9498dfa91.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>这个求损失的方法，就是交叉熵</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/81358695b028439a9fb09de0d953a6ce.png" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># import torch.nn.functional as F</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># prepare dataset</span></span><br><span class="line">x_data = torch.Tensor([[<span class="number">1.0</span>], [<span class="number">2.0</span>], [<span class="number">3.0</span>]])</span><br><span class="line">y_data = torch.Tensor([[<span class="number">0</span>], [<span class="number">0</span>], [<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># design model using class</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LogisticRegressionModel</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(LogisticRegressionModel, self).__init__()</span><br><span class="line">        self.linear = torch.nn.Linear(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="comment"># y_pred = F.sigmoid(self.linear(x))</span></span><br><span class="line">        y_pred = torch.sigmoid(self.linear(x))</span><br><span class="line">        <span class="keyword">return</span> y_pred</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = LogisticRegressionModel()</span><br><span class="line"></span><br><span class="line"><span class="comment"># construct loss and optimizer</span></span><br><span class="line"><span class="comment"># 默认情况下，loss会基于element平均，如果size_average=False的话，loss会被累加。</span></span><br><span class="line">criterion = torch.nn.BCELoss(size_average=<span class="literal">False</span>)</span><br><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># training cycle forward, backward, update</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    y_pred = model(x_data)</span><br><span class="line">    loss = criterion(y_pred, y_data)</span><br><span class="line">    <span class="built_in">print</span>(epoch, loss.item())</span><br><span class="line"></span><br><span class="line">    optimizer.zero_grad()</span><br><span class="line">    loss.backward()</span><br><span class="line">    optimizer.step()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;w = &#x27;</span>, model.linear.weight.item())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;b = &#x27;</span>, model.linear.bias.item())</span><br><span class="line"></span><br><span class="line">x_test = torch.Tensor([[<span class="number">4.0</span>]])</span><br><span class="line">y_test = model(x_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;y_pred = &#x27;</span>, y_test.data)</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-多维数据处理"><a href="#7-多维数据处理" class="headerlink" title="7. 多维数据处理"></a>7. 多维数据处理</h2><ul>
+<li>用多层神经网络，神经网络共3层；第一层是8维到6维的非线性空间变换，第二层是6维到4维的非线性空间变换，第三层是4维到1维的非线性空间变换。</li>
+<li>本算法中<code>torch.nn.Sigmoid()</code>  将其看作是网络的一层，而不是简单的函数使用<br>博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/bit452/article/details/109682078">https://blog.csdn.net/bit452/article/details/109682078</a></li>
+</ul>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/98e807b8ef904cb6a53de7d0b79bb95d.png" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"> </span><br><span class="line"><span class="comment"># prepare dataset</span></span><br><span class="line">xy = np.loadtxt(<span class="string">&#x27;diabetes.csv&#x27;</span>, delimiter=<span class="string">&#x27;,&#x27;</span>, dtype=np.float32)</span><br><span class="line">x_data = torch.from_numpy(xy[:, :-<span class="number">1</span>]) <span class="comment"># 第一个‘：’是指读取所有行，第二个‘：’是指从第一列开始，最后一列不要</span></span><br><span class="line">y_data = torch.from_numpy(xy[:, [-<span class="number">1</span>]]) <span class="comment"># [-1] 最后得到的是个矩阵</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># design model using class</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Model, self).__init__()</span><br><span class="line">        self.linear1 = torch.nn.Linear(<span class="number">8</span>, <span class="number">6</span>) <span class="comment"># 输入数据x的特征是8维，x有8个特征</span></span><br><span class="line">        self.linear2 = torch.nn.Linear(<span class="number">6</span>, <span class="number">4</span>)</span><br><span class="line">        self.linear3 = torch.nn.Linear(<span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line">        self.sigmoid = torch.nn.Sigmoid() <span class="comment"># 将其看作是网络的一层，而不是简单的函数使用</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = self.sigmoid(self.linear1(x))</span><br><span class="line">        x = self.sigmoid(self.linear2(x))</span><br><span class="line">        x = self.sigmoid(self.linear3(x)) <span class="comment"># y hat</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">model = Model()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># construct loss and optimizer</span></span><br><span class="line"><span class="comment"># criterion = torch.nn.BCELoss(size_average = True)</span></span><br><span class="line">criterion = torch.nn.BCELoss(reduction=<span class="string">&#x27;mean&#x27;</span>)  </span><br><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.1</span>)</span><br><span class="line"> </span><br><span class="line">epoch_list = []</span><br><span class="line">loss_list = []</span><br><span class="line"><span class="comment"># training cycle forward, backward, update</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    y_pred = model(x_data)</span><br><span class="line">    loss = criterion(y_pred, y_data)</span><br><span class="line">    <span class="built_in">print</span>(epoch, loss.item())</span><br><span class="line">    epoch_list.append(epoch)</span><br><span class="line">    loss_list.append(loss.item())</span><br><span class="line"> </span><br><span class="line">    optimizer.zero_grad()</span><br><span class="line">    loss.backward()</span><br><span class="line"> </span><br><span class="line">    optimizer.step()</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">plt.plot(epoch_list, loss_list)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;epoch&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="8-加载数据集"><a href="#8-加载数据集" class="headerlink" title="8. 加载数据集"></a>8. 加载数据集</h2><blockquote>
+<p>MiniBatch<br>对数据集打乱、分组</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/0dc425ddf9bb45b09a4d6e0ebb780fa1.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>自己定义</p>
+<ul>
+<li>DataSet 是抽象类，不能实例化对象，主要是用于构造我们的数据集</li>
+<li>DataLoader：数据加载器。能拿出Mini-Batch进行训练。它帮我们自动完成这些工作。DataLoader可实例化对象。</li>
+<li>batch_size：批处理大小</li>
+<li>shuffle：是否打乱，真正训练的时候都会打乱</li>
+<li>num_workers：并行处理的个数</li>
+<li>继承DataSet的类需要重写init，getitem,len魔法函数。分别是为了加载数据集，获取数据索引，获取数据总量。</li>
+</ul>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/7e89f33132a149199b01374c64cda118.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>定义数据类</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/593e73042cf448f39e10c7ed2076cee2.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>迭代数据对象。每次epoch用某一批的数据来训练。</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/272164457d544870b08ef322ab8982dc.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>使用库中的数据集<br>内置了手写字体识别的数据集，datasets可以直接获取相关的数据对象 </p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/7335692ac0ae4205a57b6be85064bcda.png" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># prepare dataset</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DiabetesDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, filepath</span>):</span><br><span class="line">        xy = np.loadtxt(filepath, delimiter=<span class="string">&#x27;,&#x27;</span>, dtype=np.float32)</span><br><span class="line">        self.<span class="built_in">len</span> = xy.shape[<span class="number">0</span>]  <span class="comment"># shape(多少行，多少列)</span></span><br><span class="line">        self.x_data = torch.from_numpy(xy[:, :-<span class="number">1</span>])</span><br><span class="line">        self.y_data = torch.from_numpy(xy[:, [-<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, index</span>):</span><br><span class="line">        <span class="keyword">return</span> self.x_data[index], self.y_data[index]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.<span class="built_in">len</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dataset = DiabetesDataset(<span class="string">&#x27;dataset/diabetes.csv&#x27;</span>)</span><br><span class="line">train_loader = DataLoader(dataset=dataset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>, num_workers=<span class="number">0</span>)  <span class="comment"># num_workers 多线程</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># design model using class</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Model</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Model, self).__init__()</span><br><span class="line">        self.linear1 = torch.nn.Linear(<span class="number">8</span>, <span class="number">6</span>)</span><br><span class="line">        self.linear2 = torch.nn.Linear(<span class="number">6</span>, <span class="number">4</span>)</span><br><span class="line">        self.linear3 = torch.nn.Linear(<span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line">        self.sigmoid = torch.nn.Sigmoid()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = self.sigmoid(self.linear1(x))</span><br><span class="line">        x = self.sigmoid(self.linear2(x))</span><br><span class="line">        x = self.sigmoid(self.linear3(x))</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = Model()</span><br><span class="line"></span><br><span class="line"><span class="comment"># construct loss and optimizer</span></span><br><span class="line">criterion = torch.nn.BCELoss(reduction=<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># training cycle forward, backward, update</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    epoch_list = []</span><br><span class="line">    loss_list = []</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        <span class="keyword">for</span> i, data <span class="keyword">in</span> <span class="built_in">enumerate</span>(train_loader, <span class="number">0</span>):  <span class="comment"># train_loader 是先shuffle后mini_batch</span></span><br><span class="line">            inputs, labels = data</span><br><span class="line">            y_pred = model(inputs)</span><br><span class="line">            loss = criterion(y_pred, labels)</span><br><span class="line">            <span class="built_in">print</span>(epoch, i, loss.item())</span><br><span class="line"></span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line"></span><br><span class="line">            optimizer.step()</span><br><span class="line">        epoch_list.append(epoch)</span><br><span class="line">        loss_list.append(loss.item())</span><br><span class="line">    plt.plot(epoch_list, loss_list)</span><br><span class="line">    plt.ylabel(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">    plt.xlabel(<span class="string">&#x27;epoch&#x27;</span>)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="9-多分类问题"><a href="#9-多分类问题" class="headerlink" title="9. 多分类问题"></a>9. 多分类问题</h2><h3 id="9-1-Softmax"><a href="#9-1-Softmax" class="headerlink" title="9.1 Softmax"></a>9.1 Softmax</h3><blockquote>
+<p>对每个分类求结果，如把看做求<code>y1</code>，把其他的分类都看做<code>P(y)=0.</code><br>那么求出结果，但是会造成，这些分类的结果相加不是1，比如<code>P(y1) = 0.8,P(y2)=0.7</code></p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/e4f9b16314c94d9cb00bac1a3d983f6c.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p><code>Softmax</code>：重新得到一个值，然后求和，再求。即：<code>a/a+b+c</code><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/6ca35b2a13294555a157f0d05d27f2f6.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p>交叉熵求损失</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/887f1e5e781f404785bd322c465b2005.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>用CrossEntropyLoss，神经网络的最后一层不需要做激活</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ab90bdc3e0c64cbca76709781d5fc975.png" alt="在这里插入图片描述"></p>
+<h3 id="9-2-图像输入表示"><a href="#9-2-图像输入表示" class="headerlink" title="9.2 图像输入表示"></a>9.2 图像输入表示</h3><blockquote>
+<p>一张黑白图的像素，可以用0-255的数值表示<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ca0c4d4e543645afaf90dd90c5beec98.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p>图像的表示</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/5d9f56db529d446ca188a768294a8a6c.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>将图像转为Tensor，分别是：通道、宽、高</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/65cf3f9df7fa4097a6ed0103912e4c96.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/490089b468984781b1d888dcf581e466.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>全连接网络</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/8d4276379e35473dbdd8efc6d1973fb9.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>最后一层不做激活</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/0179cbf9fc36487eb2fa7edbdab8e893.png" alt=" "></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/4c1a693e13e44754baae1beb989c6c32.png" alt="在这里插入图片描述"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/dfe3069ea3444e20894d6a4dee261910.png" alt="在这里插入图片描述"></p>
+<h3 id="9-3-总结"><a href="#9-3-总结" class="headerlink" title="9.3 总结"></a>9.3 总结</h3><p>来自：<a target="_blank" rel="noopener" href="https://blog.csdn.net/bit452/article/details/109686936">https://blog.csdn.net/bit452/article/details/109686936</a></p>
+<ul>
+<li>softmax的输入不需要再做非线性变换，也就是说softmax之前不再需要激活函数(relu)。softmax两个作用，如果在进行softmax前的input有负数，通过指数变换，得到正数。所有类的概率求和为1。</li>
+<li>多分类问题，标签y的类型是LongTensor。比如说0-9分类问题，如果y &#x3D; torch.LongTensor([3])，对应的one-hot是[0,0,0,1,0,0,0,0,0,0].(这里要注意，如果使用了one-hot，标签y的类型是LongTensor，糖尿病数据集中的target的类型是FloatTensor)</li>
+<li>CrossEntropyLoss &lt;&#x3D;&#x3D;&gt; LogSoftmax + NLLLoss。也就是说使用CrossEntropyLoss最后一层(线性层)是不需要做其他变化的；使用NLLLoss之前，需要对最后一层(线性层)先进行SoftMax处理，再进行log操作。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line">batch_size = <span class="number">64</span></span><br><span class="line"></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    transforms.Normalize((<span class="number">0.1307</span>,), (<span class="number">0.3081</span>,))</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">train_dataset = datasets.MNIST(root=<span class="string">&quot;/dataset/mnist&quot;</span>,</span><br><span class="line">                               train=<span class="literal">True</span>,</span><br><span class="line">                               transform=transform,</span><br><span class="line">                               download=<span class="literal">True</span></span><br><span class="line">                               )</span><br><span class="line">test_dataset = datasets.MNIST(root=<span class="string">&quot;/dataseet/mnist&quot;</span>,</span><br><span class="line">                              train=<span class="literal">True</span>,</span><br><span class="line">                              transform=transform,</span><br><span class="line">                              download=<span class="literal">True</span>)</span><br><span class="line">train_loader = DataLoader(dataset=train_dataset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line">test_loader = DataLoader(dataset=test_dataset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># design model using class</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Net</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Net, self).__init__()</span><br><span class="line">        self.l1 = torch.nn.Linear(<span class="number">784</span>, <span class="number">512</span>)</span><br><span class="line">        self.l2 = torch.nn.Linear(<span class="number">512</span>, <span class="number">256</span>)</span><br><span class="line">        self.l3 = torch.nn.Linear(<span class="number">256</span>, <span class="number">128</span>)</span><br><span class="line">        self.l4 = torch.nn.Linear(<span class="number">128</span>, <span class="number">64</span>)</span><br><span class="line">        self.l5 = torch.nn.Linear(<span class="number">64</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = x.view(-<span class="number">1</span>, <span class="number">784</span>)</span><br><span class="line">        x = F.relu(self.l1(x))</span><br><span class="line">        x = F.relu(self.l2(x))</span><br><span class="line">        x = F.relu(self.l3(x))</span><br><span class="line">        x = F.relu(self.l4(x))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.l5(x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = Net()</span><br><span class="line"></span><br><span class="line"><span class="comment"># construct loss and optimizer</span></span><br><span class="line">criterion = torch.nn.CrossEntropyLoss(reduction=<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.01</span>, momentum=<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line">epoch_list = []</span><br><span class="line">loss_list = []</span><br><span class="line">index_1 = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">epoch</span>):</span><br><span class="line">    <span class="keyword">global</span> index_1</span><br><span class="line">    running_loss = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> batch_idx, data <span class="keyword">in</span> <span class="built_in">enumerate</span>(train_loader, <span class="number">0</span>):</span><br><span class="line">        inputs, target = data</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line"></span><br><span class="line">        outputs = model(inputs)</span><br><span class="line">        loss = criterion(outputs, target)</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        running_loss += loss.item()</span><br><span class="line">        <span class="keyword">if</span> batch_idx % <span class="number">300</span> == <span class="number">299</span>:</span><br><span class="line">            epoch_list.append(index_1)</span><br><span class="line">            index_1 += <span class="number">1</span></span><br><span class="line">            loss_list.append(running_loss / <span class="number">300</span>)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;[%d,%5d] loss: %.3f&quot;</span> % (epoch + <span class="number">1</span>, batch_idx + <span class="number">1</span>, running_loss / <span class="number">300</span>))</span><br><span class="line">            running_loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>():</span><br><span class="line">    correct = <span class="number">0</span></span><br><span class="line">    total = <span class="number">0</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> data <span class="keyword">in</span> test_loader:</span><br><span class="line">            images, labels = data</span><br><span class="line">            output = model(images)</span><br><span class="line">            _, predicted = torch.<span class="built_in">max</span>(output.data, dim=<span class="number">1</span>)</span><br><span class="line">            total += labels.size(<span class="number">0</span>)</span><br><span class="line">            correct += (predicted == labels).<span class="built_in">sum</span>().item()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="number">100</span> * correct / total&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># training cycle forward, backward, update</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        train(epoch)</span><br><span class="line">        test()</span><br><span class="line">    plt.plot(epoch_list, loss_list)</span><br><span class="line">    plt.ylabel(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">    plt.xlabel(<span class="string">&#x27;epoch&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="10-卷积神经网络"><a href="#10-卷积神经网络" class="headerlink" title="10. 卷积神经网络"></a>10. 卷积神经网络</h2><blockquote>
+<p>假如一个RGB的图片，有三个通道，即<code>C * W *H</code> 的张量。<br>卷积的过程：用卷积核转为一个通道（提取特征），生成新的<code>C&#39;*W&#39;*H&#39;</code> 的张量，最大池化层进一步减小，最后转为一个向量。<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/56b018a807d14c5a90d4fc64e3c0695b.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/93b21a6259b144b0988d58790291200f.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>另一种情况，想要多个输出通道</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/1f40382191524881bc76a7e2780c3e6e.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/0cff96f7d53d42eaa5ea3ca585a4a079.png" alt="在这里插入图片描述"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/cbd9e80dddb7499199357b10b6753cb8.png" alt="在这里插入图片描述"></p>
+<h3 id="10-1-padding"><a href="#10-1-padding" class="headerlink" title="10.1 padding"></a>10.1 padding</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/abdbdb594080492c946b9be432cce36a.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>weight.data，自己定义卷积核权重<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/20c0f65f287f43e4b45c76c02cf92036.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<h3 id="10-2-stride-步长"><a href="#10-2-stride-步长" class="headerlink" title="10.2 stride 步长"></a>10.2 stride 步长</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/134b5a8174eb44cab16666eba3f51786.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/d1e15e55a0324438b381674f8570dad2.png" alt="在这里插入图片描述"></p>
+<h3 id="10-3-下采样"><a href="#10-3-下采样" class="headerlink" title="10.3 下采样"></a>10.3 下采样</h3><p>MaxPooling<br>分成四块，选最大的<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/3c34916bcb214ed2adf21e3ebe7259fb.png" alt="在这里插入图片描述"><br>设置kernel_size&#x3D;2，默认步长也是2<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/d572169514e54449b4272defab210d1b.png" alt="在这里插入图片描述"></p>
+<h3 id="10-4-卷积神经网络过程"><a href="#10-4-卷积神经网络过程" class="headerlink" title="10.4 卷积神经网络过程"></a>10.4 卷积神经网络过程</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/7821f0713f0b405bbfbe4dc76fb6344b.png" alt="在这里插入图片描述"></p>
+<h3 id="10-5-GPU运行"><a href="#10-5-GPU运行" class="headerlink" title="10.5 GPU运行"></a>10.5 GPU运行</h3><p>用GPU<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/f34623f007f54b4d97ab6e2d66859f9c.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/1c4cb5fe13c14b8da08b39ca221a38da.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/b44879f818f044eab83f52f5126c4002.png" alt="在这里插入图片描述"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This is a sample Python script.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Press Shift+F10 to execute it or replace it with your code.</span></span><br><span class="line"><span class="comment"># Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line">batch_size = <span class="number">64</span></span><br><span class="line"></span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">    transforms.ToTensor(),</span><br><span class="line">    transforms.Normalize((<span class="number">0.1307</span>,), (<span class="number">0.3081</span>,))</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">train_dataset = datasets.MNIST(root=<span class="string">&quot;./dataset/mnist&quot;</span>,</span><br><span class="line">                               train=<span class="literal">True</span>,</span><br><span class="line">                               transform=transform,</span><br><span class="line">                               download=<span class="literal">True</span></span><br><span class="line">                               )</span><br><span class="line">test_dataset = datasets.MNIST(root=<span class="string">&quot;./dataset/mnist&quot;</span>,</span><br><span class="line">                              train=<span class="literal">False</span>,</span><br><span class="line">                              transform=transform,</span><br><span class="line">                              download=<span class="literal">True</span>)</span><br><span class="line">train_loader = DataLoader(dataset=train_dataset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line">test_loader = DataLoader(dataset=test_dataset, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Net</span>(torch.nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Net, self).__init__()</span><br><span class="line">        self.conv1 = torch.nn.Conv2d(<span class="number">1</span>, <span class="number">10</span>, kernel_size=<span class="number">5</span>)</span><br><span class="line">        self.conv2 = torch.nn.Conv2d(<span class="number">10</span>, <span class="number">20</span>, kernel_size=<span class="number">5</span>)</span><br><span class="line">        <span class="comment"># self.pooling = torch.nn.MaxPool2d(2)</span></span><br><span class="line">        self.pooling = torch.nn.MaxPool2d(<span class="number">2</span>, return_indices=<span class="literal">False</span>)</span><br><span class="line">        self.fc = torch.nn.Linear(<span class="number">320</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="comment"># x.size(0) 返回的是张量 x 在第一个维度上的大小。</span></span><br><span class="line">        <span class="comment"># 对于大多数深度学习模型来说，输入数据的形状通常是 (batch_size, channels, height, width)。</span></span><br><span class="line">        batch_size = x.size(<span class="number">0</span>)</span><br><span class="line">        x = self.pooling(F.relu(self.conv1(x)))</span><br><span class="line">        x = self.pooling(F.relu(self.conv2(x)))</span><br><span class="line">        x = x.view(batch_size, -<span class="number">1</span>)</span><br><span class="line">        x = self.fc(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = Net()</span><br><span class="line"></span><br><span class="line">device = torch.device(<span class="string">&quot;npu:0&quot;</span>)</span><br><span class="line">model.to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># construct loss and optimizer</span></span><br><span class="line">criterion = torch.nn.CrossEntropyLoss(reduction=<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.01</span>, momentum=<span class="number">0.5</span>)</span><br><span class="line"><span class="comment"># criterion.to(device)</span></span><br><span class="line">epoch_list = []</span><br><span class="line">loss_list = []</span><br><span class="line">index_1 = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">train</span>(<span class="params">epoch</span>):</span><br><span class="line">    <span class="keyword">global</span> index_1</span><br><span class="line">    running_loss = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> batch_idx, data <span class="keyword">in</span> <span class="built_in">enumerate</span>(train_loader, <span class="number">0</span>):</span><br><span class="line">        inputs, target = data</span><br><span class="line">        <span class="comment"># inputs, target = inputs.to(device), target.to(device)</span></span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line"></span><br><span class="line">        outputs = model(inputs)</span><br><span class="line">        loss = criterion(outputs, target)</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        running_loss += loss.item()</span><br><span class="line">        <span class="keyword">if</span> batch_idx % <span class="number">300</span> == <span class="number">299</span>:</span><br><span class="line">            epoch_list.append(index_1)</span><br><span class="line">            index_1 += <span class="number">1</span></span><br><span class="line">            loss_list.append(running_loss / <span class="number">300</span>)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;[%d,%5d] loss: %.3f&quot;</span> % (epoch + <span class="number">1</span>, batch_idx + <span class="number">1</span>, running_loss / <span class="number">300</span>))</span><br><span class="line">            running_loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>():</span><br><span class="line">    correct = <span class="number">0</span></span><br><span class="line">    total = <span class="number">0</span></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> data <span class="keyword">in</span> test_loader:</span><br><span class="line">            images, labels = data</span><br><span class="line">            images, labels = images.to(device), labels.to(device)</span><br><span class="line">            output = model(images)</span><br><span class="line">            _, predicted = torch.<span class="built_in">max</span>(output.data, dim=<span class="number">1</span>)</span><br><span class="line">            total += labels.size(<span class="number">0</span>)</span><br><span class="line">            correct += (predicted == labels).<span class="built_in">sum</span>().item()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="number">100</span> * correct / total&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        train(epoch)</span><br><span class="line">        test()</span><br><span class="line">    plt.plot(epoch_list, loss_list)</span><br><span class="line">    plt.ylabel(<span class="string">&#x27;loss&#x27;</span>)</span><br><span class="line">    plt.xlabel(<span class="string">&#x27;epoch&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="11-RNN-循环神经网络"><a href="#11-RNN-循环神经网络" class="headerlink" title="11. RNN 循环神经网络"></a>11. RNN 循环神经网络</h2><blockquote>
+<p>是一种用于处理序列数据的神经网络架构。它特别适合于处理时间序列、自然语言处理和其他顺序数据，因为它能够捕获数据的时间依赖性和动态信息。</p>
+<p>内部实际上是线性层<br>每次都有前一个输出也同时作为输入进入cell计算。注意，第一个cell的h，可以自定义成全0；也可以接入其他，比如卷积的数据，作为卷积神经网络和循环神经网络的一个链接作用。</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/e3185d54078f4b769eb315426a66c3ae.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ac50c755dc624bcaa79548b1a77d5342.png" alt="在这里插入图片描述"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/2cc74d1a83e74f82ab4b316f8f1440ba.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/2311e01a88574df399ea97a1f978c074.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>多层RNN</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/b952f0437dd64303a975d9be6e75f1b5.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>训练代码，RNN内部已经实现了循环<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ccbe933d62b94738a7cc89bb4bc03d48.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<blockquote>
+<p>交换batch_size和seq_len的位置，有时将batch_size放到第一个纬度可能在其他用处上更方便</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ef45d61074624808b6e948d04facb995.png" alt="在这里插入图片描述"></p>
+<h3 id="11-1-RNN-Cell代码"><a href="#11-1-RNN-Cell代码" class="headerlink" title="11.1 RNN Cell代码"></a>11.1 RNN Cell代码</h3><blockquote>
+<p>假设是训练 hello –&gt; e hlol</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/5e63ad2c2a48493e8ca29c2065a5e616.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>用独热向量来表示seq</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/c480948fce284a04b80f6b29c2133f6d.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/cba266c3fab84c87aecdef5de6e7b788.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>定义模型<br>这里用的是RNNCell，而不是整个RNN</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/50b9aa30364a40d69f69d9f5b0fe835c.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/7aefb0d05fc64874b1dce20d24fd00f3.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/bc4a22df53a34d21b097e371cd3e4718.png" alt="在这里插入图片描述"></p>
+<h3 id="11-2-RNN"><a href="#11-2-RNN" class="headerlink" title="11.2 RNN"></a>11.2 RNN</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/968d169793b94a38b1bd4cabfb53c1b3.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/f67bce1f541a45b7a76ece50f8f3d4d6.png" alt="在这里插入图片描述"></p>
+<h3 id="11-3-使用embedding"><a href="#11-3-使用embedding" class="headerlink" title="11.3 使用embedding"></a>11.3 使用embedding</h3><blockquote>
+<p>seq编码使用embedding<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/ce444461faef44488bb7df05e8e387de.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/cc96a2ebf351433cb7bacb60df578201.png" alt="在这里插入图片描述"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/90f634a3fec74c5c982074e226e7f22c.png" alt=" "></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/direct/d2b068919aa44028b932b256ab9b0bc1.png" alt="在这里插入图片描述"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PYTHONUNBUFFERED=1;LD_LIBRARY_PATH=/usr/local/Ascend/ascend-toolkit/latest/lib64:/usr/local/Ascend/ascend-toolkit/latest/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/latest/lib64/plugin/nnengine:$LD_LIBRARY_PATH;ASCEND_TOOLKIT_HOME=/usr/local/Ascend/ascend-toolkit/latest;PYTHONPATH=/usr/local/Ascend/ascend-toolkit/latest/python/site-packages:/usr/local/Ascend/ascend-toolkit/latest/opp/built-in/op_impl/ai_core/tbe:$PYTHONPATH;PATH=/usr/local/Ascend/ascend-toolkit/latest/bin:/usr/local/Ascend/ascend-toolkit/latest/compiler/ccec_compiler/bin:$PATH;ASCEND_AICPU_PATH=/usr/local/Ascend/ascend-toolkit/latest;ASCEND_OPP_PATH=/usr/local/Ascend/ascend-toolkit/latest/opp;TOOLCHAIN_HOME=/usr/local/Ascend/ascend-toolkit/latest/toolkit;ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest </span><br></pre></td></tr></table></figure>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/Pytorch/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/Pytorch/&title=Pytorch - ChongWen&summary=记录机器学习基础知识、Pytorch基础使用。这次去年6月份的笔记了，当时开始转战AI了。"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=Pytorch - ChongWen&amp;body=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/Pytorch/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/Pytorch/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/">24年终总结</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/%E6%8A%80%E6%9C%AF/hexo-stellar/">博客配置笔记</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<center style='font-size: 1rem;margin-top: 0.2rem;'><span id="busuanzi_container_site_pv">总访问<span id="busuanzi_value_site_pv"></span>次</span></center>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 26 篇文章 🔸 总计 65.6k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Pytorch"><span class="toc-text">Pytorch</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80"><span class="toc-text">1. 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%90%8D%E8%AF%8D"><span class="toc-text">1.1 名词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%BC%94%E5%8F%98"><span class="toc-text">1.2 人工智能系统的演变</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-text">1.3 反向传播</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%BA%BF%E5%9E%8B%E6%A8%A1%E5%9E%8B"><span class="toc-text">2. 线型模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="toc-text">3. 梯度下降</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%84%8F%E4%B9%89"><span class="toc-text">3.1 意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%85%AC%E5%BC%8F"><span class="toc-text">3.2 公式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D-Stochastic"><span class="toc-text">3.3 随机梯度下降 Stochastic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Mini-Batch"><span class="toc-text">3.4 Mini-Batch</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-text">5. 反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Pytorch"><span class="toc-text">5. Pytorch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E9%80%BB%E8%BE%91%E6%96%AF%E8%92%82%E5%9B%9E%E5%BD%92"><span class="toc-text">6. 逻辑斯蒂回归</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E4%BA%8C%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98%E4%B8%8Esigmoid%E5%87%BD%E6%95%B0"><span class="toc-text">6.1 二分类问题与sigmoid函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E4%BA%A4%E5%8F%89%E7%86%B5"><span class="toc-text">6.2 损失函数和交叉熵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%A4%9A%E7%BB%B4%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="toc-text">7. 多维数据处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">8. 加载数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E5%A4%9A%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="toc-text">9. 多分类问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-Softmax"><span class="toc-text">9.1 Softmax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E5%9B%BE%E5%83%8F%E8%BE%93%E5%85%A5%E8%A1%A8%E7%A4%BA"><span class="toc-text">9.2 图像输入表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E6%80%BB%E7%BB%93"><span class="toc-text">9.3 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">10. 卷积神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-padding"><span class="toc-text">10.1 padding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-stride-%E6%AD%A5%E9%95%BF"><span class="toc-text">10.2 stride 步长</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-%E4%B8%8B%E9%87%87%E6%A0%B7"><span class="toc-text">10.3 下采样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-4-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%BF%87%E7%A8%8B"><span class="toc-text">10.4 卷积神经网络过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-5-GPU%E8%BF%90%E8%A1%8C"><span class="toc-text">10.5 GPU运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-RNN-%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">11. RNN 循环神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-1-RNN-Cell%E4%BB%A3%E7%A0%81"><span class="toc-text">11.1 RNN Cell代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-2-RNN"><span class="toc-text">11.2 RNN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-3-%E4%BD%BF%E7%94%A8embedding"><span class="toc-text">11.3 使用embedding</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/技术/Pytorch.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

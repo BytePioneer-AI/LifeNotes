@@ -1,0 +1,1283 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>大模型应用开发 - 知识补齐（全） - ChongWen</title>
+
+  
+    <meta name="description" content="最近准备投简历，但发现还有一些技术点自己不熟悉。那么这里就把没有掌握的技术点做个记录和总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型应用开发 - 知识补齐（全）">
+<meta property="og:url" content="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-other/index.html">
+<meta property="og:site_name" content="ChongWen">
+<meta property="og:description" content="最近准备投简历，但发现还有一些技术点自己不熟悉。那么这里就把没有掌握的技术点做个记录和总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144305.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144111.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144120.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144229.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144237.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-143444.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-141817.svg">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250305153139884.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250312160544072.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250312162122319.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250312163146931.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250312170310722.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250312170855713.png">
+<meta property="og:image" content="https://gitee.com/momo623/photo/raw/master/public/image-20250311095728968.png">
+<meta property="article:published_time" content="2025-03-05T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-04T09:57:03.000Z">
+<meta property="article:author" content="ChongWen">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="大模型应用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144305.svg">
+  
+  
+  
+  <meta name="keywords" content="AI,大模型应用">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/Pytorch/"><span class="title">Pytorch</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/hexo-stellar/"><span class="title">博客配置笔记</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/"><span class="title">【昇腾】LLaMA-Factory 训练 Qwen</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top"><img class="bg lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/img_config/left.png">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-03-05T00:00:00.000Z">2025-03-05</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-09-04T09:57:03.000Z">2025-09-04</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：6k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：22分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI/">AI</a>&nbsp; <a class="cap breadcrumb-link" href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8/">大模型应用</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>大模型应用开发 - 知识补齐（全）</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近准备投简历，但发现还有一些技术点自己不熟悉。</p>
+<p>那么这里就把没有掌握的技术点做个记录和总结。</p>
+<p><strong>已掌握（2025.3.5）：</strong></p>
+<ul>
+<li>基础：Python、Django、Flask等</li>
+<li>大模型运用方式方法，有自己的一些技巧</li>
+<li>RAG概念、Agent概念、智能体概念</li>
+<li>了解大模型在一些方面的强项和弱项</li>
+<li>熟练使用cursor等AI编程工具，突破技术瓶颈</li>
+<li>实操过大模型训练、微调方法，知道何时需要上微调</li>
+<li>熟悉Linux操作，熟练掌握大模型、小模型部署流程</li>
+<li>大模型如何利用结构化、非结构化数据</li>
+</ul>
+<p><strong>未掌握（2025.3.5）：</strong></p>
+<ul>
+<li>之前做的两个大模型项目的难点、流程，没有总结。面试时会有风险。️</li>
+<li>热门向量数据库用法、特点。只熟悉ES的向量数据库用法，不会Milvus。</li>
+<li>召回优化、多路？</li>
+<li>Rerank模型了解较少，需要懂理论，会用法。</li>
+<li>VLLM推理</li>
+<li>LlamaFactory训练</li>
+<li>Agent框架不熟悉</li>
+<li>RAG、智能体、Agent 的场景用法没有统一的思路，要总结</li>
+<li>和知识图谱结合</li>
+<li>没有深度使用Dify、FlowRAG等RAG开源项目</li>
+</ul>
+<p><strong>当前：</strong></p>
+<div class="tag-plugin colorful okr" >
+  <div class="okr-item o" id="okr-o1">
+    <div class="okr-left">
+      <span class="title">O1</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">大模型应用开发缺少的知识点</span>
+      <div class="note"></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">50%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:50%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr1">
+    <div class="okr-left">
+      <span class="title">KR1</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">总结两个大模型项目的经验，重点是难点、流程</span>
+      <div class="note"><ul><li>为什么用ES的向量数据库，不用Milvus？</li></ul></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">60%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:60%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr2">
+    <div class="okr-left">
+      <span class="title">KR2</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">学习其他向量数据库的用法、特点</span>
+      <div class="note"><div class="tag-plugin colorful checkbox" ><input type="checkbox"/><span>Milvus</span></div><div class="tag-plugin colorful checkbox" ><input type="checkbox"/><span>Chorma 不着急</span></div></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">30%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:30%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr3">
+    <div class="okr-left">
+      <span class="title">KR3</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">Rerank模型了解较少，需要懂理论，会用法</span>
+      <div class="note"><div class="tag-plugin colorful checkbox" ><input type="checkbox"/><span>用法</span></div><div class="tag-plugin colorful checkbox" ><input type="checkbox"/><span>理论</span></div><div class="tag-plugin colorful checkbox" ><input type="checkbox"/><span>场景</span></div></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">20%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:20%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-4">
+    <div class="okr-left">
+      <span class="title">KR-4</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">VLLM推理的部署</span>
+      <div class="note"></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">50%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:50%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-5">
+    <div class="okr-left">
+      <span class="title">KR-5</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">LlamaFactory训练</span>
+      <div class="note"></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">90%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:90%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-6">
+    <div class="okr-left">
+      <span class="title">KR-6</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">学习常见Agent框架用法、场景</span>
+      <div class="note"><ul><li>LangChain</li><li>llamaindex</li><li>RAGFlow</li></ul></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">60%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:60%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-7">
+    <div class="okr-left">
+      <span class="title">KR-7</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">与知识图谱结合的场景、技术</span>
+      <div class="note"></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">0%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:0%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-8">
+    <div class="okr-left">
+      <span class="title">KR-8</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">其他能力</span>
+      <div class="note"><p>Query理解、文档解析、召回、排序、相关性、<br>引用计算、提示调优、评估迭代。</p></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">70%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:70%;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="okr-item kr" id="okr-kr-9">
+    <div class="okr-left">
+      <span class="title">KR-9</span>
+    </div>
+    <div class="okr-center">
+      <span class="title">深度使用RAG开源项目</span>
+      <div class="note"><p>深度使用Dify、FlowRAG等RAG开源项目</p></div>
+    </div>
+    <div class="okr-right colorful" color="blue">
+      <div class="labels">
+        <span class="status label">正常</span>
+        <span class="status percent">70%</span>
+      </div>
+      <div class="progress">
+        <div class="fill" style="width:70%;"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+<h3 id="一、项目总结"><a href="#一、项目总结" class="headerlink" title="一、项目总结"></a>一、项目总结</h3><p>用ES的原因：有些检索需要向量，有些检索需要ES的分词检索。比如事项问答，需要用ES分词检索。而本地风土人情需要用向量数据库检索。</p>
+<p>有些功能，比如类案推送、法律法规检索。类案推送中已经让大模型提取出了关键词，那么已经有了这些关键词，可以在ES检索中配置关键词匹配的数量、是否分词等条件，可以更快、更精准的匹配到内容。<br>法律法规的话，也是同样的已经用正则表达式处理好了法典名称、条目，用ES会更精准。</p>
+<h4 id="1-1-项目一-AI辅助办案平台"><a href="#1-1-项目一-AI辅助办案平台" class="headerlink" title="1.1 项目一 AI辅助办案平台"></a>1.1 项目一 AI辅助办案平台</h4><p><strong>项目难点分析</strong>：<strong>类案推送系统的设计与优化</strong><br>在开发类案推送功能时，我们遇到了<strong>传统RAG方案的局限性</strong>，并最终通过<strong>结构化数据方案</strong>进行了解决。<br>最初，我们尝试将”类案推送”设计为传统的RAG（检索增强生成）项目：将案例数据进行向量化处理-&gt;存储到向量数据库中-&gt;用户输入的案情信息作为检索条件<br>然而，在测试阶段我们发现这种方法存在问题：<strong>检索结果</strong>往往<strong>相关度</strong>不高。后来发现是因为<strong>法律案例与普通文本不同</strong>，它们具有独特的<strong>结构和专业术语</strong>，简单的<strong>语义相似度</strong>无法捕捉案例间的<strong>实质联系</strong>。<br>解决方案:<br>经过多次迭代，最终选择用结构化数据+ES检索：</p>
+<ol>
+<li><p><strong>在数据处理时</strong>，对原始数据进行结构化预处理：使用正则表达式，将非结构化案例文本转换为结构化数据，提取出案件的关键组成部分，比如将案件的各类基本信息进行提取。</p>
+</li>
+<li><p><strong>在检索时</strong>：利用大模型从三个维度对案件进行提取，[争议焦点，核心事实，关键词]</p>
+<ul>
+<li><p>争议焦点（法律争议点锚定）</p>
+</li>
+<li><p>核心事实（时间-地点-人物-行为四要素）</p>
+</li>
+<li><p>关键词（罪名+法律要件关键词）</p>
+</li>
+</ul>
+</li>
+<li><p><strong>ES进行混合检索</strong>：基于这三个维度构建精确的ES查询条件，通过对三个维度进行不同的权重分配去做检索</p>
+<p>混合检索策略：</p>
+<p>must子句保证基础要件匹配</p>
+<p>should子句提升语义相关性</p>
+<p>boost参数动态调整字段权重</p>
+</li>
+<li><p><strong>处理长文本：</strong><br>很多法律有<strong>上千字</strong>的详细描述，这对于普通模型来说超出了上下文处理能力。我们采用了两项技术突破：</p>
+<ul>
+<li><strong>采用大上下文窗口模型</strong>：使用支持128K上下文窗口的大语言模型，确保能够处理完整案例</li>
+<li><strong>设计Prompt</strong>：精心设计了比较两个案例相似点和差异点的专业Prompt，引导模型关注法律要素而非表面文字</li>
+<li><strong>其他的优化思路</strong><br>先对长案例进行<strong>分段总结</strong>，获取核心要点后<strong>再进行对比</strong>，分段总结时可以并行处理，提高效率。</li>
+</ul>
+</li>
+</ol>
+<p><strong>功能</strong></p>
+<ul>
+<li>类案推送：根据案情信息，提取[争议焦点，核心事实，关键词]，</li>
+</ul>
+<p><strong>总体流程</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144305.svg" alt="系统总体流程"/><a class="image-download blur" style="opacity:0" target="_blank" download="系统总体流程" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144305.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">系统总体流程</span></div></div>
+
+<p><strong>类案推送</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144111.svg" alt="类案推送" style="width:200px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="类案推送" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144111.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">类案推送</span></div></div>
+
+<p><strong>数据建模</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144120.svg" alt="数据建模" style="width:200px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="数据建模" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144120.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">数据建模</span></div></div>
+
+<p><strong>法律法规</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144229.svg" alt="法律法规" style="width:200px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="法律法规" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144229.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">法律法规</span></div></div>
+
+<p><strong>文书生成</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144237.svg" alt="文书生成" style="width:200px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="文书生成" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-144237.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">文书生成</span></div></div>
+
+
+
+
+
+
+<h4 id="1-2-项目二-政务问答助手"><a href="#1-2-项目二-政务问答助手" class="headerlink" title="1.2 项目二 政务问答助手"></a>1.2 项目二 政务问答助手</h4><div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-143444.svg" alt="系统总体流程" style="width:400px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="系统总体流程" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-143444.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">系统总体流程</span></div></div>
+
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-141817.svg" alt="详细版总流程" style="width:400px;"/><a class="image-download blur" style="opacity:0" target="_blank" download="详细版总流程" href="https://gitee.com/momo623/photo/raw/master/public/mermaid-diagram-2025-03-06-141817.svg"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">详细版总流程</span></div></div>
+
+
+
+<h3 id="二、向量数据库"><a href="#二、向量数据库" class="headerlink" title="二、向量数据库"></a>二、向量数据库</h3><h4 id="2-1-向量数据库对比"><a href="#2-1-向量数据库对比" class="headerlink" title="2.1 向量数据库对比"></a>2.1 向量数据库对比</h4><ul>
+<li><p><strong>Metadata filter：</strong>支持对元数据进行过滤。元数据是附加在向量上的一些信息，键值对的形式。</p>
+</li>
+<li><p><strong>BM25（Best Matching 25）</strong>：是一种用于信息检索的排序算法，<strong>文档长度归一化</strong>和<strong>词频饱和</strong>机制，更精准地评估文档与搜索查询的相关性。</p>
+<ul>
+<li><strong>文档长度归一化</strong><ul>
+<li><strong>作用</strong>：避免长文档因包含更多词汇而获得不合理的高分。</li>
+<li><strong>机制</strong>：根据文档长度动态调整词频权重，短文档中匹配关键词的得分更高。<br><em>示例</em>：搜索“人工智能”，一篇100字的短文比1000字的长文更易因关键词集中而排名靠前。</li>
+</ul>
+</li>
+<li><strong>词频饱和（Term Frequency Saturation）</strong><ul>
+<li><strong>作用</strong>：限制高频词对得分的过度影响。</li>
+<li><strong>机制</strong>：使用对数函数对词频进行压缩，使词频达到一定阈值后重要性增幅趋缓。<br><em>示例</em>：某文档中“算法”出现100次，BM25会将其重要性压缩至接近出现10次时的水平。</li>
+</ul>
+</li>
+<li>稀疏嵌入表示</li>
+</ul>
+</li>
+<li><p><strong>Sparse（稀疏检索）</strong></p>
+</li>
+<li><p><strong>Hybrid（混合检索）</strong></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>方法</strong></th>
+<th align="center"><strong>核心逻辑</strong></th>
+<th align="center"><strong>优势场景</strong></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>BM25</strong></td>
+<td align="center">关键词统计匹配</td>
+<td align="center">短文本、精确关键词搜索</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>Sparse</strong></td>
+<td align="center">高维稀疏向量（词频驱动）</td>
+<td align="center">可解释性要求高的结构化检索</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"><strong>Hybrid</strong></td>
+<td align="center">关键词+语义联合优化</td>
+<td align="center">复杂语义与关键词混合查询</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250305153139884.png" alt="image-20250305153139884"></p>
+<h4 id="2-2-Milvus"><a href="#2-2-Milvus" class="headerlink" title="2.2 Milvus"></a>2.2 Milvus</h4><h3 id="四、VLLM推理"><a href="#四、VLLM推理" class="headerlink" title="四、VLLM推理"></a>四、VLLM推理</h3><p>GPU环境下安装较为简单，pip安装。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">conda create -n myenv python=3.10 -y</span><br><span class="line">conda activate myenv</span><br><span class="line">pip install vllm</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可设置modelscope的下载模型</span></span><br><span class="line">export VLLM_USE_MODELSCOPE=True</span><br></pre></td></tr></table></figure>
+
+
+<ol>
+<li><p>使用脚本进行推理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> vllm <span class="keyword">import</span> LLM, SamplingParams</span><br><span class="line"></span><br><span class="line">prompts = [</span><br><span class="line">    <span class="string">&quot;Hello, my name is&quot;</span>,</span><br><span class="line">    <span class="string">&quot;The president of the United States is&quot;</span>,</span><br><span class="line">    <span class="string">&quot;The capital of France is&quot;</span>,</span><br><span class="line">    <span class="string">&quot;The future of AI is&quot;</span>,</span><br><span class="line">]</span><br><span class="line">sampling_params = SamplingParams(temperature=<span class="number">0.8</span>, top_p=<span class="number">0.95</span>)</span><br><span class="line">llm = LLM(model=<span class="string">&quot;/mnt/workspace/.cache/modelscope/models/Qwen/Qwen2.5-1.5B-Instruct&quot;</span>)</span><br><span class="line"></span><br><span class="line">outputs = llm.generate(prompts, sampling_params)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Print the outputs.</span></span><br><span class="line"><span class="comment"># 打印输出</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> output <span class="keyword">in</span> outputs:</span><br><span class="line">    prompt = output.prompt</span><br><span class="line">    generated_text = output.outputs[<span class="number">0</span>].text</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Prompt: <span class="subst">&#123;prompt!r&#125;</span>, Generated text: <span class="subst">&#123;generated_text!r&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用OpenAPI接口进行推理<br>vllm后可接本地或模型仓库名</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vllm serve  /mnt/workspace/.cache/modelscope/models/Qwen/Qwen2.5-1.5B-Instruct</span><br><span class="line">或</span><br><span class="line">vllm serve /mnt/workspace/.cache/modelscope/models/Qwen/Qwen2.5-1.5B-Instruct \</span><br><span class="line">    --served-model-name Qwen2.5-1.5B-Instruct</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:8000/v1/completions \</span><br><span class="line">-H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">-d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">&quot;model&quot;: &quot;Qwen2.5-1.5B-Instruct&quot;,</span></span><br><span class="line"><span class="string">&quot;prompt&quot;: &quot;法国的首都是&quot;,</span></span><br><span class="line"><span class="string">&quot;max_tokens&quot;: 50</span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="五、LlamaFactory训练"><a href="#五、LlamaFactory训练" class="headerlink" title="五、LlamaFactory训练"></a>五、LlamaFactory训练</h3><!-- 链接当前路径的下的md文件：ai-LlamaFactory.md -->
+<p>总结到了<a href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/">这里</a></p>
+<h3 id="九、开源平台技术洞察"><a href="#九、开源平台技术洞察" class="headerlink" title="九、开源平台技术洞察"></a>九、开源平台技术洞察</h3><h4 id="1-Dify-技术洞察"><a href="#1-Dify-技术洞察" class="headerlink" title="1. Dify 技术洞察"></a>1. Dify 技术洞察</h4><p><a target="_blank" rel="noopener" href="https://docs.dify.ai/zh-hans">文档</a></p>
+<h5 id="1-1-知识库"><a href="#1-1-知识库" class="headerlink" title="1.1 知识库"></a>1.1 知识库</h5><ul>
+<li><p><strong>导入方式</strong></p>
+<ul>
+<li>本地文件，单文件15M限制</li>
+<li>其他：Notion、Firecrawl、Jina Reader。后者是在线爬虫平台，可将html等页面数据转为规范等MD等格式，便于大模型读取。</li>
+</ul>
+</li>
+<li><p><strong>分段模式</strong></p>
+<ul>
+<li><strong>通用模式</strong>：按照自定义的规则将内容拆分为独立的分段。可用正则表达式。</li>
+<li><strong>父子模式</strong>：如一篇文章是父，其句子为子。<ul>
+<li>父为较大的文本单位（如段落），用于提供信息</li>
+<li>子为较小的文本单位（如句子），用于精确检索</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>索引模式</strong></p>
+<ul>
+<li><p><strong>索引方法</strong>：</p>
+<ul>
+<li><p>高质量：即用Embedding模型将分段文本转为向量。<strong>Q&amp;A</strong>：对分段文本进行总结，生成Q&amp;A 匹配对，Dify采用的是「Q to Q」（问题匹配问题）策略。</p>
+<blockquote>
+<p>当用户提问时，系统会找出与之最相似的问题，然后返回对应的分段作为答案。</p>
+<p><strong>问题生成的逻辑</strong>：</p>
+<p>Step 1：了解并总结这段文本的主要内容。</p>
+<p>Step 2：这段文本提到了哪些关键信息或概念。</p>
+<p>Step 3：可分解或结合多个信息与概念。</p>
+<p>Step 4：将这些关键信息与概念生成 20 个问题与答案。</p>
+</blockquote>
+</li>
+<li><p>经济：每个区块内使用 10 个关键词进行检索，使用倒排索引。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>检索方式：</strong></p>
+<ul>
+<li>高质量：向量检索、全文检索与混合检索设置。<strong>混合检索</strong>中可以设置两种检索方式的结果权重。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>总的来说，效果可能不能保证的好。一些分段策略、索引策略，感觉也一般。尤其QA模式，感觉有很大的问题，有的文件直接没有生成或者生成的效果一般。用他的切分策略，比较固定，可能不如自己去做切分的处理，再导入。</p>
+</blockquote>
+<h5 id="1-2-应用"><a href="#1-2-应用" class="headerlink" title="1.2 应用"></a>1.2 应用</h5><ol>
+<li><strong>Agent</strong></li>
+</ol>
+<p>产品描述：</p>
+<ul>
+<li>可使用内置工具、自定义工具、编排的工作流。</li>
+<li>最多3个工具</li>
+<li>支持多工具调用</li>
+</ul>
+<p>简单流程：Agent流程分为三步。</p>
+<ol>
+<li>用Query让大模型的Function Call去选择工具和参数。</li>
+<li>调用工具</li>
+<li>大模型再次处理工具返回的结果</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250312160544072.png" alt="image-20250312160544072"></p>
+<p>稍复杂流程：LLM根据Query循环调用工具</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250312162122319.png" alt="image-20250312162122319"></p>
+<blockquote>
+<p>总的来说，支持自定义和工作流，确实也可以实现一些稍微复杂的场景。</p>
+<p>但对于用 Dify 平台实现某个具体业务，保持怀疑。需要二次开发或借鉴其思路自己做。</p>
+</blockquote>
+<ol start="2">
+<li><strong>文本生成应用</strong></li>
+</ol>
+<p>专注某类文本生成，利用提示词可作为一个小工具来使用。可以导入excel批量处理。</p>
+<p>这个工具在让大模型处理较多数据时，有一些用处。比如让大模型总结100篇科学文章。</p>
+<p><em>功能本身并不复杂。这里算是提供了一个可视化的操作页面</em></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250312163146931.png" alt="image-20250312163146931"></p>
+<ol start="3">
+<li><strong>工作流</strong></li>
+</ol>
+<blockquote>
+<p>面向自动化和批处理情景，适合高质量翻译、数据分析、内容生成、电子邮件自动化等应用程序。该类型应用无法对生成的结果进行多轮对话交互。</p>
+<p>常见的交互路径：给出指令 → 生成内容 → 结束</p>
+</blockquote>
+<p>节点类型丰富，有LLM路由、参数提取等一些好用的功能。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250312170310722.png" alt="image-20250312170310722"></p>
+<p>节点内的配置也比较自由，可以添加上下文、System字段、User字段<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250312170855713.png" alt="image-20250312170855713"></p>
+<blockquote>
+<p>在“探索”中，有挺复杂的工作流，有些RAG编排的思路很不错。但如果在业务中，我还是更倾向于自己写代码实现某个工作流。</p>
+</blockquote>
+<ol start="4">
+<li><strong>Chatflow</strong></li>
+</ol>
+<blockquote>
+<p>常见的交互路径：给出指令 → 生成内容 → 就内容进行多次讨论 → 重新生成结果 → 结束</p>
+</blockquote>
+<p>同工作流，只是</p>
+<h3 id="十、RAG-文本切分策略"><a href="#十、RAG-文本切分策略" class="headerlink" title="十、RAG 文本切分策略"></a>十、RAG 文本切分策略</h3><blockquote>
+<p>文本切分的两个基本参数：Chunk Size（块大小）、Overlap（重叠）。</p>
+</blockquote>
+<p><strong>模型选择与Chunk Size</strong></p>
+<p>根据<code>Chunk Size</code>的设置，需要考虑<code>Embedding</code>的<code>Max Token</code>限制、大模型<code>Max sequence length</code>。</p>
+<ol>
+<li><code>Chunk Size</code> 不能超过<code>Embedding</code>模型<code>Max Token</code></li>
+<li>大模型对话时，需考虑 <code>Top k * Chunk Size</code>和大模型的 <code>Max sequence length</code>。</li>
+</ol>
+<blockquote>
+<p> Embedding Model 排行榜： <a target="_blank" rel="noopener" href="https://huggingface.co/spaces/mteb/leaderboard">https://huggingface.co/spaces/mteb/leaderboard</a></p>
+</blockquote>
+<p><strong>文本切分策略</strong></p>
+<ol>
+<li><p><strong>CharacterTextSplitter</strong>  字符分块	<br>使用固定长度字符窗口拆分文本（如每512字符）</p>
+</li>
+<li><p><strong>RecursivelyCharacterTextSplitter</strong>  递归分块	<br>基于字符列表拆分文本。按层次化分隔符（<strong>\n\n</strong> &gt; \n &gt; <strong>,</strong> &gt; <strong>?</strong> &gt; !）递归拆分至目标长度。</p>
+<p>解释：其中如果每个分割的大小较大，则会递归分割，直到分至目标长度。</p>
+</li>
+<li><p><strong>Document Specific Splitting</strong><br>基于不同的文件类型使用不同的切分方法（如PDF、Python、Markdown）。</p>
+</li>
+<li><p><strong>Semantic Splitting</strong> 语义分块	<br>基于滑动窗口的语义切分。利用嵌入向量相似性分段。</p>
+<blockquote>
+<ul>
+<li>从前几个句子开始，生成一个嵌入。</li>
+<li>移动到下一组句子，并生成另一个嵌入（例如，使用滑动窗口方法）。</li>
+<li>比较嵌入以查找重大差异，这表明语义部分之间可能存在“中断点”。</li>
+</ul>
+<p>总结：先用某个方式切分，然后做滑动窗口，比如现在的窗口是<code>1-3</code>块，那么就将<code>1-3</code>和<code>1-4</code>块计算余旋相似度距离。</p>
+<p>我们会设置一个距离的阀值，如果满足就把<code>4</code>块加入到<code>1-3</code>中，那么现在就是<code>1-4</code>块为一块，继续做滑动窗口。</p>
+<p>如果不满足，就从这里切分，<code>1-3</code>块为一块，下一个窗口是<code>4</code>块，类推用<code>4</code>和<code>4-5</code>比较…</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>如果使用LangChain</p>
+<p>LangChain 的<strong>分割逻辑</strong>分为两步：</p>
+<ol>
+<li>按 separator <strong>预分割</strong>：先用指定的分隔符（此处是 \n）将文本拆分为多个段落</li>
+<li>合并至 chunk_size：<strong>将相邻段落合并，直到字符数不超过 chunk_size</strong>，但若某段落<strong>本身已超过</strong> chunk_size，则会<strong>强制保留</strong>完整段落</li>
+</ol>
+<p>ps：LangChain提供了两种计数方式：字符切分、Token切分。但根据LangChain的分割逻辑2，某段Chunk Size仍有可能超过设置的长度。</p>
+</blockquote>
+<p><strong>样例代码</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. CharacterTextSplitter</span></span><br><span class="line">document = <span class="string">&quot;COT是一种通过引导大语言模型（LLM）生成逐步推理过程来提升复杂任务解决能力的技术。其核心在于让模型模仿人类分步骤思考的思维链，将问题分解为多个中间推理环节，最终推导出答案。\n\n我是人工智能应用工程师&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langchain_text_splitters <span class="keyword">import</span> CharacterTextSplitter</span><br><span class="line">text_splitter = CharacterTextSplitter(</span><br><span class="line">    separator=<span class="string">&quot;&quot;</span>,</span><br><span class="line">    chunk_size=<span class="number">20</span>,</span><br><span class="line">    chunk_overlap=<span class="number">1</span>,</span><br><span class="line">    length_function=<span class="built_in">len</span>, <span class="comment"># 使用内置的 len 函数来计算字符长度</span></span><br><span class="line">    is_separator_regex=<span class="literal">False</span>,  <span class="comment"># 是否使用正则表达式来分割文本</span></span><br><span class="line">)</span><br><span class="line">texts = text_splitter.split_text(document)</span><br><span class="line"><span class="built_in">print</span>(texts)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可用from_tiktoken_encoder，用token计数</span></span><br><span class="line"><span class="keyword">from</span> langchain_text_splitters <span class="keyword">import</span> CharacterTextSplitter</span><br><span class="line">text_splitter = CharacterTextSplitter.from_tiktoken_encoder(</span><br><span class="line">    separator=<span class="string">&quot;&quot;</span>,</span><br><span class="line">    encoding_name=<span class="string">&quot;cl100k_base&quot;</span>, </span><br><span class="line">    chunk_size=<span class="number">20</span>, </span><br><span class="line">    chunk_overlap=<span class="number">1</span>,</span><br><span class="line">)</span><br><span class="line">texts = text_splitter.split_text(document)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. RecursivelyCharacterTextSplitter</span></span><br><span class="line"><span class="keyword">from</span> langchain_text_splitters <span class="keyword">import</span> RecursiveCharacterTextSplitter</span><br><span class="line"></span><br><span class="line">recursive_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span><br><span class="line">    chunk_size=<span class="number">20</span>,  <span class="comment"># token数</span></span><br><span class="line">    separators=[<span class="string">&quot;\n\n&quot;</span>,<span class="string">&quot;\n&quot;</span>,<span class="string">&quot;。&quot;</span>, <span class="string">&quot;，&quot;</span>],  <span class="comment"># 优先级递减</span></span><br><span class="line">    chunk_overlap=<span class="number">0</span></span><br><span class="line">)</span><br><span class="line">texts = recursive_splitter.split_text(document)</span><br><span class="line"><span class="built_in">print</span>(texts)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>查看Embedding模型MaxToken、统计Chunk的Token数量</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sentence_transformers <span class="keyword">import</span> SentenceTransformer</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">Embedding_model = <span class="string">&#x27;BAAI/bge-large-zh-v1.5&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(SentenceTransformer(Embedding_model).max_seq_length)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;文本长度 <span class="subst">&#123;<span class="built_in">len</span>(texts[<span class="number">1</span>])&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(Embedding_model)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Token数 <span class="subst">&#123;<span class="built_in">len</span>(tokenizer.encode(texts[<span class="number">1</span>]))&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 展示该chunk文本中使用 Embedding_model 的Token数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">plot_chunk</span>(<span class="params">chunks, embedding_model</span>):</span><br><span class="line">    tokenizer = AutoTokenizer.from_pretrained(embedding_model)</span><br><span class="line">    length = [<span class="built_in">len</span>(tokenizer.encode(chunk)) <span class="keyword">for</span> chunk <span class="keyword">in</span> chunks]</span><br><span class="line">    fig = pd.Series(length).hist()</span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line">plot_chunk(texts, Embedding_model)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>语义切分</strong></p>
+<p><strong>递归语义切分</strong></p>
+<blockquote>
+<p>直接语义切分有几个问题：每块长度不平均，单块太长会出现超出Max Token的风险。</p>
+<p>一轮切分后，根据每块的长度判断是否需要再次切分。</p>
+<p>ps：块数和字符数没有正比关系。比如第一块有3个，第二块有4个，但第一块仍有可能比第4块长很多。</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20250311095728968.png" alt="image-20250311095728968"></p>
+<h3 id="RAG优化："><a href="#RAG优化：" class="headerlink" title="RAG优化："></a>RAG优化：</h3><ol>
+<li><strong>预检索阶段</strong>：这个阶段的核心是“打好基础”，主要是对数据进行整理和预处理，比如建立索引、优化查询方式，让后续的检索更高效。</li>
+<li><strong>检索阶段</strong>：这个阶段的重点是“精准搜索”，通过改进嵌入模型（embedding model）和利用元数据过滤，让向量搜索的结果更准确、更相关。</li>
+<li><strong>后检索阶段</strong>：这个阶段的任务是“去粗取精”，从检索到的文档中剔除无关信息，压缩提示内容，再把干净、简洁的上下文交给大模型（LLM），让它生成高质量的答案。</li>
+</ol>
+<h4 id="1-预检索阶段"><a href="#1-预检索阶段" class="headerlink" title="1. 预检索阶段"></a><strong>1. 预检索阶段</strong></h4><ul>
+<li><p><strong>数据清洗</strong>、删掉那些无关紧要的细节。</p>
+</li>
+<li><p>给数据<strong>加点标签</strong>（元数据），检索的时候有效过滤。</p>
+</li>
+<li><p><strong>父子</strong>：用一小段文本来计算嵌入，在元数据里保留更宽的上下文窗口。小块的文本能提高检索的准确性，而更大的上下文则能给LLM（大语言模型）提供更多的背景信息。</p>
+<blockquote>
+<p>用整篇文本来计算嵌入，可能会引入太多噪音，或者文本里可能包含多个主题，这样一来嵌入的整体语义表示就会变差。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>查询优化</strong></p>
+<ul>
+<li><strong>查询路由</strong>：数据检索可从向量库、数据库、网络等途径获取数据。 所以，在检索前、使用提示词之前，用LLM针对Query做判断。相当于编程的 if 语句</li>
+<li><strong>查询重写</strong>：重新组织问题的表述，来更好地匹配我们索引里的信息。<ul>
+<li><strong>释义</strong>：把用户的查询换个说法，但意思不变</li>
+<li><strong>同义词替换</strong>：把一些不太常用的词换成更常见的同义词，这样搜索范围就更广了</li>
+<li><strong>子查询</strong>：如果查询比较长，我们可以把它拆成几个更短、更聚焦的小查询。</li>
+</ul>
+</li>
+<li><strong>假设文档嵌入（HyDE）</strong>：LLM对用户问题做一个假设性回答，这个回答会和原始查询一起，输入到检索阶段。</li>
+<li><strong>查询扩展</strong>：通过添加一些相关的术语或概念，来丰富问题的维度</li>
+<li><strong>转结构化</strong>：把非结构化的查询“翻译”成结构化的查询，LLM 从Query中识别出关键的实体、事件和关系。作为元数据的过滤条件。</li>
+</ul>
+<blockquote>
+<p>⚠️ 需要注意的是，数据索引和查询优化的预检索技术，都高度依赖于数据的类型、结构和来源。所以，跟其他数据处理流程一样，没有一种方法是万能的。每个用例都有它的特殊性和潜在的坑。优化预检索 RAG 层是一个实验性很强的工作。因此，多尝试几种方法（比如上面提到的这些），反复试验，找到最适合的方案，才是关键。</p>
+</blockquote>
+<h4 id="2-检索阶段"><a href="#2-检索阶段" class="headerlink" title="2. 检索阶段"></a>2. 检索阶段</h4><p><strong>1. 混合搜索</strong></p>
+<p>结合<strong>向量搜索</strong>和<strong>关键字搜索</strong>的混合方法。</p>
+<ul>
+<li><strong>关键字搜索</strong>擅长找到包含特定关键词的文档。如果你的任务需要<strong>高精度</strong>，并且检索结果必须包含精确的关键词匹配，那么这种方法非常有用。</li>
+<li><strong>向量搜索</strong>虽然功能强大，但在<strong>精确匹配上可能稍显不足</strong>，不过它更擅长捕捉<strong>语义上的相似性</strong>。</li>
+</ul>
+<p>通过把这两种方法结合起来，可以同时利用关键词匹配和语义相似性的优势。<br>会用一个参数（比如叫 alpha）来控制两者的权重。<br>具体来说，算法会分别进行两种独立的搜索，然后将结果标准化并合并。</p>
+<p><strong>2. 过滤向量搜索</strong></p>
+<p>利用元数据索引来筛选出符合特定关键词的文档。<br>它和混合搜索的区别在于，只需要用向量索引检索一次数据，然后在向量搜索之前或之后，通过过滤步骤来缩小搜索范围。</p>
+<h4 id="3-后检索阶段"><a href="#3-后检索阶段" class="headerlink" title="3. 后检索阶段"></a>3. 后检索阶段</h4><blockquote>
+<p>检索后优化主要是对已经检索到的数据进行处理，减少一些数据对 LLM 的干扰。如上下文窗口有限或数据有噪声，</p>
+</blockquote>
+<h4 id="RAT"><a href="#RAT" class="headerlink" title="RAT"></a>RAT</h4><p>来源：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/quincyqiang/p/18652768">https://www.cnblogs.com/quincyqiang/p/18652768</a></p>
+<blockquote>
+<p>检索增强思维 (RAT) 是一种简单但有效的提示方法，它将思路链 (CoT) 提示与检索增强生成 (RAG) 相结合，以处理长窗口推理和生成问题。</p>
+</blockquote>
+<p><strong>RAT 流程</strong></p>
+<ol>
+<li><strong>生成初始草稿</strong>：<ul>
+<li>使用 GPT-3.5-turbo 生成一个初始的草稿答案（<code>draft</code>）。</li>
+<li>草稿答案是基于用户输入的问题生成的，可能包含一些错误或不完整的信息。</li>
+</ul>
+</li>
+<li><strong>分割草稿</strong>：<ul>
+<li>将草稿答案分割成多个段落（<code>draft_paragraphs</code>），每个段落包含一个完整的思路。</li>
+<li>分割的目的是为了逐段修正和优化答案。</li>
+</ul>
+</li>
+<li><strong>逐段修正答案</strong>：<ul>
+<li>对每个段落，生成一个检索查询（<code>query</code>），用于从网络中检索相关信息。</li>
+<li>根据检索到的内容，修正当前段落的答案。</li>
+<li>重复这一过程，直到所有段落都修正完毕。</li>
+</ul>
+</li>
+<li><strong>结构化输出</strong>：<ul>
+<li>最后，为修正后的答案添加标题和副标题，使其更具结构性。</li>
+</ul>
+</li>
+<li><strong>返回结果</strong>：<ul>
+<li>返回初始草稿和修正后的最终答案。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 示例流程</span></span><br><span class="line">假设用户输入的问题是：“介绍爱因斯坦的生平和成就。”</span><br><span class="line"><span class="section">### 生成初始草稿：</span></span><br><span class="line">GPT-3.5-turbo 生成一个初始答案，可能包含一些不准确的信息。</span><br><span class="line"><span class="section">### 分割草稿：</span></span><br><span class="line">将初始答案分割成多个段落，例如：</span><br><span class="line">段落1：爱因斯坦的早期生活。</span><br><span class="line">段落2：爱因斯坦的科学成就。</span><br><span class="line">段落3：爱因斯坦的晚年生活。</span><br><span class="line"><span class="section">### 逐段修正：</span></span><br><span class="line">对每个段落生成检索查询，例如：</span><br><span class="line">查询1：“爱因斯坦的早期生活”。</span><br><span class="line">查询2：“爱因斯坦的科学成就”。</span><br><span class="line">查询3：“爱因斯坦的晚年生活”。</span><br><span class="line">根据检索结果修正每个段落的内容。</span><br><span class="line"><span class="section">### 结构化输出：</span></span><br><span class="line">为修正后的答案添加标题和副标题，例如：</span><br><span class="line">标题：爱因斯坦的生平和成就</span><br><span class="line">副标题1：早期生活</span><br><span class="line">副标题2：科学成就</span><br><span class="line">副标题3：晚年生活</span><br><span class="line"><span class="section">### 返回结果：</span></span><br><span class="line">返回初始草稿和修正后的最终答案。</span><br><span class="line"></span><br><span class="line"><span class="section">## 提示词</span></span><br><span class="line">prompt1 = &quot;&quot;&quot;</span><br><span class="line">尝试用逐步的思考来回答这个问题\指令，并使答案更具结构化。</span><br><span class="line">使用 <span class="code">`\n\n`</span> 来将答案分成几个段落。</span><br><span class="line">直接响应指令。除非被要求，否则不要在答案中添加额外的解释或介绍。</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">prompt2 = &quot;&quot;&quot;</span><br><span class="line">我想验证给定问题的内容准确性，特别是最后几句话。</span><br><span class="line">请用相应的问题总结内容。</span><br><span class="line">这个总结将被用作必应搜索引擎的查询。</span><br><span class="line">查询应该简短，但需要足够具体，以确保必应能够找到相关知识或页面。</span><br><span class="line">您还可以使用搜索语法，使查询足够简短和清晰，以便搜索引擎能够找到相关的语言数据。</span><br><span class="line">尽量使查询与内容中的最后几句话尽可能相关。</span><br><span class="line"><span class="strong">**重要**</span></span><br><span class="line">直接输出查询。除非被要求，否则不要在答案中添加额外的解释或介绍。</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">prompt3 = &quot;&quot;&quot;</span><br><span class="line">我想根据在维基百科页面上学到的相关文本来修订答案。</span><br><span class="line">你需要检查答案是否正确。</span><br><span class="line">如果你在答案中发现了错误，请修订答案使其更好。</span><br><span class="line">如果你发现有些必要的细节被忽略了，请根据相关文本添加这些细节，以使答案更加可信。</span><br><span class="line">如果你发现答案是正确的且不需要添加更多细节，请直接输出原始答案。</span><br><span class="line"><span class="strong">**重要**</span></span><br><span class="line">尽量保持修订后答案的结构（多个段落及其子标题），使其更具结构性以便理解。</span><br><span class="line">用 <span class="code">`\n\n`</span> 字符分隔段落。</span><br><span class="line">直接输出修订后的答案。除非被要求，否则在修订后的答案中不要添加额外的解释或声明。</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<meta name="referrer" content="no-referrer"/>
+
+
+
+
+
+
+
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-other/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-other/&title=大模型应用开发 - 知识补齐（全） - ChongWen&summary=最近准备投简历，但发现还有一些技术点自己不熟悉。那么这里就把没有掌握的技术点做个记录和总结。"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=大模型应用开发 - 知识补齐（全） - ChongWen&amp;body=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-other/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-other/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai-prompt/">大模型应用开发 - 提示词优化</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai-model-still/">模型蒸馏</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<center style='font-size: 1rem;margin-top: 0.2rem;'><span id="busuanzi_container_site_pv">总访问<span id="busuanzi_value_site_pv"></span>次</span></center>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 26 篇文章 🔸 总计 65.6k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="toc-text">一、项目总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E9%A1%B9%E7%9B%AE%E4%B8%80-AI%E8%BE%85%E5%8A%A9%E5%8A%9E%E6%A1%88%E5%B9%B3%E5%8F%B0"><span class="toc-text">1.1 项目一 AI辅助办案平台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E9%A1%B9%E7%9B%AE%E4%BA%8C-%E6%94%BF%E5%8A%A1%E9%97%AE%E7%AD%94%E5%8A%A9%E6%89%8B"><span class="toc-text">1.2 项目二 政务问答助手</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">二、向量数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E6%AF%94"><span class="toc-text">2.1 向量数据库对比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Milvus"><span class="toc-text">2.2 Milvus</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81VLLM%E6%8E%A8%E7%90%86"><span class="toc-text">四、VLLM推理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81LlamaFactory%E8%AE%AD%E7%BB%83"><span class="toc-text">五、LlamaFactory训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%BC%80%E6%BA%90%E5%B9%B3%E5%8F%B0%E6%8A%80%E6%9C%AF%E6%B4%9E%E5%AF%9F"><span class="toc-text">九、开源平台技术洞察</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Dify-%E6%8A%80%E6%9C%AF%E6%B4%9E%E5%AF%9F"><span class="toc-text">1. Dify 技术洞察</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-1-%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="toc-text">1.1 知识库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-2-%E5%BA%94%E7%94%A8"><span class="toc-text">1.2 应用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%81%E3%80%81RAG-%E6%96%87%E6%9C%AC%E5%88%87%E5%88%86%E7%AD%96%E7%95%A5"><span class="toc-text">十、RAG 文本切分策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-text">RAG优化：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%A2%84%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5"><span class="toc-text">1. 预检索阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5"><span class="toc-text">2. 检索阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%90%8E%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5"><span class="toc-text">3. 后检索阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RAT"><span class="toc-text">RAT</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/技术/AI/ai-other.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

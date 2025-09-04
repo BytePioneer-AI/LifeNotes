@@ -1,0 +1,971 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>交互式Agent系统的设计 - ChongWen</title>
+
+  
+    <meta name="description" content="一篇阿里博文引发的思考和探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交互式Agent系统的设计">
+<meta property="og:url" content="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/index.html">
+<meta property="og:site_name" content="ChongWen">
+<meta property="og:description" content="一篇阿里博文引发的思考和探索">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chongwenz.cn/assets/blog/1.png">
+<meta property="og:image" content="https://bu.dusays.com/2022/10/24/63567d3e092ff.png">
+<meta property="og:image" content="https://bu.dusays.com/2022/10/24/63567d3e0ab55.png">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3QibPwAS2uIbiclzrcbY095fZT0rSiadXs6R7bvfd71y04mjicHWBBibINVlQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Qic13pxwxSgAuGIA4A5tjC0ypibHbFvXNvibp1DUDzBFA67ORiaq41vRPkQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKEStNMtq6WXB89iciblbtYwI8WMZcTqFbZ0RicT8M7X2Bh7p4luetaND0W3cPBzUKNVNniaMHlyKbqhw/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3QXnaMKRMgRc62Y5kFlibttuVJwJkPrnbXYcwYdlSjU0rgBU0YCymuwYA/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Qpl6ykKp5oJ7ZmtVerXVNPgK8UP1IP9FyxDLGx2iaEJ4zVKB5RGhvWpA/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Q81Dy8iacPib1aNVnshRs25f5Pl7TlpFhhdBg8XZt9Hv5l8f1qlU44g6Q/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="article:published_time" content="2025-08-07T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-04T09:57:03.000Z">
+<meta property="article:author" content="ChongWen">
+<meta property="article:tag" content="Agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chongwenz.cn/assets/blog/1.png">
+  
+  
+  
+  <meta name="keywords" content="Agent">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/Pytorch/"><span class="title">Pytorch</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/hexo-stellar/"><span class="title">博客配置笔记</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/"><span class="title">【昇腾】LLaMA-Factory 训练 Qwen</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/Agent/">Agent</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-08-07T00:00:00.000Z">2025-08-07</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-09-04T09:57:03.000Z">2025-09-04</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：6.7k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：25分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/Agent/">Agent</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>交互式Agent系统的设计</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><blockquote>
+<p>一篇阿里博文引发的思考和探索。</p>
+</blockquote>
+<h3 id="基于大语言模型的智能Agent系统"><a href="#基于大语言模型的智能Agent系统" class="headerlink" title="基于大语言模型的智能Agent系统"></a><strong>基于大语言模型的智能Agent系统</strong></h3><h4 id="1-系统核心思想"><a href="#1-系统核心思想" class="headerlink" title="1. 系统核心思想"></a><strong>1. 系统核心思想</strong></h4><p>核心思想是构建一个以<strong>大语言模型（LLM）为“大脑”的智能代理（Agent），旨在解决将人类的自然语言指令</strong>高效、准确地转化为<strong>机器可执行的自动化任务</strong>。系统通过<code>LLM + RAG (检索增强生成) + Tools</code>的组合，让用户仅需通过一句话，即可驱动系统完成原本需要跨多个应用、执行多个步骤的复杂操作，实现“所想即所得”。更通顺的说，以<strong>对话的交互方式</strong>代替之前复杂ERP系统的流程交互。</p>
+<p><strong>ERP系统人力流程样例：</strong></p>
+<div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/blog/1.png" alt="流程图" data-fancybox="true" style="width:100%;"/><a class="image-download blur" style="opacity:0" target="_blank" download="流程图" href="/assets/blog/1.png"><svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3734"><path d="M561.00682908 685.55838913a111.03077546 111.03077546 0 0 1-106.8895062 0L256.23182837 487.72885783a55.96309219 55.96309219 0 0 1 79.13181253-79.18777574L450.70357448 523.88101491V181.55477937a55.96309219 55.96309219 0 0 1 111.92618438 0v344.06109173l117.07478902-117.07478901a55.96309219 55.96309219 0 0 1 79.13181252 79.18777574zM282.81429711 797.1487951h447.70473912a55.96309219 55.96309219 0 0 1 0 111.92618438H282.81429711a55.96309219 55.96309219 0 0 1 0-111.92618438z" p-id="3735"></path></svg></a></div><div class="image-meta"><span class="image-caption center">流程图</span></div></div>
+
+
+
+
+
+
+
+<h4 id="2-核心组件定义"><a href="#2-核心组件定义" class="headerlink" title="2. 核心组件定义"></a><strong>2. 核心组件定义</strong></h4><p>系统主要由三大核心组件构成，分别扮演“大脑”、“记忆”和“双手”的角色。</p>
+<ul>
+<li><strong>2.1. 大语言模型 (LLM) - “大脑”</strong><ul>
+<li><strong>定义</strong>: 系统的中央处理器和决策核心。它负责理解用户的模糊意图、进行逻辑推理、制定行动计划、并以人性化的方式反馈结果。</li>
+</ul>
+</li>
+<li><strong>2.2. 知识库 (Knowledge Base) - “记忆”</strong><ul>
+<li><strong>定义</strong>: LLM的外部知识源，通过RAG技术为LLM提供决策所需的、实时的、精确的上下文信息。它包含两个关键部分：<ul>
+<li><strong>2.2.1. 原子能力工具库 (Atomic Tool Library)</strong><ul>
+<li><strong>定义</strong>: 一份关于<strong>“所有可用工具”的详细说明书</strong>。它精确定义了每一个独立的、最小颗粒度的功能（即“原子工具”），包括其功能描述、所需参数、使用范例等。它回答了“我有什么具体能力？”的问题。</li>
+</ul>
+</li>
+<li><strong>2.2.2. 工具调用规则库 (Tool Call Rule Library)</strong><ul>
+<li><strong>定义</strong>: 一本关于<strong>“如何完成复杂任务”的流程蓝图（菜谱）</strong>。它定义了各种业务场景下，需要按什么顺序、组合调用哪些原子工具来完成任务。它回答了“要达成一个大目标，分几步走？”的问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>2.3. 执行引擎 (Execution Engine) - “双手”</strong><ul>
+<li><strong>定义</strong>: 一个确定性的、非AI的程序。它负责接收并严格执行由LLM大脑规划好的行动计划，调用原子工具，并管理任务状态。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="3-核心流程实现"><a href="#3-核心流程实现" class="headerlink" title="3. 核心流程实现"></a><strong>3. 核心流程实现</strong></h4><p>系统的工作流程可以分解为以下五个关键步骤：</p>
+<ol>
+<li><strong>意图理解 (Intent Understanding)</strong><ul>
+<li>用户通过自然语言界面输入指令。LLM接收到指令后，进行初步的语义分析，理解用户的核心意图和提取关键参数。</li>
+</ul>
+</li>
+<li><strong>RAG检索 (RAG Retrieval)</strong><ul>
+<li>LLM带着用户的意图，<strong>并行地</strong>在<code>原子能力工具库</code>和<code>工具调用规则库</code>中进行向量相似度检索，找出与当前任务最相关的“工具说明”和“流程蓝图”。</li>
+</ul>
+</li>
+<li><strong>动态规划 (Dynamic Planning)</strong><ul>
+<li>LLM综合“用户原始指令”和“RAG检索到的上下文”，生成一个结构化的、包含完整执行步骤和参数映射的行动计划（DAG）。此阶段能灵活应对三种情况：<ul>
+<li><strong>单点任务</strong>: 若用户指令只对应单个原子工具，则直接生成调用该工具的计划。</li>
+<li><strong>复杂任务</strong>: 若用户指令匹配到<code>工具调用规则库</code>中的某个流程，则以此为模板生成计划。</li>
+<li><strong>动态任务</strong>: 若用户指令介于两者之间（如执行某个流程的一部分），LLM能基于对工具的理解，动态编排出一个新的、裁剪过的执行计划。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>计划执行 (Plan Execution)</strong><ul>
+<li><code>执行引擎</code>接管LLM生成的计划，并严格按照计划中定义的顺序和依赖关系，依次调用<code>原子工具层</code>的API接口，完成与后端系统的实际交互。</li>
+</ul>
+</li>
+<li><strong>结果反馈 (Result Feedback)</strong><ul>
+<li><code>执行引擎</code>将最终的执行结果返回。LLM可以（可选地）对技术性的结果进行总结，以通俗易懂的自然语言向用户汇报任务成果。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="4-数据结构样例"><a href="#4-数据结构样例" class="headerlink" title="4. 数据结构样例"></a><strong>4. 数据结构样例</strong></h4><p>以下是两大知识库的核心数据结构及其JSON样例。</p>
+<ul>
+<li><p><strong>4.1. 原子能力工具库 (Atomic Tool Library)</strong></p>
+<ul>
+<li><strong>作用</strong>: 定义“零件”的规格。</li>
+<li><strong>样例</strong>: 定义“创建员工档案”工具。</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;tool_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;create_employee_record&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用于在人力资源系统中为一名新员工创建基础的个人档案。成功执行后会返回新创建员工的唯一ID（employee_id）。&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;full_name&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;员工的法定全名&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;national_id&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;员工的身份证号码&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 数据结构 (Data Structure)</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;tool_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>          <span class="comment">// 工具的唯一标识符，像函数名一样</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>        <span class="comment">// 详细描述工具的功能、用途和适用场景，写给LLM看</span></span><br><span class="line">  <span class="attr">&quot;parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>                 <span class="comment">// 工具所需的参数列表</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>           <span class="comment">// 参数名</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>           <span class="comment">// 参数类型 (e.g., &#x27;string&#x27;, &#x27;integer&#x27;, &#x27;boolean&#x27;)</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>    <span class="comment">// 参数的详细描述</span></span><br><span class="line">      <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="string">&quot;boolean&quot;</span>       <span class="comment">// 该参数是否为必填项</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;examples&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>                   <span class="comment">// (可选但推荐) 调用该工具的用户提问示例</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;user_query&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;extracted_params&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;param_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>4.2. 工具调用规则库 (Tool Call Rule Library)</strong></p>
+<ul>
+<li><strong>作用</strong>: 提供“组装图纸”。</li>
+<li><strong>样例</strong>: 定义“新员工入职流程”。</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;rule_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;new_hire_onboarding_process&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;一个完整的新员工入职流程，涵盖了从创建档案到分配部门的全过程。&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dag_definition&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;step_id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;create_employee_record&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;第一步：为新员工创建个人档案。&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;parameter_mapping&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;full_name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial_query&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;full_name&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;national_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial_query&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;national_id&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;step_id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assign_department&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;第二步：为新员工分配部门和职位。&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">1</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;parameter_mapping&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;employee_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;step_output&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;step_id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;employee_id&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;department&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial_query&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;department&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"># 数据结构 (Data Structure)</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;rule_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>        <span class="comment">// 规则的唯一标识符，代表一个完整的业务流程</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>      <span class="comment">// 对整个业务流程的宏观描述</span></span><br><span class="line">  <span class="attr">&quot;trigger_phrases&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>          <span class="comment">// (可选但推荐) 可能会触发此规则的用户常用短语</span></span><br><span class="line">    <span class="string">&quot;string&quot;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dag_definition&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>           <span class="comment">// 定义工作流的有向无环图 (DAG)</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;step_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;integer&quot;</span><span class="punctuation">,</span>     <span class="comment">// 步骤的唯一ID</span></span><br><span class="line">      <span class="attr">&quot;tool_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>    <span class="comment">// 此步骤需要调用的原子工具名称 (必须与工具库中的tool_name对应)</span></span><br><span class="line">      <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>  <span class="comment">// 对这一步骤的人性化描述</span></span><br><span class="line">      <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>         <span class="comment">// 此步骤依赖的前置步骤的step_id列表，为空则代表是起始步骤</span></span><br><span class="line">        <span class="string">&quot;integer&quot;</span></span><br><span class="line">      <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;parameter_mapping&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>  <span class="comment">// 定义此步骤工具的参数来源</span></span><br><span class="line">        <span class="attr">&quot;param_name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span>   <span class="comment">// 来源类型: &#x27;initial_query&#x27; (来自用户原始提问), &#x27;step_output&#x27; (来自前置步骤的输出)</span></span><br><span class="line">          <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span>     <span class="comment">// 如果来源是&#x27;initial_query&#x27;，这里是参数名；如果是&#x27;step_output&#x27;，这里是来源步骤的输出键名 (e.g., &#x27;employee_id&#x27;)</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="【转发】别再手搓测试数据了！AE测试数据智造系统揭秘"><a href="#【转发】别再手搓测试数据了！AE测试数据智造系统揭秘" class="headerlink" title="【转发】别再手搓测试数据了！AE测试数据智造系统揭秘"></a>【转发】别再手搓测试数据了！AE测试数据智造系统揭秘</h3><p>本文介绍如何通过构建基于大语言模型的测试数据智造Agent，解决AliExpress跨境电商测试中数据构造复杂、低效的问题，推动测试效率提升与智能化转型。</p>
+<div class="tag-plugin quot"><h8 class="content" id="引言" type="icon"><img class="icon prefix lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://bu.dusays.com/2022/10/24/63567d3e092ff.png" /><span class="text">引言</span><img class="icon prefix lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://bu.dusays.com/2022/10/24/63567d3e0ab55.png" /></h8></div> 
+
+<p>在AliExpress跨境电商的复杂业务场景下，复杂业务模式（例如跨境、本地）、多类型物流方式、分国家运营策略、多币种、多语言等各因子叠加，测试经常面临测试数据构造复杂且困难、学习成本高、耗时长等问题。测试用例的初衷是验证业务逻辑，却被数据构造的“脏活累活”绑架了。</p>
+<p>如今，大语言模型与原子工具库的结合，可以重新定义测试数据构造的工作模式。我们构建的测试数据智造助手，让”生成一个命中单品补贴的pop待评价订单”这样的复杂需求，只需一句自然语言描述即可自动完成全链路数据构造。</p>
+<h3 id="一、核心痛点"><a href="#一、核心痛点" class="headerlink" title="一、核心痛点"></a>一、核心痛点</h3><p>以构造一个包含业务类型、组合营销优惠、物流线路等多种条件的测试数据为例：测试往往需要辗转于测试商家后台、营销运营工作台、各业务域的测试工具平台等多个系统，记忆各种参数规则，耗时费力地拼接出一个完整的测试场景。</p>
+<p>随着业务的快速扩张，测试数据的复杂性和多样性持续增长，更加暴露出了传统的数据构造模式存在以下<strong>痛点</strong>：</p>
+<ul>
+<li><strong>多域依赖：</strong>测试数据构造依赖交易、支付、营销等多个业务域，工具分散于不同平台，操作链路冗长；</li>
+<li><strong>协作成本高：</strong>跨域工具使用需多团队协调，理解成本和重复工作量巨大；</li>
+<li><strong>效率瓶颈：</strong>人工构造复杂场景（如各状态订单、组合优惠等）耗时高达小时级，增加了测试执行的时间。</li>
+</ul>
+<h3 id="二、破局思路"><a href="#二、破局思路" class="headerlink" title="二、破局思路"></a>二、破局思路</h3><p>通过引入AI智能聚合编排测试数据构造能力，构建统一调度中台，可以有效解决这些问题，提高测试数据构造的效率和质量。</p>
+<p><strong>核心思想：</strong>通过LLM大模型+RAG技术实现自然语言驱动，结合多业务域原子工具单点调用和链式调用，实现全链路测试数据”所想即所得”。</p>
+<h3 id="三、目标"><a href="#三、目标" class="headerlink" title="三、目标"></a>三、目标</h3><p>从0-1建设AE测试数据智造Agent，统一测试工具AI接入方式，聚合多业务域测试原子能力，解决测试数据构成本高、造耗时长等问题，实现“提效”、“降本”、“提升覆盖率”，在自动化场景中实际运用。</p>
+<ul>
+<li><strong>提效：</strong>将复杂场景（如跨境订单、组合优惠）的测试数据构造耗时从小时级缩短至分钟级。</li>
+<li><strong>降本：</strong>减少开发&amp;测试时在数据构造的理解成本和重复工作量。</li>
+<li><strong>覆盖率：</strong>覆盖订单生命周期，支持多个核心业务域的复杂场景。</li>
+</ul>
+<h3 id="四、智造Agent实现方案"><a href="#四、智造Agent实现方案" class="headerlink" title="四、智造Agent实现方案"></a>四、智造Agent实现方案</h3><p><strong>4.1设计思路</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3QibPwAS2uIbiclzrcbY095fZT0rSiadXs6R7bvfd71y04mjicHWBBibINVlQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li>用户以自然语言提出询问时，Agent 会依据用户输入的内容，在 RAG 测试工具知识库中进行信息检索。RAG技术能帮助 Agent 精准匹配到与用户问题相关的信息。</li>
+<li>Agent 将用户提出的问题以及从知识库中检索到的信息，一同输入到 LLM 大语言模型中。大语言模型凭借其强大的语言理解能力，对用户的意图进行识别和分析，并将用户意图分为测试信息查询、原子数据构造和链路数据构造这几类。</li>
+<li>基于识别出的用户意图，Agent 会匹配相应的一个或多个原子工具，以及链路调用工具的规则。这些原子工具是实现数据构造的基础组件，各自具备特定的数据处理功能。同时，Agent 会从用户问题里提取出原子工具必要的关键参数。</li>
+<li>依据知识库中的业务规则、数据模板和相关知识，使用提取出来的参数调用工具库中的原子能力生成符合用户需求的测试数据。最后，Agent 将生成的测试数据进行合理组装，以清晰、易懂的格式回复给用户，完成整个测试数据生成与反馈的流程。</li>
+</ul>
+<p><strong>举个</strong>🌰</p>
+<p>用户指令：给商品id为123456（示例ID，非真实数据）的商品生成一笔退货退款的订单。</p>
+<p>Agent处理流程：</p>
+<blockquote>
+<p>1.使用用户的问题去匹配知识库中的场景，与“退货退款”链路的背景内容关联度最高。</p>
+<p>2.将用户问题和知识库匹配结果共同传入大模型，识别用户意图为通过退货退款链路构造测试数据，该链路涉及的原子工具及调用顺序规则为：下单—&gt;支付—&gt;发货—&gt;确认收货—&gt;申请退货退款—&gt;同意退货—&gt;退货—&gt;同意退款。</p>
+<p>3.提取必要参数商品id：123456（示例ID，非真实数据），将其作为入参传给下单原子工具。然后将下单工具生成的订单id传给支付工具，之后按照按照顺序调用原子工具。</p>
+<p>4.将状态推进成功的订单回复给用户。</p>
+</blockquote>
+<p><strong>4.2Agent架构设计</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Qic13pxwxSgAuGIA4A5tjC0ypibHbFvXNvibp1DUDzBFA67ORiaq41vRPkQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li><strong>前端交互：</strong>提供自然语言输入界面，用户通过描述需求（如“构造一个使用平台券的pop商品订单”）触发流程。</li>
+<li>**语**义解析：**结合RAG从知识库中匹配工具链规则信息和原子工具信息，再通过LLM大模型解析用户意图。</li>
+<li><strong>原子工具调度：</strong>根据工具链规则信息和原子工具信息调用原子工具服务（HSF&#x2F;HTTP请求），实现原子工具间的依赖关系与参数传递，生成用户想要的测试数据。</li>
+</ul>
+<p>因此可以抽象为三层系统架构，具体如下：</p>
+<h4 id="4-2-1规则抽象层"><a href="#4-2-1规则抽象层" class="headerlink" title="4.2.1规则抽象层"></a><strong>4.2.1规则抽象层</strong></h4><p>通过构建《原子能力工具库》、《工具调用规则库》的知识库实现。</p>
+<p>原子能力工具库：每个原子工具定义工具描述、提问示例、参数说明以及原子工具维度的参数映射规则。</p>
+<p>工具调用规则库：将业务场景抽象成原子工具调用规则，再通过DAG有向无环图的方式进行规则的定义。</p>
+<h4 id="4-2-2执行调度层"><a href="#4-2-2执行调度层" class="headerlink" title="4.2.2执行调度层"></a><strong>4.2.2执行调度层</strong></h4><p>工具链调用：编写数据智造prompt提示词使大模型能够根据规则生成对应的执行计划。</p>
+<p>参数透传：在工具链上的规则输出的结果会根据参数语义透传给后续工具，不需要人工进行干预。</p>
+<p>失败重试策略：工具调用失败自动触发重试，重试超过5次触发断点，需要人工确认。</p>
+<h4 id="4-2-3原子工具层"><a href="#4-2-3原子工具层" class="headerlink" title="4.2.3原子工具层"></a><strong>4.2.3原子工具层</strong></h4><p>通过AI应用开发平台的工具箱能力执行原子工具的真实调用，从而实现测试数据的自动构造。</p>
+<h3 id="4-3关键实现模块解析"><a href="#4-3关键实现模块解析" class="headerlink" title="4.3关键实现模块解析"></a>4.3关键实现模块解析</h3><h5 id="4-3-1AI应用开发平台"><a href="#4-3-1AI应用开发平台" class="headerlink" title="4.3.1AI应用开发平台"></a><strong>4.3.1AI应用开发平台</strong></h5><p>基于AI应用开发平台进行对话型AI智能体设计，在Agent中调用RAG知识库、LLM大语言模型、自定义工具等能力实现AE测试工具构造功能。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section"># Role: AE测试数据构造助手——全链路测试数据生成专家</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Profile</span></span><br><span class="line"><span class="bullet">-</span> <span class="strong">**Author**</span>: AE测试团队</span><br><span class="line"><span class="bullet">-</span> <span class="strong">**Version**</span>: V0.1.1</span><br><span class="line"><span class="bullet">-</span> <span class="strong">**Language**</span>: 中文  </span><br><span class="line"><span class="bullet">-</span> <span class="strong">**Description**</span>: 专注通过自然语言交互，自动化生成覆盖交易、支付、营销等全业务域的复杂测试数据，实现&quot;所想即所得&quot;。</span><br><span class="line"><span class="section">## 核心原则</span></span><br><span class="line"><span class="bullet">1.</span> <span class="strong">**三源数据优先级**</span>  </span><br><span class="line">   `用户输入参数 &gt; 常用测试数据 &gt; 原子工具默认值</span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**文档引用规范**</span>  </span><br><span class="line"><span class="bullet">   -</span> 链路流程 → 《工具调用规则库》  </span><br><span class="line"><span class="bullet">   -</span> 工具定义 → 《原子能力工具库》  </span><br><span class="line"><span class="bullet">   -</span> 默认数据 → 《常用测试数据》</span><br><span class="line"></span><br><span class="line"><span class="section">## Core Capabilities</span></span><br><span class="line"><span class="bullet">1.</span> <span class="strong">**意图精准识别**</span>  </span><br><span class="line"><span class="bullet">   -</span> 支持识别7大场景类型：  </span><br><span class="line"><span class="code">     `基础订单生成 | 营销活动构造 | 逆向流程推进 | 跨境场景模拟 | 用户资产管理 | 数据状态查询 | 异常场景构造`  </span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**参数深度提取**</span>  </span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**常规参数**</span>：商品ID、用户ID、订单ID </span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**场景扩展参数**</span>：  </span><br><span class="line"><span class="code">     &#123;</span></span><br><span class="line"><span class="code">         &quot;营销活动&quot;: [&quot;活动类型&quot;, &quot;优惠门槛&quot;, &quot;叠加规则&quot;],</span></span><br><span class="line"><span class="code">         &quot;逆向流程&quot;: [&quot;纠纷类型&quot;, &quot;退款原因&quot;, &quot;风控等级&quot;],</span></span><br><span class="line"><span class="code">         &quot;跨境场景&quot;: [&quot;关税模式&quot;, &quot;物流渠道&quot;, &quot;货币类型&quot;]</span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code">3. **动态链路生成** 基于目标状态自动裁剪工具链（如&quot;已支付&quot;状态仅调用创建+支付工具）</span></span><br><span class="line"><span class="code">A[输入解析] --&gt; B&#123;是否跨域?&#125;  B --&gt;|是| C[组合规则引擎]  B --&gt;|否| D[单域规则匹配]  C &amp; D --&gt; E[工具链执行]  E --&gt; F[结果聚合]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="section">## Workflow (严格遵循)</span></span><br><span class="line">1.<span class="strong">**提取请求参数**</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**工具调度阶段**</span>  </span><br><span class="line">环境适配 → 根据用户输入的环境特征选择对应工具版本</span><br><span class="line">链式执行 → 按《工具调用规则库》定义的工具顺序执行</span><br><span class="line">参数桥接 → 自动将上游工具出参映射为下游工具入参</span><br><span class="line">状态演进 → 每个工具执行后必须推进业务状态到目标阶段</span><br><span class="line"></span><br><span class="line"><span class="bullet">3.</span> <span class="strong">**异常处理机制**</span>  </span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="section">## Output Format(强制规范)</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="4-3-2原子能力工具库构建"><a href="#4-3-2原子能力工具库构建" class="headerlink" title="4.3.2原子能力工具库构建"></a>4.3.2原子能力工具库构建</h4><p>梳理研发测试过程中测试数据构造&amp;测试数据查询的原子操作进行封装和抽象，并在AI应用开发平台的工具空间对工具封装成API。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKEStNMtq6WXB89iciblbtYwI8WMZcTqFbZ0RicT8M7X2Bh7p4luetaND0W3cPBzUKNVNniaMHlyKbqhw/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<h4 id="4-3-3测试工具知识库建设"><a href="#4-3-3测试工具知识库建设" class="headerlink" title="4.3.3测试工具知识库建设"></a>4.3.3测试工具知识库建设</h4><p>为了让 AI 智能体能够精准识别用户意图，并使用正确参数调用工具组件，因此通过结构化工具描述文档搭建 RAG 测试工具知识库。该知识库是 AI 智能体理解用户需求和执行任务的关键基础。</p>
+<p>需要维护的测试工具知识库涵盖两大部分：</p>
+<ul>
+<li>原子测试工具描述文档：将原子测试工具的使用背景、使用说明以及使用范例整理后录入知识库。AI 智能体在识别到具体业务场景时，就能快速匹配到对应的原子工具，进而实现数据构造和数据查询。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">工具名称：请填写工具名称。</span><br><span class="line">工具描述：请填写工具描述、使用场景，方便大模型理解工具。</span><br><span class="line">提问示例：请填写提问相关的示例，支持多条。</span><br><span class="line">参数说明：参数名称-参数描述（是否必填）以及参数枚举</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数据构造链路描述文档：把数据构造链路的背景信息、原子工具的调度链路以及具体原子工具名称都输出到知识库中。如此，AI 智能体在面对特定业务场景时，便能准确对应到具体的数据构造链路，然后依照链路顺序调用原子工具，完成数据构造任务。</li>
+</ul>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">链路名称：退货退款链路</span><br><span class="line">链路背景：售后退货退款是指买家在下单支付完成，货物确认收货后买家申请退货退款，卖家同意退款的链路。用户用淘宝账号购买指定itemId的商品并且支付生成淘宝订单号<span class="keyword">orderId。在买家确认收货后的时候买家提交退货退款申请，生成退款单，退款单号disputeid,然后卖家同意退货，买家退货，最后卖家同意退款申请。</span></span><br><span class="line"><span class="keyword"></span>链路信息：下单—&gt;支付—&gt;发货—&gt;确认收货—&gt;申请退货退款—&gt;同意退货—&gt;退货—&gt;同意退款</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="五、Agent应用实践"><a href="#五、Agent应用实践" class="headerlink" title="五、Agent应用实践"></a>五、Agent应用实践</h4><p>AE测试数据智造Agent应用场景是多方面的。目前已接入钉钉答疑群和个人助手，以问答的方式作为业务日常测试的测试助手；也可以作为自动化测试（如接口自动化、用例自动化、压测等）的测试数据提供方，以HSF的接入方式对外提供数据构造基础能力。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3QXnaMKRMgRc62Y5kFlibttuVJwJkPrnbXYcwYdlSjU0rgBU0YCymuwYA/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<p>针对对外提供的数据构造基础能力，我们做了以下的系统架构设计来保障数据构造的准确性和稳定性。</p>
+<p><strong>5.1外部接入架构设计</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Qpl6ykKp5oJ7ZmtVerXVNPgK8UP1IP9FyxDLGx2iaEJ4zVKB5RGhvWpA/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<h4 id="5-1-1漏桶算法限流"><a href="#5-1-1漏桶算法限流" class="headerlink" title="5.1.1漏桶算法限流"></a><strong>5.1.1漏桶算法限流</strong></h4><p>由于LLM大模型存在token、QPM限制，而上游平台会批量调用触发限流，所以需要做限流方案。</p>
+<p>为了解决这一问题，需要对流量整形，限制对AE测试数据智造Agent的请求频率，避免触发LLM服务端限流，保障系统的稳定性。</p>
+<p><strong>限流算法选型：漏桶算法</strong></p>
+<p><strong>实现思路：</strong>将请求视为水流，将其放入一个“漏桶”中，桶的出口以固定速率流出请求，从而实现对流量的平滑控制，从而以恒定的速率请求AE测试数据智造Agent。</p>
+<p>漏桶容量 &#x3D; 预估峰值流量 * 1.2) </p>
+<p>漏水速率 &#x3D; LLM每分钟限制 &#x2F; 60 * 安全系数（如0.8） </p>
+<h4 id="5-1-2标准化输出"><a href="#5-1-2标准化输出" class="headerlink" title="5.1.2标准化输出"></a><strong>5.1.2标准化输出</strong></h4><p><strong>（1）业务错误场景处理</strong></p>
+<p>测试数据无法构造的场景对于AE测试数据智造Agent来说并不是系统错误，是属于业务层面的错误，直接请求不会返回错误码和错误信息。</p>
+<p>因此在接口适配层识别这些业务错误的场景，返回对应的业务错误码和错误信息。</p>
+<p><strong>（2）标准化错误码</strong></p>
+<p>AI应用开发平台构建的Agent在系统错误时返回的错误码不符合AE的规范，因此在接口适配层按照AE的标准规范进行错误码的转换。</p>
+<p><strong>（3）输出结果标准化处理</strong></p>
+<p>由于上游对数据输出的格式要求严格，如果输出格式只写在AI规则里的话容易因为AI的幻觉导致输出的格式不符合规范。</p>
+<p><strong>JSON Schema校验</strong>：定义严格的响应结构模板，自动修复或拒绝非法格式（如字段类型错误、多余字段）。</p>
+<h4 id="5-1-3日志-监控"><a href="#5-1-3日志-监控" class="headerlink" title="5.1.3日志+监控"></a><strong>5.1.3日志+监控</strong></h4><p>通过日志的方式，记录执行链路中的关键数据，并进行监控，分析大模型的执行结果，提供可监控、可分析的稳定性保障能力。</p>
+<p><strong>日志：</strong>场景+问题入参+Agent响应+标准化后输出结果+traceId，通过traceId串联从外部请求到Agent调用的全链路日志。</p>
+<p><strong>基础监控：</strong>Agent的RT和接口成功率。</p>
+<p><strong>业务监控：</strong>监控无法构造出测试数据的场景等。</p>
+<p><strong>执行分析：</strong>对无法构造出测试数据场景进行记录和分析，进行后续测试数据构造功能的迭代。</p>
+<h4 id="5-1-4缓存"><a href="#5-1-4缓存" class="headerlink" title="5.1.4缓存"></a><strong>5.1.4缓存</strong></h4><p><strong>目的：</strong>减少重复调用Agent的token开销，提升批量用例执行效率，减少耗时。</p>
+<p><strong>缓存键设计：</strong>对用户输入参数（如场景描述、业务参数）计算唯一哈希值，作为缓存主键。</p>
+<p><strong>缓存策略：</strong>成功结果缓存30分钟，失败结果缓存2分钟（防穿透）。</p>
+<p>六、结果</p>
+<p>当前Agent已完成8500+次问答（含调试）。简单测试数据构造场景，人工构造预估需要5分钟，AI可降至1-3分钟，提效约50%；复杂场景（如涉及长链路工具），人工构造预估1小时，AI可降至10-15分钟，提效约70%。</p>
+<p>当前已完成的核心能力如下：</p>
+<ul>
+<li><strong>原子工具调用：</strong>共接入85+原子工具，覆盖交易下单、购物车、订单、营销、支付、逆向、商家、商品、招商等核心场景诉求。</li>
+<li><strong>链式数据构造：</strong>打通交易、营销、逆向跨域链式规则执行，实现各类订单状态数据、营销订单数据等的一键全流程构造。</li>
+<li><strong>业务域接入友好：</strong>各业务域原子工具和数据链路构造规则可以按照规范直接完成接入，无需感知Agent内部逻辑。</li>
+<li><strong>多环境支持能力：</strong>实现环境感知路由机制，支持根据用户需求动态切换线上&#x2F;预发&#x2F;项目隔离环境。</li>
+</ul>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naK4mUzd9gRy6FHHVUcfyn3Q81Dy8iacPib1aNVnshRs25f5Pl7TlpFhhdBg8XZt9Hv5l8f1qlU44g6Q/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<p>七、未来展望</p>
+<p>测试数据构造正在经历从”手工操作”到”智能服务”的转型。当各业务域的测试工具完成原子化改造，当大语言模型真正理解业务语义，我们距离”所想即所得”的终极目标将越来越近。未来的测试工程师可以更专注于场景设计而非数据准备，用创造力推动质量保障体系的持续进化。</p>
+<p>这种智能化改造的价值不仅限于测试领域，其背后构建的<strong>业务语义理解能力</strong>和<strong>跨域协作机制</strong>，为整个研发体系的效能提升提供了新的可能性。或许在不远的将来，我们今天构建的智能助手，将成为新一代研发基础设施的重要组成部分。</p>
+<meta name="referrer" content="no-referrer"/>
+
+
+
+
+
+
+
+
+<p><strong>流程图原始代码</strong></p>
+<pre class="mermaid">%%{
+  init: {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#F8F9FA",
+      "primaryTextColor": "#333",
+      "primaryBorderColor": "#A9A9A9",
+      "lineColor": "#666",
+      "secondaryColor": "#E9ECEF",
+      "tertiaryColor": "#fff"
+    },
+    "fontFamily": "sans-serif"
+  }
+}%%
+graph TD
+    %% 定义不同角色的样式
+    classDef userStyle fill:#E6F4EA,stroke:#1D6F42,stroke-width:2px,color:#1D6F42
+    classDef llmStyle fill:#E3F2FD,stroke:#0B5B8D,stroke-width:2px,color:#0B5B8D
+    classDef execStyle fill:#FEF4E3,stroke:#8A5300,stroke-width:2px,color:#8A5300
+    classDef systemStyle fill:#F8F9FA,stroke:#343A40,stroke-width:2px,color:#343A40
+    classDef artifactStyle fill:#FBEAEB,stroke:#721c24,stroke-width:1px,stroke-dasharray: 4 4,color:#721c24
+
+    %% 流程图主体
+    subgraph " "
+        User[("fa:fa-user 用户 (HR/业务经理)")]
+    end
+
+    subgraph "HRM Agent 核心 (AI大脑)"
+        LLM_Parse["fa:fa-brain LLM: 意图识别 & 参数提取"]
+        
+        subgraph "知识库 (RAG检索)"
+            KB_Tools["fa:fa-book 原子能力工具库
+            • 描述每个工具的功能
+            • 描述所需参数"]
+            KB_Rules["fa:fa-sitemap 工具调用规则库
+            • 定义业务流程/DAG"]
+        end
+
+        LLM_Plan["fa:fa-lightbulb LLM: 生成结构化执行计划 (DAG)"]
+        LLM_Summary["fa:fa-comment-dots LLM: (可选)总结结果并生成回复"]
+    end
+
+    subgraph "执行层 (确定性引擎)"
+        ExecEngine["fa:fa-cogs 执行引擎
+        (Orchestrator)"]
+        Atomic_Tools_Layer["fa:fa-bolt 原子工具层
+        (ERP API 封装)"]
+    end
+
+    subgraph "后端系统"
+        ERP["fa:fa-database ERP 后端系统
+        • 员工数据库
+        • 薪酬数据库
+        • 组织数据库"]
+    end
+
+    subgraph " "
+        User_Output[("fa:fa-check-circle 最终输出")]
+    end
+
+    %% 定义流程连线
+    User -- "自然语言指令" --> LLM_Parse
+    LLM_Parse -- "RAG检索" --> KB_Tools
+    LLM_Parse -- "RAG检索" --> KB_Rules
+    KB_Rules -- "提供流程模板" --> LLM_Plan
+    KB_Tools -- "提供工具定义" --> LLM_Plan
+    LLM_Parse -- "传递意图与参数" --> LLM_Plan
+    LLM_Plan -- "输出精确的执行计划" --> ExecEngine
+    ExecEngine -- "依次调用工具" --> Atomic_Tools_Layer
+    Atomic_Tools_Layer -- "执行具体数据库操作" --> ERP
+    ERP -- "返回操作结果" --> Atomic_Tools_Layer
+    Atomic_Tools_Layer -- "返回执行状态" --> ExecEngine
+    ExecEngine -- "返回结构化执行结果" --> LLM_Summary
+    LLM_Summary -- "生成人性化回复" --> User_Output
+    User_Output --> User
+
+    %% 应用样式
+    class User,User_Output userStyle
+    class LLM_Parse,LLM_Plan,LLM_Summary llmStyle
+    class KB_Tools,KB_Rules artifactStyle
+    class ExecEngine,Atomic_Tools_Layer execStyle
+    class ERP systemStyle
+
+    %% 箭头样式
+    linkStyle default stroke:#555,stroke-width:2px,color:black;</pre>
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/&title=交互式Agent系统的设计 - ChongWen&summary=一篇阿里博文引发的思考和探索"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=交互式Agent系统的设计 - ChongWen&amp;body=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai_train/">【训练】大模型微调技术基础(转发)</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/Essays/20250720%E5%85%AD%E6%9C%88/">2025-06、07</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<center style='font-size: 1rem;margin-top: 0.2rem;'><span id="busuanzi_container_site_pv">总访问<span id="busuanzi_value_site_pv"></span>次</span></center>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 26 篇文章 🔸 总计 65.6k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%99%BA%E8%83%BDAgent%E7%B3%BB%E7%BB%9F"><span class="toc-text">基于大语言模型的智能Agent系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-text">1. 系统核心思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E5%AE%9A%E4%B9%89"><span class="toc-text">2. 核心组件定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="toc-text">3. 核心流程实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A0%B7%E4%BE%8B"><span class="toc-text">4. 数据结构样例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%80%90%E8%BD%AC%E5%8F%91%E3%80%91%E5%88%AB%E5%86%8D%E6%89%8B%E6%90%93%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E4%BA%86%EF%BC%81AE%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E6%99%BA%E9%80%A0%E7%B3%BB%E7%BB%9F%E6%8F%AD%E7%A7%98"><span class="toc-text">【转发】别再手搓测试数据了！AE测试数据智造系统揭秘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E7%97%9B%E7%82%B9"><span class="toc-text">一、核心痛点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%A0%B4%E5%B1%80%E6%80%9D%E8%B7%AF"><span class="toc-text">二、破局思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%9B%AE%E6%A0%87"><span class="toc-text">三、目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%99%BA%E9%80%A0Agent%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="toc-text">四、智造Agent实现方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1%E8%A7%84%E5%88%99%E6%8A%BD%E8%B1%A1%E5%B1%82"><span class="toc-text">4.2.1规则抽象层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2%E6%89%A7%E8%A1%8C%E8%B0%83%E5%BA%A6%E5%B1%82"><span class="toc-text">4.2.2执行调度层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3%E5%8E%9F%E5%AD%90%E5%B7%A5%E5%85%B7%E5%B1%82"><span class="toc-text">4.2.3原子工具层</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3%E5%85%B3%E9%94%AE%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90"><span class="toc-text">4.3关键实现模块解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#4-3-1AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E5%B9%B3%E5%8F%B0"><span class="toc-text">4.3.1AI应用开发平台</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2%E5%8E%9F%E5%AD%90%E8%83%BD%E5%8A%9B%E5%B7%A5%E5%85%B7%E5%BA%93%E6%9E%84%E5%BB%BA"><span class="toc-text">4.3.2原子能力工具库构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-3%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E7%9F%A5%E8%AF%86%E5%BA%93%E5%BB%BA%E8%AE%BE"><span class="toc-text">4.3.3测试工具知识库建设</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%94%E3%80%81Agent%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5"><span class="toc-text">五、Agent应用实践</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95%E9%99%90%E6%B5%81"><span class="toc-text">5.1.1漏桶算法限流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%87%BA"><span class="toc-text">5.1.2标准化输出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-3%E6%97%A5%E5%BF%97-%E7%9B%91%E6%8E%A7"><span class="toc-text">5.1.3日志+监控</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-4%E7%BC%93%E5%AD%98"><span class="toc-text">5.1.4缓存</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/技术/AI/ai-alibaba-agent.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

@@ -1,0 +1,1017 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>【训练】大模型微调技术基础(转发) - ChongWen</title>
+
+  
+    <meta name="description" content="原文：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;xJ29Uh3AHTQRA2n6IxeHYw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【训练】大模型微调技术基础(转发)">
+<meta property="og:url" content="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai_train/index.html">
+<meta property="og:site_name" content="ChongWen">
+<meta property="og:description" content="原文：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;xJ29Uh3AHTQRA2n6IxeHYw">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PoYViaoPRHdmMLAZlJK2FOzic9aDWicNGlEnEyrluHzc8RQfict5oU6o8R9A/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po5rNkX4jJQaVFqcZKuVStO8rf47YYvlDLmKEHdbjUc6hySakcO5v68g/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po1WAaMSw9HXINBvicBicaicGgdP3Hf77rjVk0vTnrKeL8lyxUcrUBSB1Ig/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po6icSAJFLMORP2X7YtfdP9iajZXvo5gFRxPoxO9PEE9PCWFNIic4IrAoQQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PoIYBwgibt2hAGGamzKhnD6RdzAz7gnibx1AVZmKk2rBDHmHP9fuAMxOHA/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PogRlQhI1eK35l58ABERgFtYUw0UsCVJuUKB6nyzIB5pg2FA1fflvjdg/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="article:published_time" content="2025-08-15T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-04T09:57:03.000Z">
+<meta property="article:author" content="ChongWen">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="训练">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PoYViaoPRHdmMLAZlJK2FOzic9aDWicNGlEnEyrluHzc8RQfict5oU6o8R9A/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1">
+  
+  
+  
+  <meta name="keywords" content="AI,训练">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/Pytorch/"><span class="title">Pytorch</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/hexo-stellar/"><span class="title">博客配置笔记</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/"><span class="title">【昇腾】LLaMA-Factory 训练 Qwen</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-08-15T00:00:00.000Z">2025-08-15</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-09-04T09:57:03.000Z">2025-09-04</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：6.7k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：24分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI/">AI</a>&nbsp; <a class="cap breadcrumb-link" href="/tags/%E8%AE%AD%E7%BB%83/">训练</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>【训练】大模型微调技术基础(转发)</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><meta name="referrer" content="no-referrer"/>
+
+<blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/xJ29Uh3AHTQRA2n6IxeHYw">https://mp.weixin.qq.com/s/xJ29Uh3AHTQRA2n6IxeHYw</a></p>
+</blockquote>
+<h2 id="文章总结"><a href="#文章总结" class="headerlink" title="文章总结"></a>文章总结</h2><h3 id="大模型微调技术综合概述"><a href="#大模型微调技术综合概述" class="headerlink" title="大模型微调技术综合概述"></a><strong>大模型微调技术综合概述</strong></h3><p>本文全面介绍了大型语言模型（LLM）微调的基础知识、核心技术、应用场景、主流工具、评估方法、环境要求以及数据集准备的全过程。</p>
+<h4 id="第一部分：微调基础概念"><a href="#第一部分：微调基础概念" class="headerlink" title="第一部分：微调基础概念"></a><strong>第一部分：微调基础概念</strong></h4><p>文章首先定义了<strong>大模型微调</strong>，即在预训练模型的基础上，使用特定领域的标注数据进行再训练，以优化模型在特定任务上的表现，从而实现能力的“永久”性提升。</p>
+<p>微调主要分为两大类：<br>   <strong>全量微调</strong> (Full Fine-Tuning)：更新模型的所有参数，对模型的改造最彻底，但算力消耗巨大。<br>   <strong>高效微调</strong> (Parameter-Efficient Fine-Tuning, PEFT)：仅修改模型一小部分参数，以“四两拨千斤”的方式调整模型能力，显著降低了资源消耗。</p>
+<p>微调的主要<strong>优势</strong>在于能永久性地改变模型能力，而<strong>劣势</strong>则在于可能引发“灾难性遗忘”，即模型在学习新知识时丢失了原有的通用能力，因此需要谨慎设计训练流程。</p>
+<h4 id="第二部分：高效微调核心技术：LoRA-与-QLoRA"><a href="#第二部分：高效微调核心技术：LoRA-与-QLoRA" class="headerlink" title="第二部分：高效微调核心技术：LoRA 与 QLoRA"></a><strong>第二部分：高效微调核心技术：LoRA 与 QLoRA</strong></h4><p>在众多高效微调方法中，<strong>LoRA (低秩适配)</strong> 是当前的主流技术。<br>   <strong>LoRA</strong> 的核心原理是冻结预训练模型的绝大部分权重，仅在模型的特定层（如注意力层）中引入并训练两个小型的、低秩的矩阵（适配器）。这两个矩阵的乘积近似于全量微调时的权重更新，从而用极少的参数量（约为原始模型的0.01%-1%）实现高效训练 。其优势在于显著优化了显存占用和计算效率。<br>   <strong>QLoRA (量化低秩适配)</strong> 是LoRA的进一步优化。它将未参与训练的基础模型权重量化为更低的数据类型（通常是4-bit），同时对插入的LoRA适配器进行训练。这种方法结合了量化和低秩适配的优点，极大地降低了显存需求，使得在消费级GPU上微调超大规模模型成为可能 。</p>
+<p>总的来说，QLoRA在LoRA的基础上通过量化技术实现了更高的显存效率，适用于资源极度受限的场景，而LoRA则在设备性能较好的情况下表现出色 。</p>
+<h4 id="第三部分：高效微调的四大应用场景"><a href="#第三部分：高效微调的四大应用场景" class="headerlink" title="第三部分：高效微调的四大应用场景"></a><strong>第三部分：高效微调的四大应用场景</strong></h4><p>高效微调在实际应用中主要体现在以下四个方面：</p>
+<ol>
+<li><strong>对话风格微调</strong>：调整模型的语气、风格和应答方式，以适应客服、虚拟助手等特定场景的需求 。</li>
+<li><strong>知识灌注</strong>：将特定领域的专业知识（如医疗、法律）注入模型，提升其在专业问答场景下的准确性 。</li>
+<li><strong>推理能力提升</strong>：通过在包含逻辑步骤的数据集上进行微调，增强模型处理复杂问题（如数学计算、代码生成）时的逻辑推理能力。</li>
+<li><strong>Agent 能力提升</strong>：优化模型调用外部工具（API）、与其他系统交互的能力，使其在自动化任务中表现更智能、更高效。</li>
+</ol>
+<h4 id="第四部分：主流微调工具介绍"><a href="#第四部分：主流微调工具介绍" class="headerlink" title="第四部分：主流微调工具介绍"></a><strong>第四部分：主流微调工具介绍</strong></h4><p>文章推荐了四款封装程度较高、适合初学者的微调框架：</p>
+<ul>
+<li><strong>unsloth</strong>：专注于提升微调速度和降低显存占用，通过手写GPU内核实现2倍以上的速度提升和70%-80%的显存节省，并与HuggingFace生态兼容。</li>
+<li><strong>LLaMA-Factory</strong>：一个统一高效的微调框架，支持超过100种LLM和VLM，集成了多种高效微调方法，并提供Web UI界面，无需编码即可完成定制。</li>
+<li><strong>ms-SWIFT</strong>：由ModelScope社区开发，提供一站式解决方案，支持超过550种LLM和150多种多模态模型，集成了丰富的训练技术和轻量级微调方法。</li>
+<li><strong>ColossalAI</strong>：一个旨在最大化训练效率、最小化成本的分布式AI训练系统，提供自动并行、大规模优化库等前沿技术。</li>
+</ul>
+<h4 id="第五部分：模型性能评估框架：EvalScope"><a href="#第五部分：模型性能评估框架：EvalScope" class="headerlink" title="第五部分：模型性能评估框架：EvalScope"></a><strong>第五部分：模型性能评估框架：EvalScope</strong></h4><p><strong>EvalScope</strong> 是由ModelScope社区推出的开源模型评估框架，其核心功能包括：</p>
+<ul>
+<li><strong>丰富的评测基准</strong>：内置MMLU、GSM8K等权威数据集。</li>
+<li><strong>多样的评估模式</strong>：支持单模型评估、与基线模型对比等多种模式。</li>
+<li><strong>高度自动化</strong>：实现评测任务全自动执行和报告生成。</li>
+<li><strong>无缝集成</strong>：与ms-swift等训练框架紧密结合，提供端到端的开发支持。</li>
+</ul>
+<h4 id="第六部分：软硬件环境要求"><a href="#第六部分：软硬件环境要求" class="headerlink" title="第六部分：软硬件环境要求"></a><strong>第六部分：软硬件环境要求</strong></h4><p>微调对硬件有一定要求，特别是<strong>显存（VRAM）</strong>。文章提供了详细的参考表格，列出了不同尺寸模型（从7B到110B）在不同微调方法（如FP16 LoRA、INT4 QLoRA）下所需的显存，并给出了推荐的GPU配置（如RTX 4090、A100等）。此外，还专门提供了Qwen3系列模型在不同量化微调下的显存占用情况。</p>
+<h4 id="第七部分：准备微调数据集"><a href="#第七部分：准备微调数据集" class="headerlink" title="第七部分：准备微调数据集"></a><strong>第七部分：准备微调数据集</strong></h4><p>数据集的质量直接决定了微调效果。核心要点包括：</p>
+<ul>
+<li><strong>理解底层原理</strong>：模型通过<code>&lt;|im_start|&gt;</code>等特殊标记来识别对话结构，因此数据集必须遵循目标模型的格式规范。</li>
+<li><strong>常见数据集格式</strong>：<ul>
+<li><strong>Alpaca风格</strong>：包含<code>instruction</code>、<code>input</code>、<code>output</code>字段，适用于基础问答任务 。</li>
+<li><strong>Function Calling格式</strong>：包含系统提示和<code>&lt;tools&gt;</code>标签，用于定义和调用外部函数 。</li>
+<li><strong>带思考过程的格式</strong>：包含<code>&lt;think&gt;</code>等标签，展示模型的中间推理步骤，以提升逻辑能力。</li>
+</ul>
+</li>
+<li><strong>数据集构造与获取</strong>：可以通过混合不同类型的开源数据集（如对话和推理）、根据任务目标调整配比、并进行格式统一和清洗来构造高质量数据集。数据集可从Hugging Face、ModelScope等平台获取，也可针对特定领域手动创建。</li>
+</ul>
+<h2 id="一、微调基础概念"><a href="#一、微调基础概念" class="headerlink" title="一、微调基础概念"></a>一、微调基础概念</h2><h3 id="1-1-什么是大模型微调？"><a href="#1-1-什么是大模型微调？" class="headerlink" title="1.1. 什么是大模型微调？"></a>1.1. 什么是大模型微调？</h3><p>大模型微调指在已有的大规模预训练模型基础上，通过对标注数据进行训练，进一步优化模型的表现，以适应特定任务或场景的需求。与 RAG 或者 Agent 技术通过搭建工作流来优化模型表现不同，微调是通过修改模型参数来优化模型能力，是一种能够让模型 “永久” 掌握某种能力的方法。</p>
+<h3 id="1-2-全量微调与高效微调的区别"><a href="#1-2-全量微调与高效微调的区别" class="headerlink" title="1.2 全量微调与高效微调的区别"></a>1.2 全量微调与高效微调的区别</h3><p>从方法大类划分，微调可分为全量微调与高效微调：</p>
+<ul>
+<li><strong>全量微调</strong>：带入全部数据进行微调，算力消耗更大，但对模型的能力改造更为彻底。</li>
+<li><strong>高效微调</strong>：只带入部分数据进行微调，更类似 “四两拨千斤” 的方法，通过修改模型部分参数，来调整模型整体能力。</li>
+</ul>
+<h3 id="1-3-模型微调的优劣势分析"><a href="#1-3-模型微调的优劣势分析" class="headerlink" title="1.3 模型微调的优劣势分析"></a>1.3 模型微调的优劣势分析</h3><ul>
+<li><strong>优势</strong>：能够通过修改模型参数的方式，永久地修改模型的能力。</li>
+<li><strong>劣势</strong>：若处理不当，很可能造成模型原始能力的灾难性遗忘，即导致模型原始能力丢失，对于复杂模型尤其如此。因此需要小心谨慎地设计模型微调数据集和微调训练流程，并经过反复多次训练验证，得到最佳模型。</li>
+</ul>
+<h2 id="二、高效微调核心技术：LoRA-与-QLoRA-简介"><a href="#二、高效微调核心技术：LoRA-与-QLoRA-简介" class="headerlink" title="二、高效微调核心技术：LoRA 与 QLoRA 简介"></a>二、高效微调核心技术：LoRA 与 QLoRA 简介</h2><p>尽管全量微调可以深度改造模型能力，但需消耗大量算力且有一定技术门槛。在绝大多数场景中，若只想提升模型某个具体领域的能力，高效微调会更加合适，而目前适用于大模型的最主流高效微调方法是 LoRA。</p>
+<h3 id="2-1-LoRA：低秩适配的高效微调方法"><a href="#2-1-LoRA：低秩适配的高效微调方法" class="headerlink" title="2.1 LoRA：低秩适配的高效微调方法"></a>2.1 LoRA：低秩适配的高效微调方法</h3><p>LoRA（Low-Rank Adaptation）微调是一种参数高效的微调方法，旨在通过引入低秩矩阵来减少微调时需要调整的参数数量，从而显著降低显存和计算资源的消耗。具体来说，LoRA 微调并不直接调整原始模型的所有参数，而是通过在某些层中插入低秩的适配器（Adapter）层来进行训练。</p>
+<ul>
+<li><strong>原理</strong>：在标准微调中，会修改模型的所有权重，而在 LoRA 中，只有某些低秩矩阵（适配器）被训练和调整。原始模型的参数保持不变，只是通过少量的新参数来调整模型的输出。低秩矩阵的引入能在显存和计算能力有限的情况下，有效对大型预训练模型进行微调，成为显存较小设备上的理想选择。</li>
+<li><strong>优势</strong>：<ul>
+<li>显存优化：只需要调整少量的参数（适配器），显著减少了显存需求，适合显存有限的 GPU。</li>
+<li>计算效率：微调过程中的计算负担更轻，因为减少了需要调整的参数量。</li>
+<li>灵活性：可以与现有的预训练模型轻松结合使用，适用于多种任务，如文本生成、分类、问答等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-QLoRA：量化与低秩结合的优化方案"><a href="#2-2-QLoRA：量化与低秩结合的优化方案" class="headerlink" title="2.2 QLoRA：量化与低秩结合的优化方案"></a>2.2 QLoRA：量化与低秩结合的优化方案</h3><p>QLoRA（Quantized Low-Rank Adaptation）是 LoRA 的扩展版本，它结合了 LoRA 的低秩适配器和量化技术。QLoRA 进一步优化了计算效率和存储需求，特别是在极端显存受限的环境下。与 LoRA 不同的是，QLoRA 会将插入的低秩适配器层的部分权重进行量化（通常是量化为 INT4 或 INT8），在保持性能的同时显著降低模型的存储和计算需求。</p>
+<ul>
+<li><strong>核心思想</strong>：在 LoRA 的基础上加入量化技术，减少权重表示的位数，从而降低显存和计算需求。QLoRA 结合了低秩适配器和量化的优点，能够在显存有限的设备上进行更高效的微调。</li>
+<li><strong>量化作用</strong>：通过将模型权重量化为低精度（如 INT4），减少内存占用，并提高推理和训练速度。</li>
+<li><strong>优势</strong>：在显存非常有限的情况下仍能进行微调；可以处理更大规模的模型；适合用于边缘设备和需要低延迟推理的场景。</li>
+</ul>
+<h3 id="2-3-LoRA-与-QLoRA-对比"><a href="#2-3-LoRA-与-QLoRA-对比" class="headerlink" title="2.3 LoRA 与 QLoRA 对比"></a>2.3 LoRA 与 QLoRA 对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>LoRA</th>
+<th>QLoRA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心技术</td>
+<td>低秩适配器 (Low-Rank Adapters)</td>
+<td>低秩适配器 + 量化技术 (Low-Rank Adapters + Quantization)</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>显存受限，但设备性能较好</td>
+<td>极限显存受限或需要快速推理的设备</td>
+</tr>
+<tr>
+<td>计算效率</td>
+<td>提高计算效率，减少调整的参数数量</td>
+<td>进一步提升效率，减少内存使用并加快推理速度</td>
+</tr>
+<tr>
+<td>量化技术</td>
+<td>无量化</td>
+<td>将权重量化为低精度 (如 INT4 或 INT8)</td>
+</tr>
+<tr>
+<td>内存消耗</td>
+<td>较低，但不如 QLoRA 低</td>
+<td>显著降低内存消耗，适合更小的设备</td>
+</tr>
+<tr>
+<td>训练复杂度</td>
+<td>较简单，适用于大多数微调场景</td>
+<td>需要更多的量化和适配工作，但适合超大模型和设备受限场景</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意：大模型微调的 LoRA 与 QLoRa，二者相差一个字母的大小写，是完全两种不同的技术；LoRA 除了可以用于微调大语言模型（LLM）外，目前在围绕 diffusion models（扩散模型）进行微调，及图片任务中也表现惊艳。</p>
+</blockquote>
+<h2 id="三、高效微调的四大应用场景"><a href="#三、高效微调的四大应用场景" class="headerlink" title="三、高效微调的四大应用场景"></a>三、高效微调的四大应用场景</h2><p>在实际大模型应用场景中，高效微调主要用于以下四个方面：</p>
+<h3 id="3-1-对话风格微调"><a href="#3-1-对话风格微调" class="headerlink" title="3.1 对话风格微调"></a>3.1 对话风格微调</h3><p>高效微调可以用于根据特定需求调整模型的对话风格。例如，针对客服系统、虚拟助理等场景，模型可以通过微调来适应不同的语气、礼貌程度或回答方式，从而在与用户互动时提供更符合要求的对话体验。通过微调少量的参数（例如对话生成的策略、情感表达等），可以使模型表现出更具针对性和个性化的风格。</p>
+<h3 id="3-2-知识灌注"><a href="#3-2-知识灌注" class="headerlink" title="3.2 知识灌注"></a>3.2 知识灌注</h3><p>知识灌注是指将外部知识或领域特定的信息快速集成到已有的预训练模型中。通过高效微调，模型可以更好地学习新领域的专有知识，而无需重新从头开始训练。例如，对于法律、医疗等专业领域，可以使用少量的标注数据对预训练模型进行微调，帮助模型理解特定行业的术语、规则和知识，进而提升专业领域的问答能力。</p>
+<h3 id="3-3-推理能力提升"><a href="#3-3-推理能力提升" class="headerlink" title="3.3 推理能力提升"></a>3.3 推理能力提升</h3><p>高效微调还可以用于提升大模型的推理能力，尤其是在处理更复杂推理任务时。通过微调，模型能够更加高效地理解长文本、推理隐含信息，或者从数据中提取逻辑关系，进而在多轮推理任务中提供更准确的答案。这种微调方式可以帮助模型在解答复杂问题时，提高推理准确性并减少错误。</p>
+<h3 id="3-4-Agent-能力提升"><a href="#3-4-Agent-能力提升" class="headerlink" title="3.4 Agent 能力提升"></a>3.4 Agent 能力提升</h3><p>在多任务协作或功能调用场景中，高效微调能够显著提升模型的 Agent 能力，使得模型能够有效地与其他系统进行交互、调用外部 API 或执行特定任务。通过针对性微调，模型可以学会更精准的功能调用策略、参数解析和操作指令，从而在自动化服务、智能助手或机器人控制等领域表现得更加高效和智能。</p>
+<h2 id="四、主流微调工具介绍"><a href="#四、主流微调工具介绍" class="headerlink" title="四、主流微调工具介绍"></a>四、主流微调工具介绍</h2><p>在入手学习大模型微调时，首先推荐功能层次封装层次较高的微调四套工具：unsloth、LlamaFactory、ms-SWIFT 和 ColossalAI。除此之外，也可以借助更加底层的库，如 peft、LoRA、transformer 等实现高效微调。对于初学者来说，首先使用现成工具来进行微调更为合适。</p>
+<h3 id="4-1-unsloth"><a href="#4-1-unsloth" class="headerlink" title="4.1 unsloth"></a>4.1 unsloth</h3><p>unsloth 是一个专为大型语言模型（LLM）设计的动态量化与微调框架，旨在提高微调效率并减少显存占用。它通过手动推导计算密集型数学步骤并手写 GPU 内核，实现了无需硬件更改即可显著加快训练速度。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PoYViaoPRHdmMLAZlJK2FOzic9aDWicNGlEnEyrluHzc8RQfict5oU6o8R9A/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li><strong>GitHub 主页</strong>：<a target="_blank" rel="noopener" href="https://github.com/unslothai/unsloth23%E3%80%82">https://github.com/unslothai/unsloth23。</a></li>
+<li><strong>性能表现</strong>：支持 Qwen3、Llama 4、Gemma 3 等多种模型，微调速度提升 2 倍，显存使用减少 70%-80% 等。</li>
+<li><strong>兼容性</strong>：与 HuggingFace 生态兼容，可以很容易地与 transformers、peft、trl 等库结合，以实现模型的监督微调（SFT）和直接偏好优化（DPO），仅需修改模型的加载方式，无需对现有训练代码进行修改。</li>
+<li><strong>核心优势</strong>：显著提升微调效率，采用独家 4bit 动态量化技术，节省时间成本；降低硬件要求，用户可在显存较小的 GPU 上进行大模型微调；开源免费，用户可在 Google Colab 或 Kaggle Notebooks 上免费试用。</li>
+</ul>
+<h3 id="4-2-LLama-Factory"><a href="#4-2-LLama-Factory" class="headerlink" title="4.2 LLama-Factory"></a>4.2 LLama-Factory</h3><p>LLaMA-Factory 是一个统一且高效的微调框架，旨在为超过 100 种大型语言模型（LLMs）和视觉语言模型（VLMs）提供便捷的微调支持。用户能够灵活地定制模型以适应各种下游任务。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po5rNkX4jJQaVFqcZKuVStO8rf47YYvlDLmKEHdbjUc6hySakcO5v68g/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li><strong>GitHub 主页</strong>：<a target="_blank" rel="noopener" href="https://github.com/hiyouga/LLaMA-Factory30%E3%80%82">https://github.com/hiyouga/LLaMA-Factory30。</a></li>
+<li><strong>主要功能和特点</strong>：支持对 100 多 LLMs 和 VLMs 进行微调，包括最新模型版本；集成多种高效微调方法，提高训练速度并减少显存占用；支持音频识别、音频理解等多模态任务；提供丰富的实验监控工具；框架提供类似 OpenAI 风格的 API、Gradio UI 和命令行界面，结合 vLLM worker 实现高效推理能力。</li>
+</ul>
+<h3 id="4-3-ms-SWIFT"><a href="#4-3-ms-SWIFT" class="headerlink" title="4.3 ms-SWIFT"></a>4.3 ms-SWIFT</h3><p>ms-swift（Scalable lightWeight Infrastructure for Fine-Tuning）是由魔搭社区（ModelScope）开发的高效微调和部署框架，旨在为研究人员和开发者提供一站式的大模型与多模态大模型的训练、推理、评测、量化和部署解决方案。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po1WAaMSw9HXINBvicBicaicGgdP3Hf77rjVk0vTnrKeL8lyxUcrUBSB1Ig/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li><strong>GitHub 项目主页</strong>：<a target="_blank" rel="noopener" href="https://github.com/modelscope/swift37%E3%80%82">https://github.com/modelscope/swift37。</a></li>
+<li><strong>模型支持</strong>：支持超过 450 种大型模型（LLMs）和 150 多种多模态大模型（MLLMs）的训练和部署，包括最新模型版本及多模态模型等。</li>
+<li><strong>技术特点</strong>：集成多种训练技术，满足不同微调需求；支持多种轻量级微调方法，降低显存和计算资源消耗；支持分布式训练技术，提升推理加速；提供多种量化方法，支持多种模态型训练；提供基于 Gradio 的 Web 界面，简化大模型全链路流程。</li>
+</ul>
+<h3 id="4-4-ColossalAI"><a href="#4-4-ColossalAI" class="headerlink" title="4.4 ColossalAI"></a>4.4 ColossalAI</h3><p>Colossal-AI 是一个高效的分布式人工智能训练系统，旨在最大化提升人工智能训练效率，同时最小化训练成本。作为深度学习框架的内核，提供自动超高维并行、大规模优化库等前沿技术。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4Po6icSAJFLMORP2X7YtfdP9iajZXvo5gFRxPoxO9PEE9PCWFNIic4IrAoQQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<ul>
+<li><strong>GitHub 项目主页</strong>：<a target="_blank" rel="noopener" href="https://github.com/hpcaitech/ColossalAI42%E3%80%82">https://github.com/hpcaitech/ColossalAI42。</a></li>
+<li><strong>优势表现</strong>：与英伟达的 Megatron-LM 相比，仅需一半数量的 GPU 即可完成 GPT-3 训练，半小时内预训练 ViT-Base&#x2F;32，并在两天内训练完 15 亿参数的 GPT 模型。提供多种并行技术，如数据并行、流水线并行和张量并行，以加速模型训练。</li>
+<li><strong>特色</strong>：支持 DeepSeek R1 非量化模型高效微调，仅需 4 个节点、8 卡 A100 服务器即可完成 DeepSeek R1 高效微调44。</li>
+</ul>
+<p>若是强化学习训练，则推荐veRL和OpenRLHF等框架。</p>
+<h3 id="4-5-其他微调框架"><a href="#4-5-其他微调框架" class="headerlink" title="4.5 其他微调框架"></a>4.5 其他微调框架</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PoIYBwgibt2hAGGamzKhnD6RdzAz7gnibx1AVZmKk2rBDHmHP9fuAMxOHA/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<h2 id="五、模型性能评估框架：EvalScope"><a href="#五、模型性能评估框架：EvalScope" class="headerlink" title="五、模型性能评估框架：EvalScope"></a>五、模型性能评估框架：EvalScope</h2><p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/modelscope/evalscope45">https://github.com/modelscope/evalscope45</a></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/2lV2gxZP551yITOic526icK10ia0a9NX4PogRlQhI1eK35l58ABERgFtYUw0UsCVJuUKB6nyzIB5pg2FA1fflvjdg/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<p>EvalScope 是由阿里巴巴魔搭社区（ModelScope）推出的一款开源模型评估框架，旨在为大语言模型（LLM）和多模态模型提供统一、系统化的性能评估方案。该框架具备高度的自动化和可扩展性，适用于研究机构、工业界以及模型开发者在模型验证与性能对比场景中的广泛需求。</p>
+<h4 id="核心功能和特点"><a href="#核心功能和特点" class="headerlink" title="核心功能和特点"></a>核心功能和特点</h4><ul>
+<li><strong>丰富的评测基准覆盖</strong>：内置多种权威评测数据集，涵盖中英文通用知识问答、数学推理、常识判断、代码生成等多个方向，支持多维度评估47。</li>
+<li><strong>多样的评估模式支持</strong>：提供单模型评估模式（Single）、基于基线的两两对比模式（Pairwise-Baseline）、全模型两两对比模式（Pairwise-All），满足不同使用场景。</li>
+<li><strong>统一的模型接入接口</strong>：对不同类型的模型提供统一调用方式，兼容 HuggingFace、本地部署模型及 API 远程调用，降低模型集成复杂度。</li>
+<li><strong>评估流程高度自动化</strong>：实现评测任务全自动执行，包括客观题自动打分、复杂问题使用评审模型辅助判定结果等，支持批量评估与日志记录。</li>
+<li><strong>完善的可视化工具</strong>：支持生成详细评估报告和图表，展示模型在不同任务维度下的表现，便于横向对比和性能分析。</li>
+<li><strong>多后端与评测能力扩展</strong>：可集成多个评测后端，支持从单模态到多模态、从语言建模到 RAG 端到端评测的全链路能力。</li>
+<li><strong>支持部署性能测试</strong>：提供服务端推理性能测试工具，涵盖吞吐量、响应时延等关键指标，帮助评估模型部署实用性。</li>
+</ul>
+<h3 id="六、微调所需软硬件环境说明"><a href="#六、微调所需软硬件环境说明" class="headerlink" title="六、微调所需软硬件环境说明"></a>六、微调所需软硬件环境说明</h3><p>大模型微调属于大模型进阶类技术，不同于普通的模型对话或搭建基础应用，微调往往需要一定的软硬件条件支持。</p>
+<h4 id="6-1-硬件要求"><a href="#6-1-硬件要求" class="headerlink" title="6.1 硬件要求"></a>6.1 硬件要求</h4><p>不同尺寸模型、不同精度微调时所需显存不同，以下是相关参考：</p>
+<table>
+<thead>
+<tr>
+<th>模型尺寸</th>
+<th>Freeze (FP16) 显存需求 (GB)</th>
+<th>LoRA (FP16) 显存需求 (GB)</th>
+<th>QLORA (INT8) 显存需求 (GB)</th>
+<th>QLORA (INT4) 显存需求 (GB)</th>
+<th>推荐硬件配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7B</td>
+<td>20</td>
+<td>16</td>
+<td>10</td>
+<td>6</td>
+<td>RTX4090、RTX4080、RTX3060</td>
+</tr>
+<tr>
+<td>13B</td>
+<td>40</td>
+<td>32</td>
+<td>20</td>
+<td>12-13</td>
+<td>RTX 4090&#x2F;A100 (40GB)、L40(48GB)</td>
+</tr>
+<tr>
+<td>30B</td>
+<td>80</td>
+<td>64</td>
+<td>40</td>
+<td>24</td>
+<td>A100 (80GB)、RTX4090</td>
+</tr>
+<tr>
+<td>70B</td>
+<td>200</td>
+<td>160</td>
+<td>80</td>
+<td>48</td>
+<td>H100 (80GB)、L40(48GB)</td>
+</tr>
+<tr>
+<td>110B</td>
+<td>360</td>
+<td>240</td>
+<td>140</td>
+<td>72</td>
+<td>H100(80GB)*5、H100(80GB)*2、A10 (24GB)*3</td>
+</tr>
+</tbody></table>
+<p>其中 RTX4090 可等价替换为 RTX3090；A100 可替换为 A800（国内特供）；L40 可替换为 L20（国内特供）56575859。</p>
+<h4 id="6-2-Qwen3-系列模型微调显存占用"><a href="#6-2-Qwen3-系列模型微调显存占用" class="headerlink" title="6.2 Qwen3 系列模型微调显存占用"></a>6.2 Qwen3 系列模型微调显存占用</h4><table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>参数量</th>
+<th>FP16 微调显存占用</th>
+<th>4-bit 动态量化微调显存占用</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Qwen3-0.6B</td>
+<td>0.6B</td>
+<td>~1.2 GB</td>
+<td>~0.5 GB</td>
+<td>可在低端 GPU 或 CPU 上运行</td>
+</tr>
+<tr>
+<td>Qwen3-1.7B</td>
+<td>1.7B</td>
+<td>~3.4 GB</td>
+<td>~1.5 GB</td>
+<td>适合入门级部署</td>
+</tr>
+<tr>
+<td>Qwen3-4B</td>
+<td>4B</td>
+<td>~8.0 GB</td>
+<td>~3.5 GB</td>
+<td>适合中等规模任务</td>
+</tr>
+<tr>
+<td>Qwen3-8B</td>
+<td>8B</td>
+<td>~16.0 GB</td>
+<td>~7.0 GB</td>
+<td>需要高端消费级 GPU</td>
+</tr>
+<tr>
+<td>Qwen3-14B</td>
+<td>14B</td>
+<td>~28.0 GB</td>
+<td>~12.0 GB</td>
+<td>可在单张 RTX 4090 上微调</td>
+</tr>
+<tr>
+<td>Qwen3-30B- A3B (MoE)</td>
+<td>激活参数约 3B</td>
+<td>~85.0 GB</td>
+<td>暂不支持</td>
+<td>激活部分专家参数，资源需求较高</td>
+</tr>
+<tr>
+<td>Qwen3-32B</td>
+<td>32B</td>
+<td>~65.0 GB</td>
+<td>~32.0 GB</td>
+<td>需要 A100&#x2F;H100 或多卡并行</td>
+</tr>
+<tr>
+<td>Qwen3-235B- A22B (MoE)</td>
+<td>激活参数约 22B</td>
+<td>~600 GB</td>
+<td>暂不支持</td>
+<td>超大模型，适合企业级部署，需高端服务器支持</td>
+</tr>
+</tbody></table>
+<p>注 1：CPU 不能进行微调；</p>
+<p>注 2：目前 MoE 模型只支持 4bit 普通量化微调，暂不支持动态量化微调。</p>
+<h3 id="七、准备微调数据集"><a href="#七、准备微调数据集" class="headerlink" title="七、准备微调数据集"></a>七、准备微调数据集</h3><p>在大模型微调流程中，数据集的质量直接决定微调效果。尤其是当模型需要具备复杂功能（如 Function calling、混合推理）或特定领域知识时，手动创建或优化数据集至关重要。以下是基于 Qwen3 模型微调的数据集准备方法：</p>
+<h4 id="7-1-理解数据集构造的底层原理"><a href="#7-1-理解数据集构造的底层原理" class="headerlink" title="7.1 理解数据集构造的底层原理"></a>7.1 理解数据集构造的底层原理</h4><p>模型通过特殊字符标记识别输入类型、系统提示和输出边界，因此数据集需遵循模型的格式规范。以 Qwen3 为例，其核心特殊标记如下：</p>
+<ul>
+<li><code>&lt;|im_start|&gt;</code>：标记文本开始，后跟角色（如<code>user</code>&#x2F;<code>assistant</code>&#x2F;<code>system</code>）</li>
+<li><code>&lt;|im_end|&gt;</code>：标记文本结束</li>
+</ul>
+<p>例如，简单对话的实际输入输出格式为：</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;|im_start|&gt;user  </span><br><span class="line">你好！&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;assistant  </span><br><span class="line">你好呀，很高兴见到你！&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这些标记可在模型的<code>tokenizer_config.json</code>文件中查看完整定义。</p>
+<h3 id="7-2-常见微调数据集格式详解"><a href="#7-2-常见微调数据集格式详解" class="headerlink" title="7.2 常见微调数据集格式详解"></a>7.2 常见微调数据集格式详解</h3><h4 id="7-2-1-基础问答格式（Alpaca-风格）"><a href="#7-2-1-基础问答格式（Alpaca-风格）" class="headerlink" title="7.2.1 基础问答格式（Alpaca 风格）"></a>7.2.1 基础问答格式（Alpaca 风格）</h4><p>适用于简单指令微调，包含<code>instruction</code>（指令）、<code>input</code>（输入）和<code>output</code>（输出）三个核心字段。例如：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;instruction&quot;</span><span class="punctuation">:</span> <span class="string">&quot;识别并解释给定的科学理论&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;input&quot;</span><span class="punctuation">:</span> <span class="string">&quot;细胞理论&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;output&quot;</span><span class="punctuation">:</span> <span class="string">&quot;细胞理论是生物科学的基础理论，认为所有生命体由细胞构成，细胞是生物的基本结构和功能单位。&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>微调时，脚本会自动将其转换为 Qwen3 兼容的标记格式：</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;|im_start|&gt;user  </span><br><span class="line">识别并解释给定的科学理论：细胞理论&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;assistant  </span><br><span class="line">细胞理论是生物科学的基础理论...&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-2-带系统提示和-Function-calling-的格式"><a href="#7-2-2-带系统提示和-Function-calling-的格式" class="headerlink" title="7.2.2 带系统提示和 Function calling 的格式"></a>7.2.2 带系统提示和 Function calling 的格式</h4><p>若需提升模型的工具调用能力，数据集需包含系统提示、工具定义和调用示例。例如：<strong>系统提示</strong>：明确工具调用规则<strong>工具定义</strong>：通过<code>&lt;tools&gt;</code>标签描述函数参数<strong>对话示例</strong>：</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;|im_start|&gt;system  </span><br><span class="line">你是天气助手，查询天气时需调用get_weather函数。  </span><br><span class="line">&lt;tools&gt;[&#123;<span class="comment">&quot;name&quot;</span>:<span class="comment">&quot;get_weather&quot;</span>,<span class="comment">&quot;parameters&quot;</span>:&#123;<span class="comment">&quot;location&quot;</span>:<span class="comment">&quot;城市名称&quot;</span>&#125;&#125;]&lt;/tools&gt;  </span><br><span class="line">&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;user  </span><br><span class="line">北京天气如何？&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;assistant  </span><br><span class="line">&lt;tool_call&gt;&#123;<span class="comment">&quot;name&quot;</span>:<span class="comment">&quot;get_weather&quot;</span>,<span class="comment">&quot;arguments&quot;</span>:&#123;<span class="comment">&quot;location&quot;</span>:<span class="comment">&quot;北京&quot;</span>&#125;&#125;&lt;/tool_call&gt;&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<p>需注意：高效微调仅能优化现有 Function calling 能力，无法让模型从无到有学会该功能。</p>
+<h3 id="7-2-3-带思考过程的格式"><a href="#7-2-3-带思考过程的格式" class="headerlink" title="7.2.3 带思考过程的格式"></a>7.2.3 带思考过程的格式</h3><p>为提升模型推理能力（如数学解题、逻辑分析），数据集需包含中间思考步骤，用特殊标记（如<code>&lt;|think|&gt;</code>）分隔思考过程与最终输出。例如：</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;|im_start|&gt;system  </span><br><span class="line">你是天气助手，查询天气时需调用get_weather函数。  </span><br><span class="line">&lt;tools&gt;[&#123;<span class="comment">&quot;name&quot;</span>:<span class="comment">&quot;get_weather&quot;</span>,<span class="comment">&quot;parameters&quot;</span>:&#123;<span class="comment">&quot;location&quot;</span>:<span class="comment">&quot;城市名称&quot;</span>&#125;&#125;]&lt;/tools&gt;  </span><br><span class="line">&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;user  </span><br><span class="line">北京天气如何？&lt;|im_end|&gt;  </span><br><span class="line">&lt;|im_start|&gt;assistant  </span><br><span class="line">&lt;tool_call&gt;&#123;<span class="comment">&quot;name&quot;</span>:<span class="comment">&quot;get_weather&quot;</span>,<span class="comment">&quot;arguments&quot;</span>:&#123;<span class="comment">&quot;location&quot;</span>:<span class="comment">&quot;北京&quot;</span>&#125;&#125;&lt;/tool_call&gt;&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<p>模型会通过学习思考过程与最终答案的关联，提升推理逻辑性。</p>
+<h3 id="7-3-Qwen3-混合推理模型的数据集构造方法"><a href="#7-3-Qwen3-混合推理模型的数据集构造方法" class="headerlink" title="7.3 Qwen3 混合推理模型的数据集构造方法"></a>7.3 Qwen3 混合推理模型的数据集构造方法</h3><p>为确保 Qwen3 在微调后保留混合推理能力，需采用 “多数据集拼接” 策略，核心步骤如下：</p>
+<h4 id="7-3-1-选择基础数据集"><a href="#7-3-1-选择基础数据集" class="headerlink" title="7.3.1. 选择基础数据集"></a>7.3.1. 选择基础数据集</h4><ul>
+<li><strong>普通对话数据</strong>：如<code>FineTome-100k</code>（含 10 万条多轮对话，ShareGPT 风格），用于保留模型的自然交互能力。</li>
+<li><strong>推理类数据</strong>：如<code>OpenMathReasoning</code>（含 54 万道数学题及详细解题步骤），用于强化逻辑推理能力。</li>
+</ul>
+<h4 id="7-3-2-数据集配比调整"><a href="#7-3-2-数据集配比调整" class="headerlink" title="7.3.2 数据集配比调整"></a>7.3.2 数据集配比调整</h4><p>需根据微调目标平衡不同类型数据的比例：</p>
+<ul>
+<li>若侧重数学推理：可按 7:3 比例混合<code>OpenMathReasoning</code>与<code>FineTome-100k</code></li>
+<li>若需均衡能力：建议按 5:5 比例混合，避免模型过度偏向单一任务。</li>
+</ul>
+<h4 id="7-3-3-格式统一与清洗"><a href="#7-3-3-格式统一与清洗" class="headerlink" title="7.3.3 格式统一与清洗"></a>7.3.3 格式统一与清洗</h4><ul>
+<li>确保所有数据转换为 Qwen3 兼容的标记格式（含<code>&lt;|im_start|&gt;``&lt;|im_end|&gt;</code>等）。</li>
+<li>过滤重复样本、错误标注和低质量内容，避免模型学习噪声数据。</li>
+</ul>
+<h3 id="7-4-数据集获取与组装渠道"><a href="#7-4-数据集获取与组装渠道" class="headerlink" title="7.4 数据集获取与组装渠道"></a>7.4 数据集获取与组装渠道</h3><p><strong>开源数据集</strong></p>
+<ul>
+<li>直接从 Hugging Face、ModelScope 下载，如：<ul>
+<li><code>mlabonne/FineTome-100k</code>（通用对话）</li>
+<li><code>nvidia/OpenMathReasoning</code>（数学推理）</li>
+</ul>
+</li>
+</ul>
+<p><strong>手动创建</strong></p>
+<ul>
+<li>针对特定领域（如法律、医疗），可结合专业文档编写问答对，确保知识准确性。</li>
+</ul>
+<p><strong>格式转换</strong></p>
+<ul>
+<li>使用工具将原始数据转换为目标格式，例如用 Python 脚本批量添加 Qwen3 的特殊标记。</li>
+</ul>
+<p>通过以上方法构建的数据集，能让 Qwen3 在微调后既保留原有能力，又针对性提升目标任务性能。</p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai_train/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai_train/&title=【训练】大模型微调技术基础(转发) - ChongWen&summary=原文：https://mp.weixin.qq.com/s/xJ29Uh3AHTQRA2n6IxeHYw"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=【训练】大模型微调技术基础(转发) - ChongWen&amp;body=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai_train/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai_train/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai-llm-canpin-prompt/">一种通过结构化提问，与LLM共创高质量PRD核心的实用指南</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai-alibaba-agent/">交互式Agent系统的设计</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<center style='font-size: 1rem;margin-top: 0.2rem;'><span id="busuanzi_container_site_pv">总访问<span id="busuanzi_value_site_pv"></span>次</span></center>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 26 篇文章 🔸 总计 65.6k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93"><span class="toc-text">文章总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%8A%80%E6%9C%AF%E7%BB%BC%E5%90%88%E6%A6%82%E8%BF%B0"><span class="toc-text">大模型微调技术综合概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A%E5%BE%AE%E8%B0%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text">第一部分：微调基础概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%EF%BC%9ALoRA-%E4%B8%8E-QLoRA"><span class="toc-text">第二部分：高效微调核心技术：LoRA 与 QLoRA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%EF%BC%9A%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9B%9B%E5%A4%A7%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">第三部分：高效微调的四大应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%EF%BC%9A%E4%B8%BB%E6%B5%81%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="toc-text">第四部分：主流微调工具介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E9%83%A8%E5%88%86%EF%BC%9A%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6%EF%BC%9AEvalScope"><span class="toc-text">第五部分：模型性能评估框架：EvalScope</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E9%83%A8%E5%88%86%EF%BC%9A%E8%BD%AF%E7%A1%AC%E4%BB%B6%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82"><span class="toc-text">第六部分：软硬件环境要求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E9%83%A8%E5%88%86%EF%BC%9A%E5%87%86%E5%A4%87%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">第七部分：准备微调数据集</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BE%AE%E8%B0%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text">一、微调基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%EF%BC%9F"><span class="toc-text">1.1. 什么是大模型微调？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83%E4%B8%8E%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">1.2 全量微调与高效微调的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF%E5%88%86%E6%9E%90"><span class="toc-text">1.3 模型微调的优劣势分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%EF%BC%9ALoRA-%E4%B8%8E-QLoRA-%E7%AE%80%E4%BB%8B"><span class="toc-text">二、高效微调核心技术：LoRA 与 QLoRA 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-LoRA%EF%BC%9A%E4%BD%8E%E7%A7%A9%E9%80%82%E9%85%8D%E7%9A%84%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95"><span class="toc-text">2.1 LoRA：低秩适配的高效微调方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-QLoRA%EF%BC%9A%E9%87%8F%E5%8C%96%E4%B8%8E%E4%BD%8E%E7%A7%A9%E7%BB%93%E5%90%88%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88"><span class="toc-text">2.2 QLoRA：量化与低秩结合的优化方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-LoRA-%E4%B8%8E-QLoRA-%E5%AF%B9%E6%AF%94"><span class="toc-text">2.3 LoRA 与 QLoRA 对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9B%9B%E5%A4%A7%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">三、高效微调的四大应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%AF%B9%E8%AF%9D%E9%A3%8E%E6%A0%BC%E5%BE%AE%E8%B0%83"><span class="toc-text">3.1 对话风格微调</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%9F%A5%E8%AF%86%E7%81%8C%E6%B3%A8"><span class="toc-text">3.2 知识灌注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E6%8F%90%E5%8D%87"><span class="toc-text">3.3 推理能力提升</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Agent-%E8%83%BD%E5%8A%9B%E6%8F%90%E5%8D%87"><span class="toc-text">3.4 Agent 能力提升</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%BB%E6%B5%81%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="toc-text">四、主流微调工具介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-unsloth"><span class="toc-text">4.1 unsloth</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-LLama-Factory"><span class="toc-text">4.2 LLama-Factory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-ms-SWIFT"><span class="toc-text">4.3 ms-SWIFT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-ColossalAI"><span class="toc-text">4.4 ColossalAI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%85%B6%E4%BB%96%E5%BE%AE%E8%B0%83%E6%A1%86%E6%9E%B6"><span class="toc-text">4.5 其他微调框架</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6%EF%BC%9AEvalScope"><span class="toc-text">五、模型性能评估框架：EvalScope</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E5%92%8C%E7%89%B9%E7%82%B9"><span class="toc-text">核心功能和特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%BE%AE%E8%B0%83%E6%89%80%E9%9C%80%E8%BD%AF%E7%A1%AC%E4%BB%B6%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E"><span class="toc-text">六、微调所需软硬件环境说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E7%A1%AC%E4%BB%B6%E8%A6%81%E6%B1%82"><span class="toc-text">6.1 硬件要求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-Qwen3-%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%98%BE%E5%AD%98%E5%8D%A0%E7%94%A8"><span class="toc-text">6.2 Qwen3 系列模型微调显存占用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%87%86%E5%A4%87%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">七、准备微调数据集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86%E6%9E%84%E9%80%A0%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-text">7.1 理解数据集构造的底层原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E5%B8%B8%E8%A7%81%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3"><span class="toc-text">7.2 常见微调数据集格式详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-1-%E5%9F%BA%E7%A1%80%E9%97%AE%E7%AD%94%E6%A0%BC%E5%BC%8F%EF%BC%88Alpaca-%E9%A3%8E%E6%A0%BC%EF%BC%89"><span class="toc-text">7.2.1 基础问答格式（Alpaca 风格）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-%E5%B8%A6%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E5%92%8C-Function-calling-%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-text">7.2.2 带系统提示和 Function calling 的格式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-3-%E5%B8%A6%E6%80%9D%E8%80%83%E8%BF%87%E7%A8%8B%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-text">7.2.3 带思考过程的格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-Qwen3-%E6%B7%B7%E5%90%88%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-text">7.3 Qwen3 混合推理模型的数据集构造方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-1-%E9%80%89%E6%8B%A9%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">7.3.1. 选择基础数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-2-%E6%95%B0%E6%8D%AE%E9%9B%86%E9%85%8D%E6%AF%94%E8%B0%83%E6%95%B4"><span class="toc-text">7.3.2 数据集配比调整</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-3-%E6%A0%BC%E5%BC%8F%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%B8%85%E6%B4%97"><span class="toc-text">7.3.3 格式统一与清洗</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E6%95%B0%E6%8D%AE%E9%9B%86%E8%8E%B7%E5%8F%96%E4%B8%8E%E7%BB%84%E8%A3%85%E6%B8%A0%E9%81%93"><span class="toc-text">7.4 数据集获取与组装渠道</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/技术/AI/ai_train.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

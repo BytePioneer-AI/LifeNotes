@@ -1,0 +1,1050 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>【昇腾】昇腾开发者训练营：Dify大模型部署实战 - ChongWen</title>
+
+  
+    <meta name="description" content="MindIE + Dify + DeepSeek + Embedding模型 + Rerank模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【昇腾】昇腾开发者训练营：Dify大模型部署实战">
+<meta property="og:url" content="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-MindIE-Dify/index.html">
+<meta property="og:site_name" content="ChongWen">
+<meta property="og:description" content="MindIE + Dify + DeepSeek + Embedding模型 + Rerank模型">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/6a0284515c76d622b1f06e69ed6b319d.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/c882c6b8ab1f9fb80691b6f5bd2dfbe6.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/a669560248b9a72c50753eb4e16cef49.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/4e1547dbfe6c366abc4b439aa19ad1c8.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/6b8c5a96ed3140408740a5ab73fea57d.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/06ee23e587eb386c81046f77fd920b5c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/77fd8100b2be586358fe88c937acac12.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/e0c07f120b4c2395c92b3b64cb707528.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/153f37a9af80a3dd354300a10a324849.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/abf46c0bddf9d59dbf9fbea6c758c66e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/2aac3cdb53041a712d753b79a280231c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/04941bb7994968e5ec32427d06974758.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/3753f4099159eb5b5d5c6c2ddb43246e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/36d50a1708931f52e5e35aa84cf97989.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/25724eba99c043abcd29402d784db470.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/5484cd590fde043fca3ebec3f9c5dd3b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/420b5b123421fe4bcac06135a8bc3717.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/93a6d52d04a613c8efa002ec08ffe227.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/78cee0a43c990e87e1986269e870aa73.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/e5174ce22fcf8b44b7f8e04dc0948bc3.png">
+<meta property="og:image" content="https://img-home.csdnimg.cn/images/20230724024159.png?origin_url=../../../../Library/Application%20Support/typora-user-images/image-20250521194704607.png&pos_id=img-OEHmsjXO-1748005187309">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/44b6c45f192d5883ef213ffe41df0dfb.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/e81efb73ad068271160398d5f34b0d68.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/a832bc5ff369536299e64643b230c6d2.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/903d5a063693257c8745d9a26e70177b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/a1a0302b70abb5fe63869c934662d17f.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/13ab46dcc9dd038db138c8588cd5d98c.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/34550c9bfeb849c0ef00447133a275c5.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/1665f01b1a2eddc3b879898ad184b950.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/4595e2d23de2135e752907c4e0e684a7.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/8f9c6ea9ee8dda12911b79dbc278393b.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/af4a8d337bf334fd72347d3f1c9ca9de.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/7763beb80b2667c4b11244ed6e41dc79.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/6b7310825cdc88672371b603e4acd22e.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/654cec3d760e3987211310863ac96089.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/c29f580f4559d32cac0f8acd4d6eb9f3.png">
+<meta property="article:published_time" content="2025-05-23T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-04T09:57:03.000Z">
+<meta property="article:author" content="ChongWen">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="昇腾">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i-blog.csdnimg.cn/img_convert/6a0284515c76d622b1f06e69ed6b319d.png">
+  
+  
+  
+  <meta name="keywords" content="AI,昇腾">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/Pytorch/"><span class="title">Pytorch</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/hexo-stellar/"><span class="title">博客配置笔记</span></a><a class="item title" href="/%E6%8A%80%E6%9C%AF/AI/ai-LlamaFactory/"><span class="title">【昇腾】LLaMA-Factory 训练 Qwen</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-05-23T00:00:00.000Z">2025-05-23</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-09-04T09:57:03.000Z">2025-09-04</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：4.2k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：19分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI/">AI</a>&nbsp; <a class="cap breadcrumb-link" href="/tags/%E6%98%87%E8%85%BE/">昇腾</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>【昇腾】昇腾开发者训练营：Dify大模型部署实战</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><meta name="referrer" content="no-referrer"/>
+
+
+<blockquote>
+<p>本次我负责【昇腾开发者训练营】上海分会场的【DeepSeek+Dify大模型推理部署实践】部分的讲解，需要完成PPT、实操手册、8台服务器的环境部署～</p>
+<p>机器：Atlas800 9000 即昇腾上一代芯片 910A，8卡32G，裸金属。</p>
+<p>可能的卡点：ARM架构上部署Dify、910A上跑MindIE、910A上跑BGE向量模型和重排序模型。</p>
+<p>注：本文档同样适用于 Atlas800T A2（910B）、Duo卡等设备。</p>
+</blockquote>
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/6a0284515c76d622b1f06e69ed6b319d.png" alt="image-20250523204934168" style="zoom: 33%;" />
+
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/c882c6b8ab1f9fb80691b6f5bd2dfbe6.png" alt="image-20250523204954253" style="zoom: 33%;" />
+
+
+
+<h1 id="部署-Dify"><a href="#部署-Dify" class="headerlink" title="部署 Dify"></a>部署 Dify</h1><h2 id="1-Dify-适配-ARM"><a href="#1-Dify-适配-ARM" class="headerlink" title="1. Dify 适配 ARM"></a>1. Dify 适配 ARM</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/langgenius/dify.git</span><br><span class="line">cd dify</span><br><span class="line">git checkout 0.15.3</span><br><span class="line">cd docker/</span><br><span class="line">cp .env.example .env</span><br></pre></td></tr></table></figure>
+
+<p><strong>1. 修改配置文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim docker-compose.yaml</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在redis的<span class="built_in">command</span>后添加：</span></span><br><span class="line">--ignore-warnings ARM64-COW-BUG</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/a669560248b9a72c50753eb4e16cef49.png" alt="image-20250523202730365"></p>
+<p><strong>2. 修改sandbox版本</strong></p>
+<p>将sandbox版本从0.2.10修改为0.2.1。0.2.10版本会出现新增模型失败的情况，修改后不使用插件式的方式，可以正常添加。</p>
+<h2 id="2-安装-docker"><a href="#2-安装-docker" class="headerlink" title="2. 安装 docker"></a>2. 安装 docker</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用下面命令一键安装 docker 和 docker-compose</span></span><br><span class="line"></span><br><span class="line">sudo yum install -y docker-engine docker-engine-selinux &amp;&amp; sudo bash -c &#x27;cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [</span><br><span class="line">    &quot;https://docker.1ms.run&quot;,</span><br><span class="line">    &quot;https://docker.xuanyuan.me&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF&#x27; &amp;&amp; sudo systemctl restart docker &amp;&amp; sudo curl -L &quot;https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose &amp;&amp; sudo chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-启动-Dify"><a href="#3-启动-Dify" class="headerlink" title="3. 启动 Dify"></a>3. 启动 Dify</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd dify/docker</span><br><span class="line">docker-compose up -d</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止服务并删除容器</span></span><br><span class="line">cd dify/docker</span><br><span class="line">docker-compose down</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="MindIE-Dify-实操手册"><a href="#MindIE-Dify-实操手册" class="headerlink" title="MindIE+Dify 实操手册"></a>MindIE+Dify 实操手册</h1><p>本文档以 Atlas 800-9000 服务器和 DeepSeek-R1-Distill-Qwen-32B-W8A8 模型为例，让开发者快速开始使用MindIE进行大模型推理流程。</p>
+<blockquote>
+<p>MindIE（Mind Inference Engine，昇腾推理引擎）是基于昇腾硬件的运行加速、调试调优、快速迁移部署的高性能AI推理引擎。</p>
+</blockquote>
+<h2 id="1-基础环境搭建"><a href="#1-基础环境搭建" class="headerlink" title="1. 基础环境搭建"></a>1. 基础环境搭建</h2><p>注：本次昇腾开发者训练营提供的服务器基础环境已配置完毕，本章节可忽略。</p>
+<h3 id="1-1-环境检查"><a href="#1-1-环境检查" class="headerlink" title="1.1 环境检查"></a>1.1 环境检查</h3><p>物理机部署场景，需要在物理机安装NPU驱动固件以及部署Docker，执行如下步骤判断是否已安装NPU驱动固件和部署Docker。</p>
+<p>执行以下命令查看NPU驱动固件是否安装。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">npu</span>-<span class="keyword">smi</span> <span class="meta">info</span></span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/4e1547dbfe6c366abc4b439aa19ad1c8.png" alt="image-20250521153440553"></p>
+<h3 id="1-2-下载模型权重"><a href="#1-2-下载模型权重" class="headerlink" title="1.2 下载模型权重"></a>1.2 下载模型权重</h3><p>权重已下载，路径：<code>/home/aicc/models/DeepSeek-R1-Distill-Qwen-32B-W8A8</code></p>
+<h3 id="1-3-获取MindIE镜像"><a href="#1-3-获取MindIE镜像" class="headerlink" title="1.3 获取MindIE镜像"></a>1.3 获取MindIE镜像</h3><p>昇腾镜像仓库地址：<a target="_blank" rel="noopener" href="https://www.hiascend.com/developer/ascendhub/detail/af85b724a7e5469ebd7ea13c3439d48f">https://www.hiascend.com/developer/ascendhub/detail/af85b724a7e5469ebd7ea13c3439d48f</a></p>
+<p>进入昇腾官方镜像仓库，根据设备型号选择下载对应的MindIE镜像。该镜像已具备模型运行所需的基础环境，包括：CANN、FrameworkPTAdapter、MindIE与ATB Models，可实现模型快速上手推理。</p>
+<p>容器内各组件安装路径：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>安装路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CANN</td>
+<td>&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;ascend-toolkit</td>
+</tr>
+<tr>
+<td>CANN-NNAL-ATB</td>
+<td>&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;nnal&#x2F;atb</td>
+</tr>
+<tr>
+<td>MindIE</td>
+<td>&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;mindie</td>
+</tr>
+<tr>
+<td>ATB Models</td>
+<td>&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;atb-models</td>
+</tr>
+</tbody></table>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/6b8c5a96ed3140408740a5ab73fea57d.png" alt="image-20250521153010845"></p>
+<h2 id="2-启动容器"><a href="#2-启动容器" class="headerlink" title="2. 启动容器"></a>2. 启动容器</h2><p>镜像已下载，执行以下命令启动容器。</p>
+<blockquote>
+<p>本次课程已提供8卡服务器，建议每台服务器启动4个容器，小组内自由分配，每个容器可以使用双卡进行模型推理。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">注：命令执行前请修改 [容器名称]</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动容器</span></span><br><span class="line">docker run -itd --privileged  --name=m2 --net=host \</span><br><span class="line">   --shm-size 500g \</span><br><span class="line">   --device=/dev/davinci0  \</span><br><span class="line">   --device=/dev/davinci1  \</span><br><span class="line">   --device=/dev/davinci2  \</span><br><span class="line">   --device=/dev/davinci3  \</span><br><span class="line">   --device=/dev/davinci4  \</span><br><span class="line">   --device=/dev/davinci5  \</span><br><span class="line">   --device=/dev/davinci6  \</span><br><span class="line">   --device=/dev/davinci7  \</span><br><span class="line">   --device=/dev/davinci_manager \</span><br><span class="line">   --device=/dev/hisi_hdc \</span><br><span class="line">   --device /dev/devmm_svm \</span><br><span class="line">   -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \</span><br><span class="line">   -v /usr/local/Ascend/firmware:/usr/local/Ascend/firmware \</span><br><span class="line">   -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi \</span><br><span class="line">   -v /usr/local/sbin:/usr/local/sbin \</span><br><span class="line">   -v /etc/hccn.conf:/etc/hccn.conf \</span><br><span class="line">   -v /home/aicc:/home/aicc \</span><br><span class="line">   swr.cn-central-221.ovaijisuan.com/wh-aicc-fae/mindie:910A-ascend_24.1.rc3-cann_8.0.t63-py_3.10-ubuntu_20.04-aarch64-mindie_1.0.T71.05  \</span><br><span class="line">   bash</span><br><span class="line"><span class="meta prompt_">  </span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入容器</span></span><br><span class="line">docker exec -it [容器名称] /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–privileged</td>
+<td>特权容器，允许容器访问宿主机的所有设备。</td>
+</tr>
+<tr>
+<td>–name</td>
+<td>设置容器名称。</td>
+</tr>
+<tr>
+<td>–device</td>
+<td>表示映射的设备，可以挂载一个或者多个设备。需要挂载的设备如下：&#x2F;dev&#x2F;davinci<em>X</em>：NPU设备，X是ID号，如：davinci0。<br />&#x2F;dev&#x2F;davinci_manager：davinci相关的管理设备。<br />&#x2F;dev&#x2F;hisi_hdc：hdc相关管理设备。<br />&#x2F;dev&#x2F;devmm_svm：内存管理相关设备。</td>
+</tr>
+<tr>
+<td>-v &#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;driver:&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;driver:ro</td>
+<td>将宿主机目录“&#x2F;usr&#x2F;local&#x2F;Ascend&#x2F;driver”挂载到容器，请根据驱动所在实际路径修改。</td>
+</tr>
+<tr>
+<td>-v &#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;sbin:ro</td>
+<td>将宿主机工具“&#x2F;usr&#x2F;local&#x2F;sbin&#x2F;”以只读模式挂载到容器中，请根据实际情况修改。</td>
+</tr>
+<tr>
+<td>-v &#x2F;path-to-weights:&#x2F;path-to-weights:ro</td>
+<td>设定权重挂载的路径，需要根据用户的情况修改。说明请将权重文件和数据集文件同时放置于该路径下。</td>
+</tr>
+</tbody></table>
+<p><strong>环境检查：</strong></p>
+<p>进入容器后，使用 <code>npu-smi info</code> 检查NPU驱动固件是否正常挂载。</p>
+<h2 id="3-纯模型推理测试"><a href="#3-纯模型推理测试" class="headerlink" title="3. 纯模型推理测试"></a>3. 纯模型推理测试</h2><p><a target="_blank" rel="noopener" href="https://www.hiascend.com/document/detail/zh/mindie/20RC1/mindiellm/llmdev/mindie_llm0009.html">参考文档</a></p>
+<p><code>ATB Models</code>的<code>run_pa.py</code>脚本用于纯模型快速测试，脚本中未增加强校验，出现异常情况时，会直接抛出异常信息，常用于快速验证模型的可用性。</p>
+<h3 id="3-1-纯模型对话测试"><a href="#3-1-纯模型对话测试" class="headerlink" title="3.1 纯模型对话测试"></a>3.1 纯模型对话测试</h3><p>例如：使用<code>/home/aicc/models/DeepSeek-R1-Distill-Qwen-32B-W8A8</code>路径下的权重，使用2卡推理<code>&quot;What&#39;s deep learning?&quot;</code>和<code>&quot;Hello World.&quot;</code>，推理时<code>batch size</code>为2。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pandas # 测试前安装依赖</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">export ASCEND_RT_VISIBLE_DEVICES=1,2 # 设置使用的卡编号</span><br><span class="line">cd $&#123;ATB_SPEED_HOME_PATH&#125;</span><br><span class="line">torchrun --nproc_per_node 2  \</span><br><span class="line">         --master_port 20030  \</span><br><span class="line">         -m examples.run_pa  \</span><br><span class="line">         --model_path /home/aicc/models/DeepSeek-R1-Distill-Qwen-32B-W8A8  \</span><br><span class="line">         --input_texts &quot;What&#x27;s deep learning?&quot; &quot;Hello World.&quot;  \</span><br><span class="line">         --max_batch_size 2</span><br><span class="line">         </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">参数说明</span></span><br><span class="line">--nproc_per_node 使用的卡数</span><br><span class="line">--input_texts 推理文本或推理文本路径，多条推理文本间使用空格分割。省略则使用默认值：&quot;What&#x27;s deep learning?&quot;</span><br><span class="line">--max_batch_size 模型推理最大batch size。</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动测试</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/06ee23e587eb386c81046f77fd920b5c.png" alt="image-20250521173349203"></p>
+<p><strong>测试成功</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/77fd8100b2be586358fe88c937acac12.png" alt="image-20250521173450568"></p>
+<h3 id="3-2-性能测试"><a href="#3-2-性能测试" class="headerlink" title="3.2 性能测试"></a>3.2 性能测试</h3><p><strong>安装依赖</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tiktoken  fuzzywuzzy jieba rouge # 测试前安装依赖</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试脚本</strong></p>
+<p><code>batch=1</code>, 输入长度<code>256</code>, 输出长度<code>256</code>用例的<code>2</code>卡并行性能测试命令为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ASCEND_RT_VISIBLE_DEVICES=1,2 <span class="comment"># 设置使用的卡编号</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$ATB_SPEED_HOME_PATH</span>/tests/modeltest/</span><br><span class="line">bash run.sh pa_fp16 performance [[256,256]] 1 \</span><br><span class="line">qwen /home/aicc/models/DeepSeek-R1-Distill-Qwen-32B-W8A8 2</span><br></pre></td></tr></table></figure>
+
+<p>耗时结果会显示在Console中，并保存在.&#x2F;benchmark_result&#x2F;benchmark.csv文件里。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/e0c07f120b4c2395c92b3b64cb707528.png" alt="image-20250522133144671"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/153f37a9af80a3dd354300a10a324849.png" alt="屏幕截图 2025-05-22 114527"></p>
+<h2 id="4-服务化部署"><a href="#4-服务化部署" class="headerlink" title="4. 服务化部署"></a>4. 服务化部署</h2><h3 id="4-1-MindIE-配置"><a href="#4-1-MindIE-配置" class="headerlink" title="4.1 MindIE 配置"></a>4.1 MindIE 配置</h3><p><a target="_blank" rel="noopener" href="https://www.hiascend.com/document/detail/zh/mindie/100/mindieservice/servicedev/mindie_service0285.html">参考文档</a></p>
+<p>修改<code>MindIE</code>配置：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="regexp">/usr/</span>local<span class="regexp">/Ascend/mi</span>ndie<span class="regexp">/latest/mi</span>ndie-service<span class="regexp">/conf/</span>config.json</span><br></pre></td></tr></table></figure>
+
+<p><strong>主要参数</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;ipAddress&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;192.168.0.10&quot;</span><span class="punctuation">,</span>  改为本机内网地址</span><br><span class="line"><span class="attr">&quot;managementIpAddress&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;192.168.0.10&quot;</span><span class="punctuation">,</span>  改为本机内网地址()</span><br><span class="line"><span class="attr">&quot;port&quot;</span> <span class="punctuation">:</span> <span class="number">1025</span><span class="punctuation">,</span> 推理端口，请保证端口号无冲突</span><br><span class="line"><span class="attr">&quot;managementPort&quot;</span> <span class="punctuation">:</span> <span class="number">1026</span><span class="punctuation">,</span> 管理面端口，请保证端口号无冲突</span><br><span class="line"><span class="attr">&quot;metricsPort&quot;</span> <span class="punctuation">:</span> <span class="number">1027</span><span class="punctuation">,</span> 服务监控指标接口，请保证端口号无冲突</span><br><span class="line"><span class="attr">&quot;npuDeviceIds&quot;</span> <span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">[</span><span class="number">0</span><span class="punctuation">,</span><span class="number">1</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="punctuation">,</span> 表示启用哪几张卡。对于每个模型实例分配的npuIds</span><br><span class="line"><span class="attr">&quot;modelName&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;DeepSeek-R1-Distill-Qwen-32B-W8A8&quot;</span><span class="punctuation">,</span> 模型名称</span><br><span class="line"><span class="attr">&quot;modelWeightPath&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;/home/aicc/models/DeepSeek-R1-Distill-Qwen-32B-W8A8/&quot;</span><span class="punctuation">,</span> 模型权重路径</span><br><span class="line"><span class="attr">&quot;worldSize&quot;</span> <span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span> 启用几张卡推理。本模型启用两卡推理即可</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：小组内多个MindIE服务请保证 port 不同、modelName不同</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/abf46c0bddf9d59dbf9fbea6c758c66e.png" alt="image-20250521185214880"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/2aac3cdb53041a712d753b79a280231c.png" alt="image-20250521184923787"></p>
+<h3 id="4-2-MindIE-服务化"><a href="#4-2-MindIE-服务化" class="headerlink" title="4.2 MindIE 服务化"></a>4.2 MindIE 服务化</h3><p>首先进入<code>mindie-service</code>目录：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="regexp">/usr/</span>local<span class="regexp">/Ascend/mi</span>ndie<span class="regexp">/latest/mi</span>ndie-service</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>方式一（推荐）：使用后台进程方式启动服务。后台进程方式启动服务后，关闭窗口后进程也会保留。</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup ./bin/mindieservice_daemon &gt; output.<span class="built_in">log</span> <span class="number">2</span>&gt;<span class="meta">&amp;1 &amp;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 tail 实时跟踪日志</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f <span class="built_in">output</span>.<span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+
+<p>打印如下信息说明启动成功。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Daemon <span class="literal">start</span> success!</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式二：直接启动服务。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/bin/mi</span>ndieservice_daemon</span><br></pre></td></tr></table></figure>
+
+<p>回显如下则说明启动成功。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Daemon <span class="literal">start</span> success!</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-3-发起测试请求"><a href="#4-3-发起测试请求" class="headerlink" title="4.3 发起测试请求"></a>4.3 发起测试请求</h3><p><a target="_blank" rel="noopener" href="https://www.hiascend.com/document/detail/zh/mindie/100/mindieservice/servicedev/mindie_service0076.html">参考文档</a></p>
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/04941bb7994968e5ec32427d06974758.png" alt="image-20250521190056832" style="zoom:50%;" />
+
+<p>重开一个窗口，使用以下命令发送请求：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">OpenAI 接口</span></span><br><span class="line">curl -H &quot;Accept: application/json&quot; -H &quot;Content-type: application/json&quot; \</span><br><span class="line">-X POST -d &#x27;&#123;</span><br><span class="line">    &quot;model&quot;: &quot;DeepSeek-R1-Distill-Qwen-32B-W8A8&quot;,</span><br><span class="line">    &quot;messages&quot;: [&#123;</span><br><span class="line">        &quot;role&quot;: &quot;user&quot;,</span><br><span class="line">        &quot;content&quot;: &quot;You are a helpful assistant.&quot;</span><br><span class="line">    &#125;],</span><br><span class="line">    &quot;stream&quot;: false,</span><br><span class="line">    &quot;presence_penalty&quot;: 1.03,</span><br><span class="line">    &quot;frequency_penalty&quot;: 1.0,</span><br><span class="line">    &quot;repetition_penalty&quot;: 1.0,</span><br><span class="line">    &quot;temperature&quot;: 0.5,</span><br><span class="line">    &quot;top_p&quot;: 0.95,</span><br><span class="line">    &quot;top_k&quot;: 10,</span><br><span class="line">    &quot;seed&quot;: null,</span><br><span class="line">    &quot;stop&quot;: [&quot;stop1&quot;, &quot;stop2&quot;],</span><br><span class="line">    &quot;stop_token_ids&quot;: [2, 13],</span><br><span class="line">    &quot;include_stop_str_in_output&quot;: false,</span><br><span class="line">    &quot;skip_special_tokens&quot;: true,</span><br><span class="line">    &quot;ignore_eos&quot;: false,</span><br><span class="line">    &quot;max_tokens&quot;: 20</span><br><span class="line">&#125;&#x27; http://192.168.0.10:1025/v1/chat/completions</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/3753f4099159eb5b5d5c6c2ddb43246e.png" alt="image-20250521185820980"></p>
+<h2 id="5-接入-Dify"><a href="#5-接入-Dify" class="headerlink" title="5. 接入 Dify"></a>5. 接入 Dify</h2><h3 id="5-1-访问-Dify"><a href="#5-1-访问-Dify" class="headerlink" title="5.1 访问 Dify"></a>5.1 访问 Dify</h3><p>根据 <strong>弹性公网IP:Dify端口</strong> 访问本机的Dify前端页面</p>
+<p>用户名&#x2F;密码：<code>atlas@hw.com</code> &#x2F; <code>0atlas@hw.com</code></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/36d50a1708931f52e5e35aa84cf97989.png" alt="image-20250521193057237"></p>
+<h3 id="5-2-配置大模型"><a href="#5-2-配置大模型" class="headerlink" title="5.2 配置大模型"></a>5.2 配置大模型</h3><ol>
+<li>点击右上角用户头像，点击“设置”</li>
+</ol>
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/25724eba99c043abcd29402d784db470.png" alt="image-20250521193307435" style="zoom:50%;" />
+
+<ol start="2">
+<li>点击“模型提供商”，搜索<code>OpenAI-API-compatible</code>，点击“添加模型”</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/5484cd590fde043fca3ebec3f9c5dd3b.png" alt="image-20250521193417055"></p>
+<ol start="3">
+<li><p>添加MindIE模型。</p>
+<p>模型名称：填写MindIE配置的modelName</p>
+<p>API endpoint URL：填写<code>本机内网IP</code>:<code>MindIE配置的port</code>&#x2F;v1</p>
+</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/420b5b123421fe4bcac06135a8bc3717.png" alt="image-20250521193743499"></p>
+<ol start="4">
+<li>新增<code>OpenAI-API-compatible</code>模型</li>
+</ol>
+<p>添加过<code>OpenAI-API-compatible</code>模型后，可在弹窗上方看到已添加的模型列，可以点击“添加模型”继续添加。添加时请避免模型名称相同。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/93a6d52d04a613c8efa002ec08ffe227.png" alt="image-20250521194346367"></p>
+<h3 id="5-3-创建聊天助手"><a href="#5-3-创建聊天助手" class="headerlink" title="5.3 创建聊天助手"></a>5.3 创建聊天助手</h3><ol>
+<li>点击“工作室”、“创建空白应用”</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/78cee0a43c990e87e1986269e870aa73.png" alt="image-20250521194506139"></p>
+<ol start="2">
+<li>选择 “聊天助手”，输入名称，点击 “创建”</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/e5174ce22fcf8b44b7f8e04dc0948bc3.png" alt="image-20250521194559695"></p>
+<ol start="3">
+<li>选择模型</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://img-home.csdnimg.cn/images/20230724024159.png?origin_url=../../../../Library/Application%20Support/typora-user-images/image-20250521194704607.png&pos_id=img-OEHmsjXO-1748005187309" alt="外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传"></p>
+<ol start="4">
+<li>对话测试</li>
+</ol>
+<p>输入内容进行对话测试，接收到响应即为正确。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/44b6c45f192d5883ef213ffe41df0dfb.png" alt="image-20250521194836351"></p>
+<h1 id="进阶实操"><a href="#进阶实操" class="headerlink" title="进阶实操"></a>进阶实操</h1><p>本文档以 Atlas 800-9000 服务器为例，让开发者快速开始使用TEI进行文本嵌入（Embedding）和重排序（Reranker）模型推理流程。</p>
+<blockquote>
+<p>TEI（全称：Text Embeddings Inference）是由Huggingface推出的高性能推理框架，旨在简化和加速文本嵌入（Embedding）和重排序（Reranker）模型在生产环境中的部署。</p>
+<p>TEI支持基于HTTP和gRPC协议的服务接口，能够高效处理文本嵌入的生成和基于文本相关性的重排序等任务；TEI框架同时也支持多种嵌入模型和重排序模型，并提供了灵活的请求批处理、模型管理和动态调度功能。通过TEI，开发者可以轻松地扩展和优化文本嵌入和重排序服务，以满足实时应用和批量处理的需求，特别适用于自然语言处理相关的在线推理任务，能够满足RAG（全称：Retrieval-Augmented Generation）、信息检索 (IR)、自然语言理解 (NLU)、文本分类以及个性化推荐系统等下游应用场景。</p>
+<p>原生TEI仅支持GPU硬件环境，且Python后端接口仅支持Embedding模型的embed服务。昇腾实现了基于MindIE Torch与ATB的组图优化，拓展其Python后端功能、将其适配到昇腾环境。</p>
+</blockquote>
+<p>本次使用以下模型：</p>
+<table>
+<thead>
+<tr>
+<th>模型名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BAAI&#x2F;bge-large-zh-v1.5</td>
+<td>稠密向量模型</td>
+</tr>
+<tr>
+<td>BAAI&#x2F;bge-m3</td>
+<td>稠密和稀疏向量模型</td>
+</tr>
+<tr>
+<td>BAAI&#x2F;bge-reranker-large</td>
+<td>排序模型</td>
+</tr>
+</tbody></table>
+<h2 id="1-环境部署"><a href="#1-环境部署" class="headerlink" title="1. 环境部署"></a>1. 环境部署</h2><p>注：本次昇腾开发者训练营提供的服务器基础环境已配置完毕，本章节可忽略。</p>
+<h3 id="1-1-下载模型权重"><a href="#1-1-下载模型权重" class="headerlink" title="1.1 下载模型权重"></a>1.1 下载模型权重</h3><p><strong>权重已下载</strong>，路径：<code>/home/aicc/bge_model</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir /home/aicc/bge_model</span><br><span class="line">pip install modelscope</span><br><span class="line"></span><br><span class="line">modelscope download --model  BAAI/bge-large-zh-v1.5 --local_dir /home/aicc/bge_model/bge-large-zh-v1.5</span><br><span class="line">modelscope download --model  BAAI/bge-reranker-large --local_dir /home/aicc/bge_model/bge-reranker-large </span><br><span class="line">modelscope download --model  BAAI/bge-m3 --local_dir /home/aicc/bge_model/bge-m3</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改模型数据类型</strong></p>
+<p>修改每一个模型内部的配置项<code>torch_dtype</code>为<code>float16</code>， <code>Atlas800 9000</code>&#x2F;<code>300I Duo</code>&#x2F;<code>300V Pro</code>设备需修改。<code>Atlas 800T A2</code>等设备不用修改。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /home/aicc/bge_model</span><br><span class="line">vim bge-reranker-large/config.json</span><br><span class="line">vim bge-large-zh-v1.5/config.json</span><br><span class="line">vim bge-m3/config.json</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改为：</span></span><br><span class="line">torch_dtype&quot;: &quot;float16&quot;,</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-获取镜像"><a href="#1-2-获取镜像" class="headerlink" title="1.2 获取镜像"></a>1.2 获取镜像</h3><p>昇腾镜像仓库：<a target="_blank" rel="noopener" href="https://www.hiascend.com/developer/ascendhub/detail/07a016975cc341f3a5ae131f2b52399d">https://www.hiascend.com/developer/ascendhub/detail/07a016975cc341f3a5ae131f2b52399d</a></p>
+<p>进入昇腾官方镜像仓库，根据设备型号选择下载对应的TEI镜像，该镜像已具备模型运行所需的基础环境。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/e81efb73ad068271160398d5f34b0d68.png" alt="image-20250521215709556"></p>
+<blockquote>
+<p>因为本次实验的机器为910A，所以需要根据官方镜像手动修改或重新构建。本次采用的是华为山东AICC的一位老哥的镜像，下载方式：<code>docker pull crpi-8ew3ouqcvy9yujug.cn-hangzhou.personal.cr.aliyuncs.com/sxj731533730/mis-tei_atlas_800_9000:v0</code></p>
+</blockquote>
+<h2 id="2-启动容器-1"><a href="#2-启动容器-1" class="headerlink" title="2. 启动容器"></a>2. 启动容器</h2><p>注意：</p>
+<ol>
+<li><strong>请修改本机 IP 和 端口</strong>，以下命令采用IP为192.168.0.10，端口为9000、9001、9002</li>
+<li><strong>修改推理卡编号：</strong><code>TEI_NPU_DEVICE=0</code> 表示使用0卡推理，请修改为合适的卡号</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 BAAI/bge-m3  推理容器</span></span><br><span class="line">docker run -itd  -u root -e ENABLE_BOOST=True --privileged=true \</span><br><span class="line">-e TEI_NPU_DEVICE=0 --name=bge-m3 --net=host \</span><br><span class="line">-v /home/aicc/bge_model:/home/HwHiAiUser/model \</span><br><span class="line">--device=/dev/davinci_manager \</span><br><span class="line">--device=/dev/hisi_hdc \</span><br><span class="line">--device=/dev/devmm_svm \</span><br><span class="line">--device=/dev/davinci0  \</span><br><span class="line">--device=/dev/davinci1  \</span><br><span class="line">--device=/dev/davinci2  \</span><br><span class="line">--device=/dev/davinci3  \</span><br><span class="line">--device=/dev/davinci4  \</span><br><span class="line">--device=/dev/davinci5  \</span><br><span class="line">--device=/dev/davinci6  \</span><br><span class="line">--device=/dev/davinci7  \</span><br><span class="line">-v /usr/local/Ascend/driver:/usr/local/Ascend/driver:ro \</span><br><span class="line">-v /usr/local/sbin:/usr/local/sbin:ro \</span><br><span class="line">mis-tei_atlas_800_9000:v0  </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动服务</span></span><br><span class="line">docker exec -it bge-m3 bash</span><br><span class="line">export HOME=/home/HwHiAiUser</span><br><span class="line">bash start.sh BAAI/bge-m3 192.168.0.10 9000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 BAAI/bge-large-zh-v1.5  推理容器</span></span><br><span class="line">docker run -itd  -u root -e ENABLE_BOOST=True --privileged=true \</span><br><span class="line">-e TEI_NPU_DEVICE=0 --name=bge-large-zh-v1.5 --net=host \</span><br><span class="line">-v /home/aicc/bge_model:/home/HwHiAiUser/model \</span><br><span class="line">--device=/dev/davinci_manager \</span><br><span class="line">--device=/dev/hisi_hdc \</span><br><span class="line">--device=/dev/devmm_svm \</span><br><span class="line">--device=/dev/davinci0  \</span><br><span class="line">--device=/dev/davinci1  \</span><br><span class="line">--device=/dev/davinci2  \</span><br><span class="line">--device=/dev/davinci3  \</span><br><span class="line">--device=/dev/davinci4  \</span><br><span class="line">--device=/dev/davinci5  \</span><br><span class="line">--device=/dev/davinci6  \</span><br><span class="line">--device=/dev/davinci7  \</span><br><span class="line">-v /usr/local/Ascend/driver:/usr/local/Ascend/driver:ro \</span><br><span class="line">-v /usr/local/sbin:/usr/local/sbin:ro \</span><br><span class="line">mis-tei_atlas_800_9000:v0  </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动服务</span></span><br><span class="line">docker exec -it bge-large-zh-v1.5 bash</span><br><span class="line">export HOME=/home/HwHiAiUser</span><br><span class="line">bash start.sh BAAI/bge-large-zh-v1.5 192.168.0.10 9001</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 BAAI/bge-reranker-large  推理容器</span></span><br><span class="line">docker run -itd  -u root -e ENABLE_BOOST=True --privileged=true \</span><br><span class="line">-e TEI_NPU_DEVICE=0 --name=bge-reranker-large --net=host \</span><br><span class="line">-v /home/aicc/bge_model:/home/HwHiAiUser/model \</span><br><span class="line">--device=/dev/davinci_manager \</span><br><span class="line">--device=/dev/hisi_hdc \</span><br><span class="line">--device=/dev/devmm_svm \</span><br><span class="line">--device=/dev/davinci0  \</span><br><span class="line">--device=/dev/davinci1  \</span><br><span class="line">--device=/dev/davinci2  \</span><br><span class="line">--device=/dev/davinci3  \</span><br><span class="line">--device=/dev/davinci4  \</span><br><span class="line">--device=/dev/davinci5  \</span><br><span class="line">--device=/dev/davinci6  \</span><br><span class="line">--device=/dev/davinci7  \</span><br><span class="line">-v /usr/local/Ascend/driver:/usr/local/Ascend/driver:ro \</span><br><span class="line">-v /usr/local/sbin:/usr/local/sbin:ro \</span><br><span class="line">-v /usr/local/sbin:/usr/local/sbin:ro \</span><br><span class="line">mis-tei_atlas_800_9000:v0  </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动服务</span></span><br><span class="line">docker exec -it bge-reranker-large bash</span><br><span class="line">export HOME=/home/HwHiAiUser</span><br><span class="line">bash start.sh BAAI/bge-reranker-large 192.168.0.10 9002</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对于800TA2、300I Duo设备无需进入容器手动启动服务。将模型名称、IP、端口作为容器启动参数，例如：</span></span><br><span class="line">docker run -itd  -u root -e ENABLE_BOOST=True --privileged=true \</span><br><span class="line">-e TEI_NPU_DEVICE=0 --name=bge-m3 --net=host \</span><br><span class="line">-v /home/aicc/bge_model:/home/HwHiAiUser/model \</span><br><span class="line"> -e POOLING=splade \</span><br><span class="line">--device=/dev/davinci_manager \</span><br><span class="line">--device=/dev/hisi_hdc \</span><br><span class="line">--device=/dev/devmm_svm \</span><br><span class="line">--device=/dev/davinci0 \</span><br><span class="line">--device=/dev/davinci1 \</span><br><span class="line">-v /usr/local/Ascend/driver:/usr/local/Ascend/driver:ro \</span><br><span class="line">-v /usr/local/sbin:/usr/local/sbin:ro \</span><br><span class="line">swr.cn-south-1.myhuaweicloud.com/ascendhub/mis-tei:7.0.RC1-800I-A2-aarch64   BAAI/bge-m3 127.0.0.1 9000</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>关键参数解释</strong>：</p>
+<ul>
+<li><code>user</code>: 容器运行用户，可配置为root或HwHiAiUser，如果不配置默认使用HwHiAiUser,建议以普通用户HwHiAiUser运行降低容器运行相关安全风险</li>
+<li><code>-e ASCEND_VISIBLE_DEVICES</code>: 挂载指定的npu卡到容器中，只有宿主机安装了Ascend Docker Runtime，此环境变量才会生效，如果未安装Ascend Docker Runtime,可参考配置如下参数挂载指定的卡到容器</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">--device=<span class="regexp">/dev/</span>davinci_manager \</span><br><span class="line">--device=<span class="regexp">/dev/</span>hisi_hdc \</span><br><span class="line">--device=<span class="regexp">/dev/</span>devmm_svm \</span><br><span class="line">--device=<span class="regexp">/dev/</span>davinci0 \</span><br><span class="line">--device=<span class="regexp">/dev/</span>davinci1 \</span><br><span class="line">-v <span class="regexp">/usr/</span>local<span class="regexp">/Ascend/</span>driver:<span class="regexp">/usr/</span>local<span class="regexp">/Ascend/</span>driver:ro \</span><br><span class="line">-v <span class="regexp">/usr/</span>local<span class="regexp">/sbin:/u</span>sr<span class="regexp">/local/</span>sbin:ro \</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-e ENABLE_BOOST</code>: 使能bert、roberta、xml-roberta类模型推理加速</li>
+<li><code>model dir</code>: 模型存放的上级目录，如&#x2F;home&#x2F;data，不能配置为&#x2F;home和&#x2F;home&#x2F;HwHiAiUser容器内的挂载目录&#x2F;home&#x2F;HwHiAiUser&#x2F;model不可更改</li>
+<li><code>image id</code>：从ascendhub网上拉取镜像后的镜像ID</li>
+<li><code>model id</code>：从modelscope上获取的模型ID：例如：<strong>BAAI&#x2F;bge-base-zh-v1.5</strong>, <strong>BAAI&#x2F;bge-reranker-large</strong>等，如需运行时下载模型，请确保网络可访问modelscope网站</li>
+<li><code>listen ip</code>：TEI服务的监听IP，例如：<strong>127.0.0.1</strong></li>
+<li><code>listen port</code>：TEI服务的监听端口，例如：<strong>8080</strong></li>
+<li>稀疏向量模型添加(本次实践无需添加): <code>-e POOLING=splade</code>,请求接口采用<code>embed_sparse</code></li>
+</ul>
+<h2 id="3-推理测试"><a href="#3-推理测试" class="headerlink" title="3. 推理测试"></a>3. 推理测试</h2><p>使用以下命令进行推理测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl 192.168.0.10:9000/embed \</span><br><span class="line">    -X POST \</span><br><span class="line">    -d &#x27;&#123;&quot;inputs&quot;:&quot;What is Deep Learning?&quot;&#125;&#x27; \</span><br><span class="line">    -H &#x27;Content-Type: application/json&#x27;</span><br><span class="line">    </span><br><span class="line">curl 192.168.0.10:9001/embed \</span><br><span class="line">    -X POST \</span><br><span class="line">    -d &#x27;&#123;&quot;inputs&quot;:&quot;I like you.&quot;&#125;&#x27; \</span><br><span class="line">    -H &#x27;Content-Type: application/json&#x27;</span><br><span class="line"></span><br><span class="line">curl 192.168.0.10:9002/rerank \</span><br><span class="line">    -X POST \</span><br><span class="line">    -d &#x27;&#123;&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]&#125;&#x27; \</span><br><span class="line">    -H &#x27;Content-Type: application/json&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>本镜像接口规范（符合TEI）：<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/a832bc5ff369536299e64643b230c6d2.png" alt="image-20250521220658643"></p>
+<h2 id="4-接入-Dify"><a href="#4-接入-Dify" class="headerlink" title="4. 接入 Dify"></a>4. 接入 Dify</h2><h3 id="4-1-配置模型"><a href="#4-1-配置模型" class="headerlink" title="4.1 配置模型"></a>4.1 配置模型</h3><p>在“模型供应商”中查询<code>Text Embedding Inference</code>，依次添加以下参数：</p>
+<p><code>API Key</code> 需要填写，随意填写即可。</p>
+<table>
+<thead>
+<tr>
+<th>模型名称</th>
+<th>服务器URL</th>
+<th>API Key</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bge-m3</td>
+<td><a target="_blank" rel="noopener" href="http://192.168.0.10:9000/">http://192.168.0.10:9000</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td>bge-large-zh-v1.5</td>
+<td><a target="_blank" rel="noopener" href="http://192.168.0.10:9001/">http://192.168.0.10:9001</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td>bge-reranker-large</td>
+<td><a target="_blank" rel="noopener" href="http://192.168.0.10:9002/">http://192.168.0.10:9002</a></td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/903d5a063693257c8745d9a26e70177b.png" alt="image-20250522145103572"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/a1a0302b70abb5fe63869c934662d17f.png" alt="image-20250522145816708"></p>
+<h3 id="4-2-创建知识库"><a href="#4-2-创建知识库" class="headerlink" title="4.2 创建知识库"></a>4.2 创建知识库</h3><ol>
+<li><strong>点击“知识库”，点击“创建知识库”</strong></li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/13ab46dcc9dd038db138c8588cd5d98c.png" alt="image-20250522145857215"></p>
+<ol start="2">
+<li><strong>从本地选择一个文件导入：</strong></li>
+</ol>
+<p>选择文件后，点击“下一步”</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/34550c9bfeb849c0ef00447133a275c5.png" alt="image-20250522145956225"></p>
+<ol start="3">
+<li><strong>配置分段：使用默认配置无需修改</strong></li>
+</ol>
+<p>保证<code>Embedding</code>模型和<code>Rerank</code>模型设置正确，下滑到底部点击“保存并处理”</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/1665f01b1a2eddc3b879898ad184b950.png" alt="image-20250522150127643"></p>
+<p>点击“前往文档”</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/4595e2d23de2135e752907c4e0e684a7.png" alt="image-20250522150227229"></p>
+<ol start="4">
+<li>可查看处理后的文件状态</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/8f9c6ea9ee8dda12911b79dbc278393b.png" alt="image-20250522150301195"></p>
+<h2 id="5-创建聊天助手"><a href="#5-创建聊天助手" class="headerlink" title="5. 创建聊天助手"></a>5. 创建聊天助手</h2><ol>
+<li>点击 “创建”点击“工作室”、“创建空白应用”</li>
+<li>选择 “聊天助手”，输入名称，</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/af4a8d337bf334fd72347d3f1c9ca9de.png" alt="image-20250522150417770"></p>
+<ol start="3">
+<li>点击添加上下文</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/7763beb80b2667c4b11244ed6e41dc79.png" alt="image-20250522150526779"></p>
+<ol start="4">
+<li>选择处理好的知识库</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/6b7310825cdc88672371b603e4acd22e.png" alt="image-20250522150547478"></p>
+<ol start="5">
+<li>提问</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/654cec3d760e3987211310863ac96089.png" alt="image-20250522150650686"></p>
+<p>回答正确：<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://i-blog.csdnimg.cn/img_convert/c29f580f4559d32cac0f8acd4d6eb9f3.png" alt="image-20250522150801672"></p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-MindIE-Dify/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-MindIE-Dify/&title=【昇腾】昇腾开发者训练营：Dify大模型部署实战 - ChongWen&summary=MindIE + Dify + DeepSeek + Embedding模型 + Rerank模型"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=【昇腾】昇腾开发者训练营：Dify大模型部署实战 - ChongWen&amp;body=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-MindIE-Dify/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/%E6%8A%80%E6%9C%AF/AI/ai-MindIE-Dify/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/Essays/20250603%E4%BA%94%E6%9C%88/">2025-05</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/%E6%8A%80%E6%9C%AF/AI/ai-PocketFlow/">PocketFlow</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<center style='font-size: 1rem;margin-top: 0.2rem;'><span id="busuanzi_container_site_pv">总访问<span id="busuanzi_value_site_pv"></span>次</span></center>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 26 篇文章 🔸 总计 65.6k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2-Dify"><span class="toc-text">部署 Dify</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Dify-%E9%80%82%E9%85%8D-ARM"><span class="toc-text">1. Dify 适配 ARM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85-docker"><span class="toc-text">2. 安装 docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8-Dify"><span class="toc-text">3. 启动 Dify</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MindIE-Dify-%E5%AE%9E%E6%93%8D%E6%89%8B%E5%86%8C"><span class="toc-text">MindIE+Dify 实操手册</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">1. 基础环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E7%8E%AF%E5%A2%83%E6%A3%80%E6%9F%A5"><span class="toc-text">1.1 环境检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B%E6%9D%83%E9%87%8D"><span class="toc-text">1.2 下载模型权重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%8E%B7%E5%8F%96MindIE%E9%95%9C%E5%83%8F"><span class="toc-text">1.3 获取MindIE镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"><span class="toc-text">2. 启动容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%BA%AF%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E6%B5%8B%E8%AF%95"><span class="toc-text">3. 纯模型推理测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%BA%AF%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%AF%9D%E6%B5%8B%E8%AF%95"><span class="toc-text">3.1 纯模型对话测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="toc-text">3.2 性能测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9C%8D%E5%8A%A1%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="toc-text">4. 服务化部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-MindIE-%E9%85%8D%E7%BD%AE"><span class="toc-text">4.1 MindIE 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-MindIE-%E6%9C%8D%E5%8A%A1%E5%8C%96"><span class="toc-text">4.2 MindIE 服务化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%8F%91%E8%B5%B7%E6%B5%8B%E8%AF%95%E8%AF%B7%E6%B1%82"><span class="toc-text">4.3 发起测试请求</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%8E%A5%E5%85%A5-Dify"><span class="toc-text">5. 接入 Dify</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%AE%BF%E9%97%AE-Dify"><span class="toc-text">5.1 访问 Dify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E9%85%8D%E7%BD%AE%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-text">5.2 配置大模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%88%9B%E5%BB%BA%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B"><span class="toc-text">5.3 创建聊天助手</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E9%98%B6%E5%AE%9E%E6%93%8D"><span class="toc-text">进阶实操</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2"><span class="toc-text">1. 环境部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B%E6%9D%83%E9%87%8D"><span class="toc-text">1.1 下载模型权重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="toc-text">1.2 获取镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8-1"><span class="toc-text">2. 启动容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8E%A8%E7%90%86%E6%B5%8B%E8%AF%95"><span class="toc-text">3. 推理测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%8E%A5%E5%85%A5-Dify"><span class="toc-text">4. 接入 Dify</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%9E%8B"><span class="toc-text">4.1 配置模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%88%9B%E5%BB%BA%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="toc-text">4.2 创建知识库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%88%9B%E5%BB%BA%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B"><span class="toc-text">5. 创建聊天助手</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/技术/AI/ai-MindIE-Dify.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>
