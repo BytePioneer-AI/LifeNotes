@@ -1,0 +1,1230 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>AI Agent 开发前置知识：模型对话、工具调用与上下文管理 - ChongWen</title>
+
+  
+  <meta name="description" content="本文介绍 AI 应用基础的知识——大模型 API 交互基础。本文内容基于 OpenAI-compatible Chat API 的请求与返回格式展开——OpenAI 请求规范是目前业界最通用的 API 格式，几乎所有主流模型都兼容此协议。">
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="icon" type="image/svg+xml" href="/assets/logo.png"><link rel="shortcut icon" href="/assets/logo.png" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" /><script defer src="/_vercel/insights/script.js"></script><script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">⭐【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/Essays/20260331/"><span class="title">2026-03</span></a><a class="item title" href="/other/vpn/"><span class="title">自建 VPN</span></a><a class="item title" href="/smo/1/"><span class="title">简历相关1</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-05-10T00:00:00.000Z">2026-05-10</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-06-10T07:04:59.000Z">2026-06-10</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：7.1k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：31分</span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>AI Agent 开发前置知识：模型对话、工具调用与上下文管理</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><meta name="referrer" content="no-referrer"/>
+
+<h1 id="AI-Agent-开发前置知识：模型对话、工具调用与上下文管理"><a href="#AI-Agent-开发前置知识：模型对话、工具调用与上下文管理" class="headerlink" title="AI Agent 开发前置知识：模型对话、工具调用与上下文管理"></a>AI Agent 开发前置知识：模型对话、工具调用与上下文管理</h1><blockquote>
+<p><strong>导读</strong> — 本文介绍 AI 应用基础的知识——<strong>大模型 API 交互基础</strong>。本文内容基于 OpenAI-compatible Chat API 的请求与返回格式展开——OpenAI 请求规范是目前业界最通用的 API 格式，几乎所有主流模型都兼容此协议。</p>
+<p>你将看到：</p>
+<ol>
+<li><p><strong>基础对话：</strong>system、user、assistant、tool 消息如何组成上下文。</p>
+</li>
+<li><p><strong>工具调用：</strong>模型如何通过 tool_calls 请求应用端执行函数。</p>
+</li>
+<li><p><strong>Reasoning &#x2F; Thinking：</strong>思考模型如何与工具调用配合。</p>
+</li>
+<li><p><strong>Tools、MCP、Skills：</strong>Agent 能力通常如何注入到模型上下文中。</p>
+</li>
+<li><p><strong>Prompt Caching：</strong>上下文如何影响缓存命中。</p>
+</li>
+</ol>
+<p>ps：本文采用 <code>Chat Completions API</code>（<code>/v1/chat/completions</code>），是目前最广泛使用的版本。<code>OpenAI</code> 后续推出了 <code>Responses API</code>（<code>/v1/responses</code>），两者核心逻辑相同，不影响阅读。</p>
+</blockquote>
+<h2 id="一、基础对话参数"><a href="#一、基础对话参数" class="headerlink" title="一、基础对话参数"></a>一、基础对话参数</h2><blockquote>
+<p> temperature、top_p 等参数控制的是生成行为，不在本文讨论范围内；本文关注的是模型实际处理的消息内容。</p>
+</blockquote>
+<h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>model</code></td>
+<td>模型名称</td>
+</tr>
+<tr>
+<td><code>messages</code></td>
+<td>对话历史：system 设定角色、user 用户输入、assistant 模型回复、tool 工具结果</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>工具定义</td>
+</tr>
+<tr>
+<td><code>tool_choice</code></td>
+<td>工具调用策略：<code>auto</code> 模型自行决定、<code>none</code> 禁用工具、<code>required</code> 必须调用工具、<code>&#123;&quot;type&quot;:&quot;function&quot;,&quot;function&quot;:&#123;&quot;name&quot;:&quot;xxx&quot;&#125;&#125;</code> 强制调用指定工具</td>
+</tr>
+</tbody></table>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>message.content</code></td>
+<td>文字回复</td>
+</tr>
+<tr>
+<td><code>message.tool_calls</code></td>
+<td>工具调用请求</td>
+</tr>
+<tr>
+<td><code>message.reasoning_content</code></td>
+<td>推理过程（仅思考模型），OpenAI 一般不返回此字段，属于其他供应商的扩展字段</td>
+</tr>
+<tr>
+<td><code>finish_reason</code></td>
+<td>结束原因：stop 正常结束、tool_calls 请求调用工具、length 达到 token 上限被截断</td>
+</tr>
+</tbody></table>
+<h3 id="基础对话"><a href="#基础对话" class="headerlink" title="基础对话"></a>基础对话</h3><h4 id="单轮对话"><a href="#单轮对话" class="headerlink" title="单轮对话"></a>单轮对话</h4><p>最简单的请求，只有 <code>model</code> 和 <code>messages</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mimo-v2.5-pro&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;messages&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用一句话介绍量子计算&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>响应中包含最终回答 <code>content</code>（推理模型还会额外返回 <code>reasoning_content</code>）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;choices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span>           <span class="comment">// assistant：角色，表示模型的回复</span></span><br><span class="line">      <span class="attr">&quot;reasoning_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用户要求用一句话介绍量子计算...&quot;</span><span class="punctuation">,</span>  <span class="comment">// 推理过程（仅思考模型有此字段）</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;量子计算是利用量子叠加和纠缠特性，实现远超传统计算机并行计算能力的新型计算方式。&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;finish_reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stop&quot;</span>          <span class="comment">// stop：正常结束，模型输出完毕</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="多轮对话"><a href="#多轮对话" class="headerlink" title="多轮对话"></a>多轮对话</h4><p>通过累积 <code>messages</code> 实现多轮对话。每轮请求都要带上完整历史。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;messages&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;system&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是一个厨师&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;红烧肉怎么做？&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;做红烧肉，关键就四个字：肥而不腻。我给你一个家常版、稳定好吃的做法...&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是谁？&quot;</span><span class="punctuation">&#125;</span> <span class="comment">// 本轮用户提示词</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>响应中模型根据上下文知道自己是厨师角色：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;choices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;reasoning_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用户问我是谁。根据之前的对话，用户一开始说&quot;</span>你是一个厨师<span class="string">&quot;，所以这是一个角色设定。用户现在问我是谁，我应该以厨师的身份回答。&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;哈哈，我是您的**私人厨师**呀！🧑‍🍳\n\n之前您给我安排的角色——**一个厨师**，所以我就系上围裙，随时为您服务！&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;finish_reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stop&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="关于历史消息中是否需要携带思考字段的问题"><a href="#关于历史消息中是否需要携带思考字段的问题" class="headerlink" title="关于历史消息中是否需要携带思考字段的问题"></a>关于历史消息中是否需要携带思考字段的问题</h3><p>上文的历史消息示例中，我们只保留了 <code>role</code> 和 <code>content</code>。但对于部分思考模型，模型回复中可能还会包含 <code>reasoning_content</code>、<code>reasoning</code>、<code>reasoning_details</code> 等思考字段。那么，这些思考字段是否也需要一并写入历史消息呢？</p>
+<p>我查阅了相关资料后发现，各家 API 的处理方式并不完全一致：有的场景需要回传思考字段，有的场景不需要；而且不同平台返回的字段名也不相同。例如，DeepSeek 在 thinking mode 中使用 <code>reasoning_content</code>，并明确区分普通对话和工具调用场景：如果本轮只是普通对话，<code>reasoning_content</code> 不需要参与后续上下文拼接；如果本轮发生了工具调用，则需要在后续请求中继续传回该字段。</p>
+<p>通用建议是：<strong>不要默认把思考字段写入历史消息</strong>。普通多轮对话通常只需要保存模型面向用户的最终回答，也就是 <code>content</code>；只有当具体 API 文档明确要求回传思考字段时，才按对应平台的规则处理。</p>
+<p>另外，如果模型没有把思考内容拆成单独字段，而是直接把思考链和最终答案一起放在 <code>content</code> 中，例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">think</span>&gt;</span>...<span class="tag">&lt;/<span class="name">think</span>&gt;</span></span><br><span class="line">最终回答</span><br></pre></td></tr></table></figure>
+
+<p>那么也建议在写入历史消息前先做拆分：思考内容可以单独记录到日志中用于调试，但<strong>历史消息里通常只保留“最终回答”</strong>。这样可以避免上下文膨胀、思考链污染后续回复，也更符合多数推理服务的推荐用法。</p>
+<hr>
+<h2 id="二、工具调用"><a href="#二、工具调用" class="headerlink" title="二、工具调用"></a>二、工具调用</h2><blockquote>
+<p><code>Function Calling</code>（函数调用）允许模型决定何时调用工具、调用哪个工具，以及传递什么参数。下面这个图很清晰，图来至菜鸟教程。</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/blog/function-calling-flow.png" alt="function-calling-flow"></p>
+<h3 id="输入-1"><a href="#输入-1" class="headerlink" title="输入"></a>输入</h3><p>在基础对话参数的基础上，新增：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tools</code></td>
+<td>工具定义数组，每个工具包含 <code>name</code>、<code>description</code>、<code>parameters</code></td>
+</tr>
+<tr>
+<td><code>tool_choice</code></td>
+<td>工具调用策略：<code>auto</code> 模型自行决定、<code>none</code> 禁用工具、<code>required</code> 必须调用工具</td>
+</tr>
+</tbody></table>
+<p>工具结果通过 <code>role: &quot;tool&quot;</code> 消息回传，塞进 <code>messages</code> 中：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>role</code></td>
+<td>固定为 <code>&quot;tool&quot;</code></td>
+</tr>
+<tr>
+<td><code>tool_call_id</code></td>
+<td>关联模型返回的 <code>tool_calls[].id</code>（ps：无需关注，使用模型返回的工具 id 字段）</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>工具执行结果（字符串）</td>
+</tr>
+</tbody></table>
+<h3 id="输出-1"><a href="#输出-1" class="headerlink" title="输出"></a>输出</h3><p>模型返回的 <code>message</code> 中新增：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tool_calls</code></td>
+<td>工具调用请求数组，每个包含 <code>id</code>、<code>function.name</code>、<code>function.arguments</code></td>
+</tr>
+<tr>
+<td><code>finish_reason</code></td>
+<td>为 <code>tool_calls</code> 时表示模型请求调用工具</td>
+</tr>
+</tbody></table>
+<h3 id="工具定义"><a href="#工具定义" class="headerlink" title="工具定义"></a>工具定义</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;function&quot;</span><span class="punctuation">,</span>                    <span class="comment">// 工具类型，目前只有 function（OpenAI Responses规范类似更多）</span></span><br><span class="line">      <span class="attr">&quot;function&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;get_weather&quot;</span><span class="punctuation">,</span>               <span class="comment">// 函数名，模型通过此名称调用</span></span><br><span class="line">        <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;查询城市当前天气&quot;</span><span class="punctuation">,</span>    <span class="comment">// 函数描述，模型根据描述决定是否调用</span></span><br><span class="line">        <span class="attr">&quot;parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>                      <span class="comment">// 参数定义，使用 JSON Schema 格式</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;city&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">&#125;</span>       <span class="comment">// 参数名和类型</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;city&quot;</span><span class="punctuation">]</span>               <span class="comment">// 必填参数</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tool_choice&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span>                      <span class="comment">// 调用策略：auto / none / required</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h3><p>以”去北京旅游，先查天气，天气好再查空气质量”为例，展示多轮工具调用的完整流程。</p>
+<blockquote>
+<p>先思考 → 先调用天气工具 → 根据天气结果继续思考 → 再决定是否调用空气质量工具 → 再基于工具结果最终回答</p>
+</blockquote>
+<p><strong>第一轮：发送用户消息</strong></p>
+<p>请求：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mimo-v2.5-pro&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="comment">/* get_weather、get_fx_rate、get_air_quality 三个工具的定义*/</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;messages&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;我想去北京旅游，先帮我查一下天气，如果天气不错再查一下空气质量。&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tool_choice&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>响应（模型先查天气）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;choices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span>                          <span class="comment">// 为空，模型选择用工具回答</span></span><br><span class="line">      <span class="attr">&quot;reasoning_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用户想去北京旅游，想先查天气，如果天气好再查空气质量。我需要先调用天气查询函数。&quot;</span><span class="punctuation">,</span>  <span class="comment">// 推理过程</span></span><br><span class="line">      <span class="attr">&quot;tool_calls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;call_xxx&quot;</span><span class="punctuation">,</span>                   <span class="comment">// 工具调用 id，回传结果时需要关联</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;function&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;function&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;get_weather&quot;</span><span class="punctuation">,</span>            <span class="comment">// 要调用的函数名</span></span><br><span class="line">            <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;\&quot;city\&quot;: \&quot;北京\&quot;&#125;&quot;</span> <span class="comment">// 函数参数（JSON 字符串）</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;finish_reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tool_calls&quot;</span>             <span class="comment">// 表示模型请求调用工具</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二轮：天气不错，继续查空气质量</strong></p>
+<p>请求（追加第一轮的 assistant 消息和天气工具结果）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;messages&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;我想去北京旅游，先帮我查一下天气，如果天气不错再查一下空气质量。&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_calls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="comment">/* 同第一轮响应 */</span><span class="punctuation">]</span></span><br><span class="line">      <span class="comment">// 不回传 reasoning_content，有利于缓存命中（见缓存章节）</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tool&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_call_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;call_xxx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;\&quot;city\&quot;: \&quot;北京\&quot;, \&quot;temperature\&quot;: \&quot;22°C\&quot;, \&quot;condition\&quot;: \&quot;晴\&quot;, \&quot;humidity\&quot;: \&quot;45%\&quot;&#125;&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>响应（模型根据天气结果，决定继续查空气质量）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;choices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span>                          <span class="comment">// 仍然为空，模型决定继续调用工具</span></span><br><span class="line">      <span class="attr">&quot;reasoning_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;天气看起来不错，温度22度，晴朗，湿度45%。接下来应该查询空气质量。&quot;</span><span class="punctuation">,</span>  <span class="comment">// 根据天气结果决定下一步</span></span><br><span class="line">      <span class="attr">&quot;tool_calls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;call_yyy&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;function&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;function&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;get_air_quality&quot;</span><span class="punctuation">,</span>        <span class="comment">// 天气好，继续查空气质量</span></span><br><span class="line">            <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;\&quot;city\&quot;: \&quot;北京\&quot;&#125;&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;finish_reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tool_calls&quot;</span>             <span class="comment">// 仍然是 tool_calls，表示还需要一轮</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第三轮：生成最终回答</strong></p>
+<p>请求（追加第二轮的 assistant 消息和空气质量工具结果）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;messages&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;我想去北京旅游，先帮我查一下天气，如果天气不错再查一下空气质量。&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_calls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="comment">/* 第一轮工具调用 */</span><span class="punctuation">]</span></span><br><span class="line">      <span class="comment">// 不回传 reasoning_content</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tool&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_call_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;call_xxx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;\&quot;city\&quot;: \&quot;北京\&quot;, \&quot;temperature\&quot;: \&quot;22°C\&quot;, \&quot;condition\&quot;: \&quot;晴\&quot;, \&quot;humidity\&quot;: \&quot;45%\&quot;&#125;&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_calls&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="comment">/* 第二轮工具调用 */</span><span class="punctuation">]</span></span><br><span class="line">      <span class="comment">// 不回传 reasoning_content</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tool&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tool_call_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;call_yyy&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;\&quot;city\&quot;: \&quot;北京\&quot;, \&quot;aqi\&quot;: 35, \&quot;level\&quot;: \&quot;优\&quot;, \&quot;pm25\&quot;: 12&#125;&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>响应（模型根据所有结果生成最终回答）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;choices&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;reasoning_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;天气和空气质量都很不错。现在可以给用户一个完整的建议。&quot;</span><span class="punctuation">,</span>  <span class="comment">// 所有数据齐全，准备生成回答</span></span><br><span class="line">      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;北京现在天气非常不错！温度22°C，晴天，湿度45%，空气质量优（AQI 35），非常适合出行！&quot;</span>  <span class="comment">// 最终回答</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;finish_reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stop&quot;</span>                  <span class="comment">// 正常结束</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、思考中调工具"><a href="#三、思考中调工具" class="headerlink" title="三、思考中调工具"></a>三、思考中调工具</h2><blockquote>
+<p>「在思考中使用工具」这一能力在2025年因 <code>DeepSeek</code>、<code>MiniMax</code> 等模型的支持而广受关注过。具体是什么意思？请看下面。</p>
+</blockquote>
+<p>以 <code>Claude Code</code> 为例，其执行流程为：思考 → 工具调用 → 再思考 → 输出回答。可以看到，工具调用穿插在两次思考之间——这是大模型「在思考中使用工具」的体现。<br>在上一章节第二轮的响应中也可以看到，<code>reasoning_content</code>、<code>tool_calls</code> 有值，但 <code>content</code> 为空——模型已完成思考并输出了工具调用请求，但尚未给出最终回答，需等待工具返回结果后再继续推理。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/blog/claude-code-thinking-tool-calling.png" alt="claude-code-thinking-tool-calling"></p>
+<p>部分支持 <code>thinking</code> &#x2F; <code>reasoning</code> 模式的模型或 API，允许在生成最终答案之前穿插工具调用。典型流程如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">用户请求</span><br><span class="line">→ 模型开始 reasoning</span><br><span class="line">→ 模型判断需要外部工具</span><br><span class="line">→ API 返回 reasoning 信息 + tool_calls，通常 content 为空</span><br><span class="line">→ 外部程序执行工具</span><br><span class="line">→ 将工具结果作为 role: &quot;tool&quot; 消息回传</span><br><span class="line">→ 模型基于工具结果继续 reasoning</span><br><span class="line">→ 必要时继续调用工具</span><br><span class="line">→ 最终输出 content</span><br></pre></td></tr></table></figure>
+
+<p>此时 API 响应通常具有以下特征：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reasoning_content / reasoning 有值：API 暴露的 reasoning 信息，字段名因供应商而异</span><br><span class="line">tool_calls 有数据：模型请求调用的工具</span><br><span class="line">content 为空或无最终答案：模型尚未完成最终回复</span><br><span class="line">finish_reason 为 tool_calls：表示当前轮需要外部执行工具</span><br></pre></td></tr></table></figure>
+
+<p>与普通工具调用相比，两者的主要区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>流程</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通 tool calling</td>
+<td>用户请求 → 模型返回 <code>tool_calls</code> → 外部执行工具 → 回传 <code>role:&quot;tool&quot;</code> → 模型继续或最终回答</td>
+<td>通常不暴露思考字段，也不需要回传思考字段</td>
+</tr>
+<tr>
+<td>thinking &#x2F; reasoning tool calling</td>
+<td>用户请求 → 模型 reasoning → 返回 reasoning 信息 + <code>tool_calls</code> → 外部执行工具 → 回传工具结果 → 模型继续 reasoning → 最终回答</td>
+<td>会暴露 reasoning 字段；是否需要回传该字段取决于具体 API</td>
+</tr>
+</tbody></table>
+<p>附上<code>DeepSeek</code>正确的一张示意图：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/blog/deepseek-thinking-mode-diagram.png" alt="deepseek-thinking-mode-diagram"></p>
+<p>一篇更详细的博文：<a target="_blank" rel="noopener" href="https://news.qq.com/rain/a/20251204A05XL800">https://news.qq.com/rain/a/20251204A05XL800</a></p>
+<h2 id="四、Agent-中的-Tools、MCP、Skills"><a href="#四、Agent-中的-Tools、MCP、Skills" class="headerlink" title="四、Agent 中的 Tools、MCP、Skills"></a>四、Agent 中的 Tools、MCP、Skills</h2><p>在 <code>Agent</code> 场景下，常见的能力注入方式可以简单分成三类：<strong>Tools、MCP、Skills</strong>。它们的目标都是增强模型能力，但方式不一样。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>可以理解成</th>
+<th>常见载体</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工具（Tools）</td>
+<td>直接给模型一组“可调用函数”</td>
+<td><code>tools</code> 字段</td>
+<td>模型通过 <code>tool_calls</code> 请求调用，真正执行由应用端完成</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>外接工具的统一接口</td>
+<td><code>tools</code> 字段</td>
+<td>转成普通工具，和内置工具走同一条链路</td>
+</tr>
+<tr>
+<td>Skills（技能）</td>
+<td>按需加载的“说明书&#x2F;操作手册”</td>
+<td><code>system prompt</code></td>
+<td>以文本形式注入，模型用 <code>read</code> 工具读取执行</td>
+</tr>
+</tbody></table>
+<h4 id="工具（Tools）"><a href="#工具（Tools）" class="headerlink" title="工具（Tools）"></a>工具（Tools）</h4><p>Tools 就是最直接的函数调用。开发者在请求里通过 <code>tools</code> 字段告诉模型有哪些函数可以用，例如查天气、查汇率、查数据库。模型不会自己执行函数，而是返回 <code>tool_calls</code>，由应用端执行后再把结果回传给模型。<code>OpenAI</code> 官方 <code>Function Calling</code> 文档也把这个流程描述为：发送工具定义、模型返回 tool call、应用执行工具、把工具结果回传、模型继续回答。</p>
+<h4 id="MCP-工具"><a href="#MCP-工具" class="headerlink" title="MCP 工具"></a>MCP 工具</h4><p><code>MCP</code> 可以理解成”给 Agent 接外部能力的标准插座”。普通 Tools 通常是你在代码里直接定义的函数，而 <code>MCP</code> 工具可能来自一个外部 <code>MCP Server</code>，比如文件系统、GitHub、数据库、浏览器、企业系统等。</p>
+<p>对模型来说，<code>MCP</code> 工具和普通工具没有区别；对应用端来说，背后多了一层 <code>MCP Client/Server</code> 的转发。</p>
+<h4 id="Skills（技能）"><a href="#Skills（技能）" class="headerlink" title="Skills（技能）"></a>Skills（技能）</h4><p>Skills 更像是“操作手册”或“技能包”，不是一个马上执行的函数。它通常包含一个 <code>SKILL.md</code> 文件，里面写着什么时候使用这个技能、具体怎么做、有哪些注意事项，也可能带脚本、模板、参考资料等文件。</p>
+<p>在 <code>openclaw</code> 这类实现里，系统会先把可用 skill 的名字、描述、路径注入到 <code>system prompt</code> 里。模型先根据描述判断是否需要某个 skill；如果需要，再用 <code>read</code> 工具读取对应路径下的 <code>SKILL.md</code>。也就是说，skill 本身不是一个函数调用，而是让模型按需加载一份更详细的说明书。</p>
+<p><code>Anthropic</code> 对 Agent Skills 的介绍也强调了类似思路：Skills 通过”渐进披露”工作，先让模型看到少量信息，只有相关时才加载 <code>SKILL.md</code> 和附加文件，避免一开始把所有内容都塞进上下文。</p>
+<p><strong>以下基于 <code>openclaw</code> 源码举例，Agent实际是如何加载skill的</strong>。</p>
+<h5 id="system-prompt-中的-Skills-指令"><a href="#system-prompt-中的-Skills-指令" class="headerlink" title="system prompt 中的 Skills 指令"></a>system prompt 中的 Skills 指令</h5><p><code>openclaw</code> 的 <code>buildSkillsSection</code> 函数会生成如下指令（参考 <code>src/agents/system-prompt.ts</code>）：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Skills (mandatory)</span></span><br><span class="line">Before replying: scan &lt;available_skills&gt; &lt;description&gt; entries.</span><br><span class="line">- If exactly <span class="literal">one</span> skill clearly applies: <span class="built_in">read</span> its SKILL.md <span class="keyword">at</span> &lt;location&gt; <span class="keyword">with</span> <span class="built_in">read</span> tool, <span class="keyword">then</span> follow <span class="keyword">it</span>.</span><br><span class="line">- If multiple could apply: choose <span class="keyword">the</span> most specific <span class="literal">one</span>, <span class="keyword">then</span> <span class="built_in">read</span>/follow <span class="keyword">it</span>.</span><br><span class="line">- If <span class="literal">none</span> clearly apply: <span class="built_in">do</span> <span class="keyword">not</span> <span class="built_in">read</span> <span class="keyword">any</span> SKILL.md.</span><br><span class="line">Constraints: never <span class="built_in">read</span> more than <span class="literal">one</span> skill up front; only <span class="built_in">read</span> <span class="keyword">after</span> selecting.</span><br></pre></td></tr></table></figure>
+
+<p>这段指令明确告诉模型：<strong>匹配到 skill 后，用 read 工具读取 <code>&lt;location&gt;</code> 路径的 SKILL.md 文件。</strong></p>
+<h5 id="技能目录格式"><a href="#技能目录格式" class="headerlink" title="技能目录格式"></a>技能目录格式</h5><p>技能列表以 XML 格式注入 system prompt（参考 <code>src/agents/skills/workspace.ts</code>）：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">available_skills</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">skill</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>checks<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>Run checks before landing changes.<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">location</span>&gt;</span>/skills/checks/SKILL.md<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">skill</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">skill</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>release<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>Release OpenClaw safely.<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">location</span>&gt;</span>/skills/release/SKILL.md<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">skill</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">available_skills</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>每个 skill 包含三个字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;name&gt;</code></td>
+<td>标识 skill</td>
+</tr>
+<tr>
+<td><code>&lt;description&gt;</code></td>
+<td>让模型判断是否匹配用户请求</td>
+</tr>
+<tr>
+<td><code>&lt;location&gt;</code></td>
+<td>告诉模型去哪里读 SKILL.md</td>
+</tr>
+</tbody></table>
+<h5 id="工具-vs-Skills"><a href="#工具-vs-Skills" class="headerlink" title="工具 vs Skills"></a>工具 vs Skills</h5><table>
+<thead>
+<tr>
+<th></th>
+<th>工具（Tools）</th>
+<th>Skills</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>注册方式</td>
+<td><code>tools</code> 字段</td>
+<td><code>system</code> prompt</td>
+</tr>
+<tr>
+<td>模型如何调用</td>
+<td>返回 <code>tool_calls</code></td>
+<td>调用 <code>read</code> 工具读取 SKILL.md</td>
+</tr>
+<tr>
+<td>执行方式</td>
+<td>应用端执行函数</td>
+<td>模型按 SKILL.md 指令操作</td>
+</tr>
+<tr>
+<td>选择方式</td>
+<td>模型直接选工具名</td>
+<td>模型匹配描述，再读文件</td>
+</tr>
+</tbody></table>
+<p>Skills 的本质是<strong>结构化的提示词工程</strong>，把领域知识存成文件，按需加载到上下文中，让模型用现有工具（如 <code>read</code>、<code>bash</code>）去执行。</p>
+<h5 id="再拿-Claude-Code-的-Skills-格式举例"><a href="#再拿-Claude-Code-的-Skills-格式举例" class="headerlink" title="再拿 Claude Code 的 Skills 格式举例"></a>再拿 Claude Code 的 Skills 格式举例</h5><p><code>Claude Code</code> 同样把 Skills 注入 system prompt，但用 XML 标签包裹 + 纯文本列表的形式：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;system-reminder&gt;</span><br><span class="line">The following skills are available for use with the Skill tool:</span><br><span class="line"></span><br><span class="line">- <span class="keyword">update</span>-config: <span class="keyword">Use</span> this skill <span class="keyword">to</span> configure the Claude Code harness <span class="keyword">via</span> settings.json. <span class="keyword">TRIGGER</span> <span class="keyword">when</span>: ... SKIP <span class="keyword">when</span>: ...</span><br><span class="line">- simplify: Review changed code <span class="keyword">for</span> reuse, quality, <span class="keyword">and</span> efficiency, <span class="keyword">then</span> fix <span class="keyword">any</span> issues found.</span><br><span class="line">- loop: Run a prompt <span class="keyword">or</span> slash command <span class="keyword">on</span> a recurring interval.</span><br><span class="line">&lt;/<span class="keyword">system</span>-reminder&gt;</span><br></pre></td></tr></table></figure>
+
+<p>每个 skill 用 <code>- name: 描述</code> 的纯文本格式，没有嵌套 XML 标签。</p>
+<p>两者都用 XML 做结构分隔，内部格式不同，核心思路一致：<strong>skill 信息以文本形式注入 system prompt，模型根据描述决定是否使用。</strong></p>
+<p><strong>总结：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>注册方式</th>
+<th>模型感知</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>工具（Tools）</strong></td>
+<td>定义在请求的 <code>tools</code> 字段中</td>
+<td>模型决定调用哪个工具、传什么参数，由应用端执行后回传结果</td>
+</tr>
+<tr>
+<td><strong>MCP 工具</strong></td>
+<td>发送前转换为标准工具格式，走 <code>tools</code> 字段</td>
+<td>对模型来说与普通工具无区别</td>
+</tr>
+<tr>
+<td><strong>Skills（技能）</strong></td>
+<td>注入到 <code>system</code> prompt 中，不注册为工具</td>
+<td>模型根据 prompt 中的描述决定是否使用</td>
+</tr>
+</tbody></table>
+<h2 id="五、-缓存"><a href="#五、-缓存" class="headerlink" title="五、 缓存"></a>五、 缓存</h2><p><code>OpenAI</code> 的 <code>Prompt Caching</code> 可以简单理解为：<strong>如果多次请求开头的 prompt 内容完全一样，<code>OpenAI</code> 可以复用之前已经计算过的前缀，从而降低延迟和成本。</strong></p>
+<h4 id="参与缓存的字段"><a href="#参与缓存的字段" class="headerlink" title="参与缓存的字段"></a>参与缓存的字段</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>messages</code></td>
+<td>必须从头完全一致，顺序不能变</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>模型名</td>
+</tr>
+<tr>
+<td><code>tools</code></td>
+<td>工具定义</td>
+</tr>
+<tr>
+<td><code>tool_choice</code></td>
+<td>工具策略</td>
+</tr>
+<tr>
+<td><code>temperature</code> &#x2F; <code>top_p</code> 等</td>
+<td>静态参数</td>
+</tr>
+</tbody></table>
+<p><strong>不参与缓存的：</strong> <code>user</code> 等 metadata 字段。</p>
+<h4 id="前缀匹配机制"><a href="#前缀匹配机制" class="headerlink" title="前缀匹配机制"></a>前缀匹配机制</h4><p>缓存匹配的是<strong>最终 prompt token 的最长相同前缀</strong>。例如：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">请求<span class="number">1</span>: [system, tools, <span class="keyword">user</span> <span class="title">A</span>, assistant, <span class="keyword">user</span> <span class="title">B</span>]</span><br><span class="line">请求<span class="number">2</span>: [system, tools, <span class="keyword">user</span> <span class="title">A</span>, assistant, <span class="keyword">user</span> <span class="title">C</span>]</span><br><span class="line">         ↑ 前面这些内容完全一致，可能命中缓存</span><br><span class="line">                                      ↑ 从这里开始不同，需要重新计算</span><br></pre></td></tr></table></figure>
+
+<p>所以想提高缓存命中率，关键是让请求开头尽量稳定：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">稳定放前面：</span><br><span class="line">system prompt</span><br><span class="line">工具定义 tools</span><br><span class="line">固定规则</span><br><span class="line">固定示例</span><br><span class="line">结构化输出 schema</span><br><span class="line"></span><br><span class="line">变化放后面：</span><br><span class="line">当前用户问题</span><br><span class="line">时间</span><br><span class="line">用户个性化信息</span><br><span class="line">检索结果</span><br><span class="line">临时状态</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="回传思考字段对缓存的影响"><a href="#回传思考字段对缓存的影响" class="headerlink" title="回传思考字段对缓存的影响"></a>回传思考字段对缓存的影响</h4><p>前文提到，不同模型&#x2F;API 对思考字段的处理规则不同：有些模型在工具调用场景下要求回传 <code>reasoning_content</code>，有些模型则不要求回传。因此，我们用小米的 <code>mimo-v2.5-pro</code> 做了一个对比实验，场景沿用第二章中的“先查天气，天气不错再查空气质量”。</p>
+<p>以下是回传与不回传 <code>reasoning_content</code> 的 <code>token</code> 数据对比：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>不回传</th>
+<th>回传</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>第一轮</strong></td>
+<td>prompt</td>
+<td>686</td>
+<td>686</td>
+</tr>
+<tr>
+<td></td>
+<td>cached</td>
+<td>640</td>
+<td>640</td>
+</tr>
+<tr>
+<td></td>
+<td>缓存率</td>
+<td>93.3%</td>
+<td>93.3%</td>
+</tr>
+<tr>
+<td><strong>第二轮</strong></td>
+<td>prompt</td>
+<td>748</td>
+<td>809 (+61)</td>
+</tr>
+<tr>
+<td></td>
+<td>cached</td>
+<td><strong>704</strong></td>
+<td><strong>640</strong></td>
+</tr>
+<tr>
+<td></td>
+<td>缓存率</td>
+<td><strong>94.1%</strong></td>
+<td><strong>79.1%</strong></td>
+</tr>
+<tr>
+<td><strong>第三轮</strong></td>
+<td>prompt</td>
+<td>812</td>
+<td>916 (+104)</td>
+</tr>
+<tr>
+<td></td>
+<td>cached</td>
+<td>768</td>
+<td>768</td>
+</tr>
+<tr>
+<td></td>
+<td>缓存率</td>
+<td><strong>94.6%</strong></td>
+<td><strong>83.8%</strong></td>
+</tr>
+</tbody></table>
+<p>关键差异在<strong>第二轮</strong>：</p>
+<ul>
+<li>不回传时 cached&#x3D;704，回传时 cached&#x3D;640，少了 64 tokens</li>
+<li>原因：回传的 <code>reasoning_content</code> 文本改变了 assistant 消息的内容，与第一轮缓存的前缀不匹配，导致这部分无法复用</li>
+<li>不回传时 assistant 消息（只有 <code>content</code> + <code>tool_calls</code>）和第一轮响应一致，前缀匹配更长</li>
+</ul>
+<blockquote>
+<p>这说明，在当前实验中，回传 <code>reasoning_content</code> 不仅增加了输入长度，还让可复用的缓存前缀变短了。原因是缓存通常依赖<strong>精确前缀匹配</strong>：如果在历史消息中插入一段新的 <code>reasoning_content</code>，最终 prompt token 序列会在更早的位置与之前请求发生分叉，导致后续部分无法复用缓存。</p>
+<p>因此，对于当前测试的 <code>mimo-v2.5-pro</code> 来说，<code>reasoning_content</code> 不适合写入历史消息。</p>
+<p>不过，这个结论不能直接推广到所有模型。比如 DeepSeek 官方 thinking mode 明确要求：如果某一轮发生了 tool call，该轮 assistant 的 <code>reasoning_content</code> 必须在后续请求中完整传回，否则可能报错。</p>
+</blockquote>
+<p><strong>结论：</strong></p>
+<p>在当前 <code>mimo-v2.5-pro</code> 实验中，不回传 <code>reasoning_content</code> 的效果更好：<code>prompt</code> 更短，缓存命中率更高。</p>
+<p>所以，除非 <code>API</code> 明确要求回传思考字段，否则一般不建议默认把 <code>reasoning_content</code> 写入历史消息。</p>
+<p>本文的样例代码为<code>Python</code>，<code>OpenAI</code> 提供了<code>Python</code>下的请求包，下载<code>pip install openai</code>，本文没有介绍此包的用法，而是重点围绕 AI 应用设计&#x2F;开发所需的模型交互知识。微信公众号读者请点击跳转原文，在文章最后附上测试代码。</p>
+<h2 id="六、测试代码"><a href="#六、测试代码" class="headerlink" title="六、测试代码"></a>六、测试代码</h2><h3 id="（一）基础对话"><a href="#（一）基础对话" class="headerlink" title="（一）基础对话"></a>（一）基础对话</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line"></span><br><span class="line">sys.stdout.reconfigure(encoding=<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line">client = OpenAI(</span><br><span class="line">base_url=<span class="string">&quot;https://token-plan-cn.xiaomimimo.com/v1&quot;</span>, // API 地址</span><br><span class="line">    api_key=os.environ.get(<span class="string">&quot;OPENAI_API_KEY&quot;</span>, <span class="string">&quot;你的key&quot;</span>)</span><br><span class="line">)</span><br><span class="line">model = <span class="string">&quot;mimo-v2.5-pro&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dump_request</span>(<span class="params">label, **kwargs</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[请求] <span class="subst">&#123;label&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(json.dumps(kwargs, ensure_ascii=<span class="literal">False</span>, indent=<span class="number">2</span>, default=<span class="built_in">str</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dump_response</span>(<span class="params">label, response</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[响应] <span class="subst">&#123;label&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Model: <span class="subst">&#123;response.model&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Finish reason: <span class="subst">&#123;response.choices[<span class="number">0</span>].finish_reason&#125;</span>&quot;</span>)</span><br><span class="line">    message = response.choices[<span class="number">0</span>].message</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Reasoning: <span class="subst">&#123;message.reasoning_content&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> message.content:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Content: <span class="subst">&#123;message.content&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="comment"># 测试 1：单轮纯文本对话</span></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span> + <span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;# 测试 1：单轮纯文本对话&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">messages1 = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;用一句话介绍量子计算&quot;</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">request1 = <span class="built_in">dict</span>(model=model, messages=messages1)</span><br><span class="line">dump_request(<span class="string">&quot;单轮对话&quot;</span>, **request1)</span><br><span class="line"></span><br><span class="line">response1 = client.chat.completions.create(**request1)</span><br><span class="line">dump_response(<span class="string">&quot;单轮对话&quot;</span>, response1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="comment"># 测试 2：多轮对话（带角色设定）</span></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span> + <span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;# 测试 2：多轮对话（带角色设定）&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">messages2 = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;system&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;你是一个厨师&quot;</span>&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第一轮</span></span><br><span class="line">messages2.append(&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;红烧肉怎么做？&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line">request2 = <span class="built_in">dict</span>(model=model, messages=messages2)</span><br><span class="line">dump_request(<span class="string">&quot;第一轮&quot;</span>, **request2)</span><br><span class="line"></span><br><span class="line">response2 = client.chat.completions.create(**request2)</span><br><span class="line">dump_response(<span class="string">&quot;第一轮&quot;</span>, response2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二轮：验证角色是否保持</span></span><br><span class="line">messages2.append(response2.choices[<span class="number">0</span>].message.model_dump(exclude_none=<span class="literal">True</span>))</span><br><span class="line">messages2.append(&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;你是谁？&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line">request2b = <span class="built_in">dict</span>(model=model, messages=messages2)</span><br><span class="line">dump_request(<span class="string">&quot;第二轮：验证角色&quot;</span>, **request2b)</span><br><span class="line"></span><br><span class="line">response2b = client.chat.completions.create(**request2b)</span><br><span class="line">dump_response(<span class="string">&quot;第二轮：验证角色&quot;</span>, response2b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="comment"># 测试 3：系统提示词对比</span></span><br><span class="line"><span class="comment"># ========================================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span> + <span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;# 测试 3：系统提示词对比&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;#&quot;</span> * <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">question = <span class="string">&quot;介绍一下你自己&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 无 system</span></span><br><span class="line">messages3a = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: question&#125;</span><br><span class="line">]</span><br><span class="line">request3a = <span class="built_in">dict</span>(model=model, messages=messages3a)</span><br><span class="line">dump_request(<span class="string">&quot;无 system&quot;</span>, **request3a)</span><br><span class="line">response3a = client.chat.completions.create(**request3a)</span><br><span class="line">dump_response(<span class="string">&quot;无 system&quot;</span>, response3a)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 有 system</span></span><br><span class="line">messages3b = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;system&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;你是一个海盗船长，说话要带海盗口吻。&quot;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: question&#125;</span><br><span class="line">]</span><br><span class="line">request3b = <span class="built_in">dict</span>(model=model, messages=messages3b)</span><br><span class="line">dump_request(<span class="string">&quot;有 system（海盗船长）&quot;</span>, **request3b)</span><br><span class="line">response3b = client.chat.completions.create(**request3b)</span><br><span class="line">dump_response(<span class="string">&quot;有 system（海盗船长）&quot;</span>, response3b)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="（二）工具调用"><a href="#（二）工具调用" class="headerlink" title="（二）工具调用"></a>（二）工具调用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">client = OpenAI(</span><br><span class="line">base_url=<span class="string">&quot;https://token-plan-cn.xiaomimimo.com/v1&quot;</span>,</span><br><span class="line">    api_key=os.environ.get(<span class="string">&quot;OPENAI_API_KEY&quot;</span>, <span class="string">&quot;你的key&quot;</span>)</span><br><span class="line">)</span><br><span class="line">model=<span class="string">&quot;mimo-v2.5-pro&quot;</span></span><br><span class="line"></span><br><span class="line">sys.stdout.reconfigure(encoding=<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dump_request</span>(<span class="params">label, **kwargs</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[请求] <span class="subst">&#123;label&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(json.dumps(kwargs, ensure_ascii=<span class="literal">False</span>, indent=<span class="number">2</span>, default=<span class="built_in">str</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dump_response</span>(<span class="params">label, response</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[响应] <span class="subst">&#123;label&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;=&#x27;</span> * <span class="number">50</span>&#125;</span>&quot;</span>)</span><br><span class="line">    message = response.choices[<span class="number">0</span>].message</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Finish reason: <span class="subst">&#123;response.choices[<span class="number">0</span>].finish_reason&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(message, <span class="string">&#x27;reasoning_content&#x27;</span>) <span class="keyword">and</span> message.reasoning_content:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Reasoning: <span class="subst">&#123;message.reasoning_content&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> message.content:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Content: <span class="subst">&#123;message.content&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> message.tool_calls:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Tool calls: <span class="subst">&#123;json.dumps([tc.model_dump() <span class="keyword">for</span> tc <span class="keyword">in</span> message.tool_calls], ensure_ascii=<span class="literal">False</span>, indent=<span class="number">2</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="comment"># 打印 token 消耗</span></span><br><span class="line">    <span class="keyword">if</span> response.usage:</span><br><span class="line">        u = response.usage</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Usage: prompt=<span class="subst">&#123;u.prompt_tokens&#125;</span>, completion=<span class="subst">&#123;u.completion_tokens&#125;</span>, total=<span class="subst">&#123;u.total_tokens&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">hasattr</span>(u, <span class="string">&#x27;prompt_tokens_details&#x27;</span>) <span class="keyword">and</span> u.prompt_tokens_details:</span><br><span class="line">            d = u.prompt_tokens_details</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;  cached_tokens=<span class="subst">&#123;<span class="built_in">getattr</span>(d, <span class="string">&#x27;cached_tokens&#x27;</span>, <span class="string">&#x27;N/A&#x27;</span>)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 模拟工具函数 ---</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_weather</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;city&quot;</span>: city, <span class="string">&quot;temperature&quot;</span>: <span class="string">&quot;22°C&quot;</span>, <span class="string">&quot;condition&quot;</span>: <span class="string">&quot;晴&quot;</span>, <span class="string">&quot;humidity&quot;</span>: <span class="string">&quot;45%&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_fx_rate</span>(<span class="params">**kwargs</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;from&quot;</span>: kwargs[<span class="string">&quot;from&quot;</span>], <span class="string">&quot;to&quot;</span>: kwargs[<span class="string">&quot;to&quot;</span>], <span class="string">&quot;rate&quot;</span>: <span class="number">7.24</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_air_quality</span>(<span class="params">city: <span class="built_in">str</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;city&quot;</span>: city, <span class="string">&quot;aqi&quot;</span>: <span class="number">35</span>, <span class="string">&quot;level&quot;</span>: <span class="string">&quot;优&quot;</span>, <span class="string">&quot;pm25&quot;</span>: <span class="number">12</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TOOL_MAP = &#123;</span><br><span class="line">    <span class="string">&quot;get_weather&quot;</span>: <span class="keyword">lambda</span> **kw: get_weather(kw[<span class="string">&quot;city&quot;</span>]),</span><br><span class="line">    <span class="string">&quot;get_fx_rate&quot;</span>: get_fx_rate,</span><br><span class="line">    <span class="string">&quot;get_air_quality&quot;</span>: <span class="keyword">lambda</span> **kw: get_air_quality(kw[<span class="string">&quot;city&quot;</span>]),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 工具定义 ---</span></span><br><span class="line">tools = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;function&quot;</span>,</span><br><span class="line">        <span class="string">&quot;function&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;name&quot;</span>: <span class="string">&quot;get_weather&quot;</span>,</span><br><span class="line">            <span class="string">&quot;description&quot;</span>: <span class="string">&quot;查询城市当前天气&quot;</span>,</span><br><span class="line">            <span class="string">&quot;parameters&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">                <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;city&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;city&quot;</span>],</span><br><span class="line">                <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">&quot;strict&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;function&quot;</span>,</span><br><span class="line">        <span class="string">&quot;function&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;name&quot;</span>: <span class="string">&quot;get_fx_rate&quot;</span>,</span><br><span class="line">            <span class="string">&quot;description&quot;</span>: <span class="string">&quot;查询两种货币的汇率&quot;</span>,</span><br><span class="line">            <span class="string">&quot;parameters&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">                <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;from&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,</span><br><span class="line">                    <span class="string">&quot;to&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;from&quot;</span>, <span class="string">&quot;to&quot;</span>],</span><br><span class="line">                <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">&quot;strict&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;function&quot;</span>,</span><br><span class="line">        <span class="string">&quot;function&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;name&quot;</span>: <span class="string">&quot;get_air_quality&quot;</span>,</span><br><span class="line">            <span class="string">&quot;description&quot;</span>: <span class="string">&quot;查询城市空气质量&quot;</span>,</span><br><span class="line">            <span class="string">&quot;parameters&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">                <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;city&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;city&quot;</span>],</span><br><span class="line">                <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">&quot;strict&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 第一轮：发送用户消息 ---</span></span><br><span class="line">messages = [</span><br><span class="line">    &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;我想去北京旅游，先帮我查一下天气，如果天气不错再查一下空气质量。&quot;</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">request1 = <span class="built_in">dict</span>(model=model, tools=tools, messages=messages, tool_choice=<span class="string">&quot;auto&quot;</span>)</span><br><span class="line">dump_request(<span class="string">&quot;第一轮：发送用户消息&quot;</span>, **request1)</span><br><span class="line"></span><br><span class="line">response = client.chat.completions.create(**request1)</span><br><span class="line">dump_response(<span class="string">&quot;第一轮：模型请求调用工具&quot;</span>, response)</span><br><span class="line"></span><br><span class="line">message = response.choices[<span class="number">0</span>].message</span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 第二轮：将工具调用结果返回给模型 ---</span></span><br><span class="line"><span class="keyword">if</span> message.tool_calls:</span><br><span class="line">    <span class="comment"># 把 assistant 的 tool_calls 消息加入对话历史（不回传 reasoning_content）</span></span><br><span class="line">    assistant_msg = message.model_dump(exclude_none=<span class="literal">True</span>)</span><br><span class="line">    assistant_msg.pop(<span class="string">&quot;reasoning_content&quot;</span>, <span class="literal">None</span>)</span><br><span class="line">    messages.append(assistant_msg)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> tc <span class="keyword">in</span> message.tool_calls:</span><br><span class="line">        func_name = tc.function.name</span><br><span class="line">        func_args = json.loads(tc.function.arguments)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 执行对应的模拟函数</span></span><br><span class="line">        result = TOOL_MAP[func_name](**func_args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 把工具执行结果加入对话历史</span></span><br><span class="line">        messages.append(&#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;tool&quot;</span>,</span><br><span class="line">            <span class="string">&quot;tool_call_id&quot;</span>: tc.<span class="built_in">id</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: json.dumps(result, ensure_ascii=<span class="literal">False</span>),</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    request2 = <span class="built_in">dict</span>(model=model, tools=tools, messages=messages, tool_choice=<span class="string">&quot;auto&quot;</span>)</span><br><span class="line">    dump_request(<span class="string">&quot;第二轮：将工具结果返回给模型&quot;</span>, **request2)</span><br><span class="line"></span><br><span class="line">    response2 = client.chat.completions.create(**request2)</span><br><span class="line">    dump_response(<span class="string">&quot;第二轮：模型基于工具结果回答&quot;</span>, response2)</span><br><span class="line"></span><br><span class="line">    message2 = response2.choices[<span class="number">0</span>].message</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --- 第三轮：如果模型再次请求调用工具 ---</span></span><br><span class="line">    <span class="keyword">if</span> message2.tool_calls:</span><br><span class="line">        assistant_msg2 = message2.model_dump(exclude_none=<span class="literal">True</span>)</span><br><span class="line">        assistant_msg2.pop(<span class="string">&quot;reasoning_content&quot;</span>, <span class="literal">None</span>)  <span class="comment"># 不回传 reasoning_content</span></span><br><span class="line">        messages.append(assistant_msg2)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> tc <span class="keyword">in</span> message2.tool_calls:</span><br><span class="line">            func_name = tc.function.name</span><br><span class="line">            func_args = json.loads(tc.function.arguments)</span><br><span class="line">            result = TOOL_MAP[func_name](**func_args)</span><br><span class="line"></span><br><span class="line">            messages.append(&#123;</span><br><span class="line">                <span class="string">&quot;role&quot;</span>: <span class="string">&quot;tool&quot;</span>,</span><br><span class="line">                <span class="string">&quot;tool_call_id&quot;</span>: tc.<span class="built_in">id</span>,</span><br><span class="line">                <span class="string">&quot;content&quot;</span>: json.dumps(result, ensure_ascii=<span class="literal">False</span>),</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        request3 = <span class="built_in">dict</span>(model=model, tools=tools, messages=messages, tool_choice=<span class="string">&quot;auto&quot;</span>)</span><br><span class="line">        dump_request(<span class="string">&quot;第三轮：将工具结果返回给模型&quot;</span>, **request3)</span><br><span class="line"></span><br><span class="line">        response3 = client.chat.completions.create(**request3)</span><br><span class="line">        dump_response(<span class="string">&quot;第三轮：模型最终回答&quot;</span>, response3)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/tech/AI/ai-agent-api-basics/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/tech/AI/ai-agent-api-basics/&title=AI Agent 开发前置知识：模型对话、工具调用与上下文管理 - ChongWen&summary=本文介绍 AI 应用基础的知识——大模型 API 交互基础。本文内容基于 OpenAI-compatible Chat API 的请求与返回格式展开——OpenAI 请求规范是目前业界最通用的 API 格式，几乎所有主流模型都兼容此协议。"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=AI Agent 开发前置知识：模型对话、工具调用与上下文管理 - ChongWen&amp;body=https://chongwenz.cn/tech/AI/ai-agent-api-basics/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/tech/AI/ai-agent-api-basics/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/tech/AI/ai-skill-01/">【学习笔记】skill设计的一些注意要点</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/tech/AI/ai-vibe-coding-04-GPT/">碎碎念-AI给我的一些冲击和思考</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<style>
+.stats-row {
+  margin: 0.6rem auto 0.2rem;
+  max-width: 720px;
+  padding: 0.5rem 0.8rem;
+  color: #2a2f2f;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.stats-item {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.stats-icon {
+  font-size: 1rem;
+  color: #586064;
+}
+.stats-label {
+  color: #586064;
+}
+.stats-value {
+  font-weight: 700;
+}
+</style>
+<div class="stats-row" role="status" aria-live="polite">
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:bar-chart-2"></span>
+    <span class="stats-label">本站总访问量</span>
+    <span class="stats-value" id="busuanzi_site_pv">10000</span>
+    <span class="stats-label">次</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:user"></span>
+    <span class="stats-label">本站总访客数</span>
+    <span class="stats-value" id="busuanzi_site_uv">500</span>
+    <span class="stats-label">人</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:file-text"></span>
+    <span class="stats-label">本页总访客数</span>
+    <span class="stats-value" id="busuanzi_page_uv">加载中...</span>
+    <span class="stats-label">人</span>
+  </div>
+</div>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
+<script defer src="https://jsd.dusays.com/npm/penndu@17.0.0/bsz.js"></script>
+<script>
+(function () {
+  var pvBase = 10000;
+  var siteUvBase = 500;
+  var retry = 0;
+  var maxRetry = 60;
+  var timer = setInterval(function () {
+    var done = 0;
+    var sitePvEl = document.getElementById('busuanzi_site_pv');
+    if (sitePvEl) {
+      var sitePvRaw = (sitePvEl.textContent || '').trim();
+      var sitePv = parseInt(sitePvRaw || '0', 10);
+      if (sitePv > 0 && sitePvRaw !== String(pvBase)) {
+        sitePvEl.textContent = sitePv + pvBase;
+        done++;
+      }
+    }
+    var siteUvEl = document.getElementById('busuanzi_site_uv');
+    if (siteUvEl) {
+      var siteUvRaw = (siteUvEl.textContent || '').trim();
+      var siteUv = parseInt(siteUvRaw || '0', 10);
+      if (siteUv > 0 && siteUvRaw !== String(siteUvBase)) {
+        siteUvEl.textContent = siteUv + siteUvBase;
+        done++;
+      }
+    }
+    if (done >= 2) {
+      clearInterval(timer);
+    }
+    retry++;
+    if (retry >= maxRetry) {
+      clearInterval(timer);
+    }
+  }, 200);
+})();
+</script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 42 篇文章 🔸 总计 130.3k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#AI-Agent-%E5%BC%80%E5%8F%91%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86%EF%BC%9A%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%AF%9D%E3%80%81%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E4%B8%8E%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86"><span class="toc-text">AI Agent 开发前置知识：模型对话、工具调用与上下文管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E5%AF%B9%E8%AF%9D%E5%8F%82%E6%95%B0"><span class="toc-text">一、基础对话参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-text">输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E5%AF%B9%E8%AF%9D"><span class="toc-text">基础对话</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="toc-text">单轮对话</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="toc-text">多轮对话</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%8E%86%E5%8F%B2%E6%B6%88%E6%81%AF%E4%B8%AD%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81%E6%90%BA%E5%B8%A6%E6%80%9D%E8%80%83%E5%AD%97%E6%AE%B5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">关于历史消息中是否需要携带思考字段的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">二、工具调用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5-1"><span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA-1"><span class="toc-text">输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%B9%89"><span class="toc-text">工具定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="toc-text">完整示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%9D%E8%80%83%E4%B8%AD%E8%B0%83%E5%B7%A5%E5%85%B7"><span class="toc-text">三、思考中调工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Agent-%E4%B8%AD%E7%9A%84-Tools%E3%80%81MCP%E3%80%81Skills"><span class="toc-text">四、Agent 中的 Tools、MCP、Skills</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%EF%BC%88Tools%EF%BC%89"><span class="toc-text">工具（Tools）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MCP-%E5%B7%A5%E5%85%B7"><span class="toc-text">MCP 工具</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Skills%EF%BC%88%E6%8A%80%E8%83%BD%EF%BC%89"><span class="toc-text">Skills（技能）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#system-prompt-%E4%B8%AD%E7%9A%84-Skills-%E6%8C%87%E4%BB%A4"><span class="toc-text">system prompt 中的 Skills 指令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8A%80%E8%83%BD%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F"><span class="toc-text">技能目录格式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7-vs-Skills"><span class="toc-text">工具 vs Skills</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%8D%E6%8B%BF-Claude-Code-%E7%9A%84-Skills-%E6%A0%BC%E5%BC%8F%E4%B8%BE%E4%BE%8B"><span class="toc-text">再拿 Claude Code 的 Skills 格式举例</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81-%E7%BC%93%E5%AD%98"><span class="toc-text">五、 缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E4%B8%8E%E7%BC%93%E5%AD%98%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="toc-text">参与缓存的字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E5%8C%B9%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="toc-text">前缀匹配机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E4%BC%A0%E6%80%9D%E8%80%83%E5%AD%97%E6%AE%B5%E5%AF%B9%E7%BC%93%E5%AD%98%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-text">回传思考字段对缓存的影响</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-text">六、测试代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%E5%AF%B9%E8%AF%9D"><span class="toc-text">（一）基础对话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">（二）工具调用</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/tech/AI/ai-agent-api-basics.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "true" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

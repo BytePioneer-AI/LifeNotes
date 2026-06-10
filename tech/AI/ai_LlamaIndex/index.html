@@ -1,0 +1,1534 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>【RAG】LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统(转发) - ChongWen</title>
+
+  
+  <meta name="description" content="原文：https://mp.weixin.qq.com/s/xGdSUX0G2FEV5QOQAfbHUw">
+  
+  <meta name="keywords" content="AI,RAG">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="icon" type="image/svg+xml" href="/assets/logo.png"><link rel="shortcut icon" href="/assets/logo.png" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" /><script defer src="/_vercel/insights/script.js"></script><script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">⭐【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/Essays/20260331/"><span class="title">2026-03</span></a><a class="item title" href="/other/vpn/"><span class="title">自建 VPN</span></a><a class="item title" href="/smo/1/"><span class="title">简历相关1</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-12-11T00:00:00.000Z">2025-12-11</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-06-10T07:04:59.000Z">2026-06-10</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：15.2k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：57分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI/">AI</a>&nbsp; <a class="cap breadcrumb-link" href="/tags/RAG/">RAG</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>【RAG】LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统(转发)</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><meta name="referrer" content="no-referrer"/>
+
+<blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/xGdSUX0G2FEV5QOQAfbHUw">https://mp.weixin.qq.com/s/xGdSUX0G2FEV5QOQAfbHUw</a></p>
+</blockquote>
+<h1 id="推荐理由"><a href="#推荐理由" class="headerlink" title="推荐理由"></a>推荐理由</h1><p>即使我们已经非常熟悉<code>RAG</code>了，但仍有必要看下这篇文章，其中一部分很有意思：</p>
+<p>在文章问答的场景下，对多种（ <code>chunk_size 、chunk_overlap 、top_k 、temperature </code>）参数组合，从体感上进行分析和判断。让读者更好的理解，参数对最终呈现结果造成的影响。</p>
+<p>虽然文章中的测试场景仅针对“书”，不过对其他RAG场景仍有借鉴意义。</p>
+<blockquote>
+<ul>
+<li>chunk_size ↑ → 上下文更完整，但可能包含噪音；</li>
+<li>chunk_overlap ↑ → 信息连续性更好，但存储空间增加；</li>
+<li>top_k ↑ → 答案更全面，但耗时和成本增加；</li>
+<li>temperature ↑ → 答案更有创意，但可能不够准确；</li>
+</ul>
+</blockquote>
+<p><strong>参数速查表</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPq9kJsibmbBhy7jzr1BHxYsnAibDnpmzsG2JUZVlgSiaFI2wibx6PeRbPkA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=5" alt="图片"></p>
+<h1 id="LlamaIndex-深度实战：用《长安的荔枝》学会构建智能问答系统"><a href="#LlamaIndex-深度实战：用《长安的荔枝》学会构建智能问答系统" class="headerlink" title="LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统"></a>LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统</h1><p>原创 殊文 </p>
+<p> <em>2025年12月4日 08:31</em> <em>浙江</em></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naJqNQO3WNPDickicksAVMek4UYRYNDQY1emhibia5rA2tur1EhYOD4swQOZaYsohPsCyh5g5HS28SP1Dg/640?wx_fmt=jpeg&from=appmsg&wxfrom=13&tp=wxpic#imgIndex=0" alt="图片"></p>
+<h2 id="读者导航"><a href="#读者导航" class="headerlink" title="读者导航"></a>读者导航</h2><p>大家好！这篇文章兼顾了 RAG 的科普与 LlamaIndex 的实战。无论你处在哪个阶段，都能找到适合自己的阅读路径：</p>
+<ol>
+<li><p>如果你是 RAG 或 AI 新手（👋 欢迎！）</p>
+<ul>
+<li>建议从<strong>第一部分：原理篇</strong>开始。这部分会用一个生动的比喻，帮你建立 RAG 的核心概念，理解 AI 是如何”读书”的。</li>
+<li>然后，你可以直接跳到<strong>第二部分：实战篇</strong>，快速体验用 30 行代码构建一个问答系统的乐趣。</li>
+<li><strong>第三部分：优化篇</strong>和<strong>第四部分：架构篇</strong>可以先收藏，等有概念后再来深入。</li>
+</ul>
+</li>
+<li><p>如果你熟悉 RAG，想深入 LlamaIndex（🚀 进阶！）</p>
+<ul>
+<li>你可以快速浏览<strong>第一部分：原理篇</strong>，回顾一下核心概念。</li>
+<li><strong>第二部分：实战篇</strong>值得一看，LlamaIndex 的 API 非常简洁高效。</li>
+<li><strong>第三部分：优化篇</strong>是本文的精华。我们通过真实实验，展示了 <code>chunk_size</code> 和 <code>top_k</code> 等参数对结果的具体影响，这对于生产环境调优至关重要。</li>
+<li><strong>第四部分：架构篇</strong>将帮你理解 LlamaIndex 的内部机制，为你的二次开发或深入定制打好基础。</li>
+</ul>
+</li>
+</ol>
+<h2 id="第一部分：原理篇-AI-如何像人一样”读书”"><a href="#第一部分：原理篇-AI-如何像人一样”读书”" class="headerlink" title="第一部分：原理篇 - AI 如何像人一样”读书”"></a>第一部分：原理篇 - AI 如何像人一样”读书”</h2><p><strong>1.1 一个真实的需求</strong></p>
+<p>假设你手上有一本 170 页的小说《长安的荔枝》，你想快速了解：</p>
+<ul>
+<li>主角是谁？</li>
+<li>故事讲了什么？</li>
+<li>荔枝最后是怎么送到长安的？</li>
+</ul>
+<p>但你没时间读完整本书。这时候，你会怎么做？</p>
+<p><strong>人类的做法：</strong></p>
+<ol>
+<li>翻到目录，找到相关章节</li>
+<li>快速浏览这些章节</li>
+<li>找到关键信息</li>
+<li>用自己的话总结答案</li>
+</ol>
+<p><strong>AI 能不能也这样做呢？</strong> 答案是：可以！这就是我们今天要探讨的技术。</p>
+<p><strong>1.2 从”搜索”到”理解”</strong></p>
+<p><strong>传统搜索的局限</strong></p>
+<p>你可能会想：用 Ctrl+F 搜索关键词不就行了？</p>
+<p>让我们试试：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">搜索&quot;主角&quot; → 可能搜不到（书中可能用&quot;李善德&quot;而不是&quot;主角&quot;）</span><br><span class="line">搜索&quot;李善德&quot; → 找到 50 处，但哪句话说明他是主角？</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题：</strong>传统搜索只能做<strong>精确匹配</strong>，不能理解<strong>语义</strong>。</p>
+<p><strong>直接问 ChatGPT？</strong></p>
+<p>你可能又想：直接问 ChatGPT 不就行了？</p>
+<p><strong>问题：</strong></p>
+<ul>
+<li>ChatGPT 没读过《长安的荔枝》</li>
+<li>它可能会”编造”一个答案</li>
+<li>无法引用原文，不可追溯</li>
+</ul>
+<p><strong>1.3 理想的解决方案</strong></p>
+<p>我们需要一个系统，它能：</p>
+<ol>
+<li><p><strong>“读”过这本书</strong> - 理解书中的内容</p>
+</li>
+<li><p><strong>找到相关段落</strong> - 像人一样快速定位</p>
+</li>
+<li><p><strong>理解并回答</strong> - 用自然语言给出答案</p>
+</li>
+<li><p><strong>可以追溯</strong> - 告诉你答案来自哪里</p>
+</li>
+</ol>
+<p>这就是 <strong>RAG（检索增强生成）</strong> 系统要做的事情。</p>
+<p><strong>1.4 工作原理：三个关键步骤</strong></p>
+<p>让我用一个类比来解释：</p>
+<p><strong>步骤 1：建立”索引卡片”（Indexing）</strong></p>
+<p>想象你在读书时做笔记：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">卡片 <span class="number">1</span>：李善德是上林署的监事...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">2</span>：他接到了一个艰巨的任务...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">3</span>：荔枝必须新鲜送达长安...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>AI 的做法：</strong></p>
+<ol>
+<li>把书切成一段段（比如每段 500 字），这叫 <strong>Chunking</strong>。</li>
+<li>为每段生成一个”数字指纹”（向量），这叫 <strong>Embedding</strong>。</li>
+<li>把这些”指纹”（向量）和原文（段落）存起来，放入<strong>向量数据库</strong>。</li>
+</ol>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">段落 <span class="number">1</span> → <span class="selector-attr">[0.1, 0.3, -0.2, ...]</span> (<span class="number">1536</span> 个数字)</span><br><span class="line">段落 <span class="number">2</span> → <span class="selector-attr">[0.2, -0.1, 0.4, ...]</span></span><br><span class="line">段落 <span class="number">3</span> → <span class="selector-attr">[-0.1, 0.2, 0.1, ...]</span></span><br></pre></td></tr></table></figure>
+
+<p>这个过程叫做<strong>向量化</strong>（Embedding）。</p>
+<p><strong>步骤 2：找到相关段落（Retrieval）</strong></p>
+<p>当你问”主角是谁？”时：</p>
+<ol>
+<li>AI 把你的问题也转成”数字指纹”</li>
+</ol>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;主角是谁？&quot;</span> → [0.15, 0.25, -0.15, <span class="string">...</span>]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>对比所有段落的”指纹”，找最相似的</li>
+</ol>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">问题指纹 <span class="attr">vs 段落1</span>指纹 → 相似度 <span class="number">0.95</span> ✓</span><br><span class="line">问题指纹 <span class="attr">vs 段落2</span>指纹 → 相似度 <span class="number">0.60</span></span><br><span class="line">问题指纹 <span class="attr">vs 段落3</span>指纹 → 相似度 <span class="number">0.85</span> ✓</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>挑出最相似的 3-5 段</li>
+</ol>
+<p>这个过程叫做<strong>语义检索</strong>。</p>
+<p><strong>步骤 3：生成答案（Generation）</strong></p>
+<p>AI 拿到相关段落后：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">输入给 AI：</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line">相关段落（上下文）：</span><br><span class="line">1. 李善德是上林署的监事，从九品下...</span><br><span class="line"></span><br><span class="line">2. 他在长安城南买了一座宅子...</span><br><span class="line"></span><br><span class="line">3. 这天，他接到了一个艰巨的任务...</span><br><span class="line"></span><br><span class="line"><span class="section">问题：主角是谁？</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line">AI 输出：主角是李善德。他是上林署的监事，从九品下的官职...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个过程叫做<strong>增强生成</strong>。</p>
+<p><strong>1.5 关键参数的作用</strong></p>
+<p>在这个过程中，有几个重要的”旋钮”可以调节。让我们用《长安的荔枝》中的实际文本来理解它们的作用。</p>
+<p><strong>参数 1：段落大小（chunk_size）</strong></p>
+<p><strong>类比：</strong>做笔记时，每张卡片写多少字？</p>
+<p>让我们看看同一段文本在不同 chunk_size 下的效果：</p>
+<p><strong>小卡片示例（约 300 字，适合 chunk_size&#x3D;512）：</strong></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">李善德是上林署的监事，从九品下。他在长安城南买了一座宅子，虽然不大，但也算是有了自己的家。这天早上，他刚到上林署，就被叫到了上司的房间。</span><br><span class="line"><span class="string">&quot;李监事，有个任务交给你。&quot;</span>上司开门见山地说。</span><br><span class="line"><span class="string">&quot;请上司吩咐。&quot;</span>李善德恭敬地回答。</span><br><span class="line"><span class="string">&quot;圣人想吃新鲜荔枝，你去岭南采办，十天内送到长安。&quot;</span></span><br><span class="line">李善德愣住了。从岭南到长安，路程遥远，荔枝又极易腐烂，这几乎是不可能完成的任务。</span><br></pre></td></tr></table></figure>
+
+<p><strong>大卡片示例（约 600 字，适合 chunk_size&#x3D;1024）：</strong></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">李善德是上林署的监事，从九品下。他在长安城南买了一座宅子，虽然不大，但也算是有了自己的家。这天早上，他刚到上林署，就被叫到了上司的房间。</span><br><span class="line"><span class="string">&quot;李监事，有个任务交给你。&quot;</span>上司开门见山地说。</span><br><span class="line"><span class="string">&quot;请上司吩咐。&quot;</span>李善德恭敬地回答。</span><br><span class="line"><span class="string">&quot;圣人想吃新鲜荔枝，你去岭南采办，十天内送到长安。&quot;</span></span><br><span class="line">李善德愣住了。从岭南到长安，路程遥远，荔枝又极易腐烂，这几乎是不可能完成的任务。但他知道，这不是可以拒绝的。</span><br><span class="line">回到自己的小房间，李善德开始思考。荔枝，这种南方的水果，离开树枝后很快就会变色变味。从岭南到长安，即使日夜兼程，也要七八天。如何让荔枝保持新鲜？</span><br><span class="line">他想起了一些传闻：有人用冰窖，有人用蜜浸，还有人用特制的木盒。但这些方法都没有经过验证。更重要的是，他需要计算成本。上林署给的预算有限，每一文钱都要精打细算。</span><br><span class="line">李善德拿出纸笔，开始列清单：采购荔枝的费用、运输工具、人工、沿途驿站的开支……数字越算越大，他的眉头皱得越来越紧。</span><br></pre></td></tr></table></figure>
+
+<p><strong>效果对比：</strong></p>
+<ul>
+<li><strong>小卡片：</strong>精确定位到”接到任务”这个事件，适合回答”李善德接到了什么任务？”</li>
+<li><strong>大卡片：</strong>包含任务的来龙去脉和李善德的思考，适合回答”李善德面临什么困难？”</li>
+</ul>
+<p><strong>参数 2：检索数量（top_k）</strong></p>
+<p><strong>类比：</strong>找几张相关的卡片？</p>
+<p>假设用户问：”李善德是个怎样的人？”</p>
+<p><strong>检索 3 张卡片（top_k&#x3D;3）：</strong></p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">卡片 <span class="number">1</span>: 李善德是上林署的监事，从九品下。他做事谨慎，从不出错...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">2</span>: 面对上司的质疑，李善德没有辩解，只是默默地继续工作...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">3</span>: 他知道这个任务几乎不可能完成，但还是决定尽全力去做...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>→ AI 回答：”李善德是个谨慎、踏实、有责任心的人。”</p>
+<p><strong>检索 10 张卡片（top_k&#x3D;10）：</strong></p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">（包含上面 <span class="number">3</span> 张，还有：）</span><br><span class="line">卡片 <span class="number">4</span>: 李善德在计算成本时，精确到每一文钱...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">5</span>: 他想起了家乡的荔枝树，那时候他还是个孩子...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">6</span>: 面对老兵的嘲讽，李善德没有生气，反而虚心请教...</span><br><span class="line"></span><br><span class="line">卡片 <span class="number">7</span>: 深夜，他还在研究地图，寻找最快的路线...</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>→ AI 回答：”李善德是个谨慎、踏实、有责任心的人。他精于计算， 注重细节，同时也有着温情的一面。面对困难，他不轻言放弃， 而是积极寻找解决方案。他谦逊好学，愿意向他人请教。”</p>
+<p><strong>效果对比</strong>：</p>
+<ul>
+<li><strong>top_k&#x3D;3</strong>：快速回答，但信息有限；</li>
+<li>top_k&#x3D;10**：全面深入，但耗时更长；</li>
+</ul>
+<p><strong>参数 3：重叠大小（overlap）</strong></p>
+<p><strong>类比</strong>：相邻卡片之间重复多少内容？</p>
+<p>假设有这样一段文本：</p>
+<p><strong>原文</strong>：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">...</span>李善德想起了一个办法。他曾听说，岭南的果农会用特殊的方法保存荔枝。如果能找到这些果农，或许就能解决保鲜的问题。</span><br><span class="line">第二天一早，李善德就出发了。他先去了市场，打听岭南商人的消息。功夫不负有心人，他终于找到了一个来自岭南的果商<span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>无重叠切分</strong>：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">卡片 1: <span class="string">...</span>李善德想起了一个办法。他曾听说，岭南的果农会用       特殊的方法保存荔枝。如果能找到这些果农，或许就能       解决保鲜的问题。</span><br><span class="line">卡片 2: 第二天一早，李善德就出发了。他先去了市场，打听       岭南商人的消息。功夫不负有心人，他终于找到了一个       来自岭南的果商<span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>→ 问题：如果用户问”李善德如何解决保鲜问题？”，可能只检索到卡片1， 看到”想到办法”但看不到”找到果商”这个关键行动。</p>
+<p><strong>有重叠切分（overlap&#x3D;50字）</strong>：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">卡片 1: <span class="string">...</span>李善德想起了一个办法。他曾听说，岭南的果农会用       特殊的方法保存荔枝。如果能找到这些果农，或许就能       解决保鲜的问题。</span><br><span class="line">       第二天一早，李善德就出发了。他先去了市场<span class="string">...</span></span><br><span class="line"></span><br><span class="line">卡片 2: <span class="string">...</span>如果能找到这些果农，或许就能解决保鲜的问题。</span><br><span class="line">       第二天一早，李善德就出发了。他先去了市场，打听       岭南商人的消息。功夫不负有心人，他终于找到了一个       来自岭南的果商<span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>→ 两张卡片都包含了从”想法”到”行动”的完整过程，无论检索到哪张， 都能给出完整的答案。</p>
+<p><strong>效果对比</strong>：</p>
+<ul>
+<li><strong>无重叠</strong>：存储空间小，但可能丢失跨段落的关键信息；</li>
+<li>有重叠**：占用空间稍大，但保证了信息的连续性和完整性；</li>
+</ul>
+<p><strong>参数定义总结</strong></p>
+<p>现在让我们用一张表格总结这三个关键参数：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPKkuZtcjGYhNlAJsyColg7E6ibBpv0IDRenc5iagiaU4htuYHyEQStqibibw/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=1" alt="图片"></p>
+<p><strong>快速记忆</strong>：</p>
+<ul>
+<li>chunk_size：每张卡片写多少字</li>
+<li>top_k：找几张相关卡片</li>
+<li>chunk_overlap：相邻卡片重复多少内容</li>
+</ul>
+<p><strong>1.6 现在，让我们引入术语</strong></p>
+<p>现在你已经理解了原理，让我们用专业术语重新描述一遍：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKP1q7t91dByy2OrrXNO0VsbphzXbYkJu23Cia4sBZkRnFeBNmaXLzCe8A/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=2" alt="图片"></p>
+<p><strong>1.7 小结</strong></p>
+<p><strong>核心思想</strong>：</p>
+<ol>
+<li><p>把文档切成小块，每块生成”数字指纹”；</p>
+</li>
+<li><p>问题也生成”指纹”，找最相似的块；</p>
+</li>
+<li><p>把相关块和问题一起给 AI，让它生成答案；</p>
+</li>
+</ol>
+<p><strong>关键优势</strong>：</p>
+<p>✅ 基于你的文档（不会编造）</p>
+<p>✅ 语义理解（不只是关键词）</p>
+<p>✅ 可以追溯（知道答案来源）</p>
+<p><strong>接下来</strong>：让我们看看如何用代码实现这个系统！</p>
+<h2 id="第二部分：实战篇-用-LlamaIndex-实现问答系统"><a href="#第二部分：实战篇-用-LlamaIndex-实现问答系统" class="headerlink" title="第二部分：实战篇 - 用 LlamaIndex 实现问答系统"></a>第二部分：实战篇 - 用 LlamaIndex 实现问答系统</h2><p><strong>2.1 什么是 LlamaIndex？</strong></p>
+<p>在上一部分，我们了解了 RAG（检索增强生成）的通用原理。要将这个原理付诸实践，我们需要一个“框架”来帮我们处理所有繁琐的步骤，比如：加载文档、切割文本、调用 Embedding API、管理向量存储、检索、构建 Prompt、调用 LLM 等。</p>
+<p><strong>LlamaIndex 就是这样一个“数据框架”，它专门为“连接大语言模型 (LLM) 与外部数据”而生。</strong></p>
+<p>通俗地说，LlamaIndex 就像一个超级“图书管理员”：</p>
+<ul>
+<li>你给它一本（或一万本）书（<strong>外部数据</strong>）。</li>
+<li>它会帮你把书拆解、消化、并制作成一套精密的“索引卡片”（<strong>索引过程</strong>）。</li>
+<li>当你提出问题时（<strong>查询</strong>），它能迅速帮你找到所有相关的“卡片”，并让 LLM 总结成通顺的答案（检索与生成）。</li>
+</ul>
+<p>我们接下来要实战的，就是如何使用 LlamaIndex 这个强大的工具，来搭建我们自己的《长安的荔枝》问答系统。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPX4fZVPXDKgyZa0UQ9Df1y9Bkaq4nOdWqEbBMysrfYU2AicibxHogibelg/640?wx_fmt=other&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=3" alt="图片"></p>
+<p><strong>2.2 预期效果</strong></p>
+<p>在开始写代码前，先看看我们要实现什么效果：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 加载《长安的荔枝》</span></span><br><span class="line"><span class="attr">loader</span> = DocumentLoader(<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建索引（建立&quot;卡片系统&quot;）</span></span><br><span class="line"><span class="attr">index</span> = VectorStoreIndex.from_documents(documents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始提问</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 问题 1</span></span><br><span class="line"><span class="attr">response</span> = query_engine.query(<span class="string">&quot;主角是谁？&quot;</span>)</span><br><span class="line"><span class="comment"># 答案：李善德。他是上林署的监事...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 问题 2</span></span><br><span class="line"><span class="attr">response</span> = query_engine.query(<span class="string">&quot;故事的主线是什么？&quot;</span>)</span><br><span class="line"><span class="comment"># 答案：故事围绕李善德接到运送荔枝的任务展开...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 问题 3</span></span><br><span class="line"><span class="attr">response</span> = query_engine.query(<span class="string">&quot;荔枝最后是怎么送到长安的？&quot;</span>)</span><br><span class="line"><span class="comment"># 答案：通过快速的船运沿着水路，然后陆路运输...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>目标</strong>：用不到 50 行代码实现这个功能！</p>
+<p><strong>2.3 最简代码清单</strong></p>
+<p>先看完整代码，有个整体印象：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.core import VectorStoreIndex,<span class="built_in"> Settings</span></span><br><span class="line"><span class="built_in"></span><span class="keyword">from</span> llama_index.llms.openai import OpenAI</span><br><span class="line"><span class="keyword">from</span> llama_index.embeddings.openai import OpenAIEmbedding</span><br><span class="line"><span class="keyword">from</span> llama_index.readers.file import PyMuPDFReader</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 配置 AI 服务</span></span><br><span class="line">Settings.llm = OpenAI(</span><br><span class="line"></span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;gpt-3.5-turbo&quot;</span>,</span><br><span class="line">    <span class="attribute">api_key</span>=<span class="string">&quot;your_api_key&quot;</span>)</span><br><span class="line"></span><br><span class="line">Settings.embed_model = OpenAIEmbedding(</span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;text-embedding-3-small&quot;</span>,</span><br><span class="line">    <span class="attribute">api_key</span>=<span class="string">&quot;your_api_key&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 加载 PDF</span></span><br><span class="line">reader = PyMuPDFReader()</span><br><span class="line">documents = reader.load(<span class="attribute">file_path</span>=<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br><span class="line"><span class="comment"># documents: 170 个 Document 对象，每个代表一页</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 构建索引（这一步会调用 Embedding API）</span></span><br><span class="line">index = VectorStoreIndex.from_documents(documents)</span><br><span class="line"><span class="comment"># 内部做了：切分 → 向量化 → 存储</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 创建查询引擎</span></span><br><span class="line">query_engine = index.as_query_engine(<span class="attribute">similarity_top_k</span>=3)</span><br><span class="line"><span class="comment"># similarity_top_k=3: 检索 3 个最相关的段落</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 提问</span></span><br><span class="line">response = query_engine.query(<span class="string">&quot;主角是谁？&quot;</span>)</span><br><span class="line"><span class="comment"># 内部做了：问题向量化 → 检索相似段落 → 调用 LLM 生成答案</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.response)</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码量</strong>：核心代码不到 30 行！</p>
+<p><strong>关键 API</strong>：</p>
+<ul>
+<li>Settings: 全局配置（LLM 和 Embedding）</li>
+<li>PyMuPDFReader: PDF 读取器</li>
+<li>VectorStoreIndex: 向量索引（核心）</li>
+<li>as_query_engine(): 创建查询引擎</li>
+<li>query(): 提问并获取答案</li>
+</ul>
+<p><strong>2.4 核心 API 详解</strong></p>
+<p><strong>API 1: Settings - 全局配置</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.core import<span class="built_in"> Settings</span></span><br><span class="line"><span class="built_in"></span><span class="keyword">from</span> llama_index.llms.openai import OpenAI</span><br><span class="line"><span class="keyword">from</span> llama_index.embeddings.openai import OpenAIEmbedding</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 LLM（用于生成答案）</span></span><br><span class="line">Settings.llm = OpenAI(</span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;gpt-3.5-turbo&quot;</span>,      # 模型名称</span><br><span class="line">    <span class="attribute">temperature</span>=0.1,             # 温度（<span class="attribute">0</span>=确定性，1=创造性）</span><br><span class="line">    <span class="attribute">api_key</span>=<span class="string">&quot;your_key&quot;</span>          # API 密钥</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 Embedding（用于向量化）</span></span><br><span class="line">Settings.embed_model = OpenAIEmbedding(</span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;text-embedding-3-small&quot;</span>,  # Embedding 模型</span><br><span class="line">    <span class="attribute">api_key</span>=<span class="string">&quot;your_key&quot;</span>               # API 密钥</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>作用</strong>：</p>
+<ul>
+<li>Settings.llm: 负责理解问题和生成答案；</li>
+<li>Settings.embed_model: 负责把文本转成向量；</li>
+</ul>
+<p><strong>实际例子</strong>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># Embedding 的工作</span></span><br><span class="line"><span class="attr">text</span> = <span class="string">&quot;李善德是上林署的监事&quot;</span></span><br><span class="line"><span class="attr">vector</span> = Settings.embed_model.get_text_embedding(text)</span><br><span class="line"><span class="comment"># vector: [0.123, -0.456, 0.789, ...] (1536 个数字)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># LLM 的工作</span></span><br><span class="line"><span class="attr">prompt</span> = <span class="string">&quot;问题：主角是谁？\n答案：&quot;</span></span><br><span class="line"><span class="attr">answer</span> = Settings.llm.complete(prompt)</span><br><span class="line"><span class="comment"># answer: &quot;李善德&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>API 2: PyMuPDFReader - PDF 加载</strong></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from llama_index.readers.file import PyMuPDFReader</span><br><span class="line"><span class="attribute">reader</span> <span class="operator">=</span> PyMuPDFReader()</span><br><span class="line"><span class="attribute">documents</span> <span class="operator">=</span> reader.load(file_path<span class="operator">=</span><span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>输入</strong>：PDF 文件路径</p>
+<p><strong>输出</strong>：<code>List[Document]</code>，每个 Document 包含：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Document(</span><br><span class="line">    <span class="built_in">text</span>=<span class="string">&quot;第一章\n\n李善德站在...&quot;</span>,  <span class="comment"># 页面文本</span></span><br><span class="line">    metadata=&#123;</span><br><span class="line">        <span class="string">&quot;page_label&quot;</span>: <span class="string">&quot;1&quot;</span>,              <span class="comment"># 页码</span></span><br><span class="line">        <span class="string">&quot;file_name&quot;</span>: <span class="string">&quot;长安的荔枝.pdf&quot;</span>   <span class="comment"># 文件名</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>实际例子</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">documents = reader.load(<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;共 <span class="subst">&#123;<span class="built_in">len</span>(documents)&#125;</span> 页&quot;</span>)  <span class="comment"># 共 170 页</span></span><br><span class="line"><span class="built_in">print</span>(documents[<span class="number">0</span>].text[:<span class="number">100</span>])     <span class="comment"># 第一页前 100 字</span></span><br><span class="line"><span class="comment"># 输出：第一章\n\n李善德站在长安城南的一座宅子门前...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>API 3: VectorStoreIndex - 构建索引</strong></p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.core <span class="keyword">import</span> VectorStoreIndex</span><br><span class="line">index = VectorStoreIndex.from_documents(</span><br><span class="line">    documents,           # 文档列表</span><br><span class="line">    show_progress=<span class="literal">True</span>   # 显示进度条</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部流程</strong>：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1. 文本分块</span><br><span class="line">   170 页 → 切分 → 约 500 个 chunks（默认每个 512 tokens）</span><br><span class="line"></span><br><span class="line">2. 向量化（调用 Embedding API）</span><br><span class="line">   chunk 1: <span class="string">&quot;李善德是...&quot;</span> → [0.1, 0.3, -0.2, <span class="string">...</span>]</span><br><span class="line">   chunk 2: <span class="string">&quot;他接到任务...&quot;</span> → [0.2, -0.1, 0.4, <span class="string">...</span>]</span><br><span class="line">   <span class="string">...</span></span><br><span class="line"></span><br><span class="line">3. 存储</span><br><span class="line">   把 <span class="params">(text, vector)</span> 存到向量数据库</span><br></pre></td></tr></table></figure>
+
+<p>实际例子：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta"># 默认配置</span></span><br><span class="line"><span class="keyword">index</span> = VectorStoreIndex.from_documents(documents)</span><br><span class="line"><span class="meta"># - chunk_size: 512 tokens</span></span><br><span class="line"><span class="meta"># - chunk_overlap: 20 tokens</span></span><br><span class="line"><span class="meta"># - 约 500 个 chunks</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 自定义配置</span></span><br><span class="line"><span class="keyword">from</span> llama_index.core.node_parser import SentenceSplitter</span><br><span class="line"></span><br><span class="line">Settings.text_splitter = SentenceSplitter(</span><br><span class="line">    chunk_size=<span class="number">1024</span>,      <span class="meta"># 更大的块</span></span><br><span class="line">    chunk_overlap=<span class="number">128</span>     <span class="meta"># 更多重叠</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">index</span> = VectorStoreIndex.from_documents(documents)</span><br><span class="line"><span class="meta"># - 约 250 个 chunks</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>持久化</strong>（避免重复构建）：**</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 首次构建并保存</span></span><br><span class="line">index = VectorStoreIndex.from_documents(documents)</span><br><span class="line">index.storage_context.persist(<span class="attribute">persist_dir</span>=<span class="string">&quot;./storage&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 后续直接加载（快速）</span></span><br><span class="line"><span class="keyword">from</span> llama_index.core import StorageContext, load_index_from_storage</span><br><span class="line"></span><br><span class="line">storage_context = StorageContext.from_defaults(<span class="attribute">persist_dir</span>=<span class="string">&quot;./storage&quot;</span>)</span><br><span class="line">index = load_index_from_storage(storage_context)</span><br></pre></td></tr></table></figure>
+
+<p><strong>API 4: as_query_engine() - 创建查询引擎</strong></p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">query_engine = <span class="keyword">index</span>.as_query_engine(</span><br><span class="line">    similarity_top_k=<span class="number">3</span>,          <span class="meta"># 检索 3 个最相关的 chunks</span></span><br><span class="line">    response_mode=<span class="string">&quot;compact&quot;</span>      <span class="meta"># 响应模式</span></span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明</strong>：</p>
+<p><strong>similarity_top_k</strong>：检索多少个相关段落</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 检索 3 个</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(similarity_top_k=<span class="number">3</span>)</span><br><span class="line"><span class="comment"># 问&quot;主角是谁？&quot; → 找到 3 个最相关的段落 → 生成答案</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检索 10 个</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(similarity_top_k=<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 问&quot;故事主线？&quot; → 找到 10 个相关段落 → 综合生成答案</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>response_mode</strong>：如何综合多个段落</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># compact: 合并所有段落，一次调用 LLM</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(response_mode=<span class="string">&quot;compact&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># refine: 逐步精炼答案（多次调用 LLM）</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(response_mode=<span class="string">&quot;refine&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># tree_summarize: 树形总结（适合大量段落）</span></span><br><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(response_mode=<span class="string">&quot;tree_summarize&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>API 5: query() - 提问</strong></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">response</span> <span class="operator">=</span> query_engine.query(<span class="string">&quot;主角是谁？&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>内部流程：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">1</span>. 向量化问题   <span class="string">&quot;主角是谁？&quot;</span> →<span class="meta"> [0.15, 0.25, -0.15, ...]</span></span><br><span class="line"><span class="attribute">2</span>. 检索相似段落（top_k=<span class="number">3</span>）   计算相似度 → 找到 <span class="number">3</span> 个最相关的 chunks</span><br><span class="line"><span class="attribute">3</span>. 构建 Prompt   上下文：chunk1 + chunk2 + chunk3   问题：主角是谁？</span><br><span class="line"><span class="attribute">4</span>. 调用 LLM   LLM 基于上下文生成答案</span><br><span class="line"><span class="attribute">5</span>. 返回结果   response.response: <span class="string">&quot;李善德。他是...&quot;</span>   response.source_nodes:<span class="meta"> [chunk1, chunk2, chunk3]</span></span><br></pre></td></tr></table></figure>
+
+<p>返回值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">response = query_engine.query(<span class="string">&quot;主角是谁？&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 答案文本</span></span><br><span class="line"><span class="built_in">print</span>(response.response)</span><br><span class="line"><span class="comment"># &quot;李善德。他是上林署的监事...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 来源段落</span></span><br><span class="line"><span class="keyword">for</span> i, node <span class="keyword">in</span> <span class="built_in">enumerate</span>(response.source_nodes):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;来源 <span class="subst">&#123;i+<span class="number">1</span>&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;  相似度: <span class="subst">&#123;node.score:<span class="number">.3</span>f&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;  内容: <span class="subst">&#123;node.text[:<span class="number">100</span>]&#125;</span>...&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.5 完整示例：对话式问答</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.core import VectorStoreIndex,<span class="built_in"> Settings</span></span><br><span class="line"><span class="built_in"></span><span class="keyword">from</span> llama_index.llms.openai import OpenAI</span><br><span class="line"><span class="keyword">from</span> llama_index.embeddings.openai import OpenAIEmbedding</span><br><span class="line"><span class="keyword">from</span> llama_index.readers.file import PyMuPDFReader</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置</span></span><br><span class="line">Settings.llm = OpenAI(<span class="attribute">model</span>=<span class="string">&quot;gpt-3.5-turbo&quot;</span>, <span class="attribute">api_key</span>=<span class="string">&quot;your_key&quot;</span>)</span><br><span class="line">Settings.embed_model = OpenAIEmbedding(<span class="attribute">model</span>=<span class="string">&quot;text-embedding-3-small&quot;</span>, <span class="attribute">api_key</span>=<span class="string">&quot;your_key&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载和索引</span></span><br><span class="line">reader = PyMuPDFReader()</span><br><span class="line">documents = reader.load(<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br><span class="line">index = VectorStoreIndex.from_documents(documents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建聊天引擎（支持多轮对话）</span></span><br><span class="line">chat_engine = index.as_chat_engine()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 多轮对话</span></span><br><span class="line">response1 = chat_engine.chat(<span class="string">&quot;这本书的主角是谁？&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f<span class="string">&quot;AI: &#123;response1.response&#125;&quot;</span>)</span><br><span class="line"><span class="comment"># AI: 主角是李善德...</span></span><br><span class="line"></span><br><span class="line">response2 = chat_engine.chat(<span class="string">&quot;他的职位是什么？&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f<span class="string">&quot;AI: &#123;response2.response&#125;&quot;</span>)</span><br><span class="line"><span class="comment"># AI: 他是上林署的监事...（记得上一轮说的是李善德）</span></span><br><span class="line"></span><br><span class="line">response3 = chat_engine.chat(<span class="string">&quot;他遇到了什么困难？&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f<span class="string">&quot;AI: &#123;response3.response&#125;&quot;</span>)</span><br><span class="line"><span class="comment"># AI: 他接到了运送荔枝的艰巨任务...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重置对话</span></span><br><span class="line">chat_engine.reset()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>chat_engine vs query_engine</strong>：</p>
+<ul>
+<li>query_engine: 每次独立提问，不记忆上下文；</li>
+<li>chat_engine: 多轮对话，记住之前的问答；</li>
+</ul>
+<p><strong>2.6 小结</strong></p>
+<p>核心 API 总结：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPSoOcQCG8LCQXic9BaQliclcIEmx9peO9mJy0GH9YQyGvwiaDZjA63Omew/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=4" alt="图片"></p>
+<p>代码量：</p>
+<ul>
+<li>最简实现：&lt; 30 行</li>
+<li>完整功能：&lt; 100 行</li>
+</ul>
+<p><strong>接下来</strong>：让我们看看不同参数配置的实际效果！</p>
+<h2 id="第三部分：优化篇-参数调优的实战效果"><a href="#第三部分：优化篇-参数调优的实战效果" class="headerlink" title="第三部分：优化篇 - 参数调优的实战效果"></a>第三部分：优化篇 - 参数调优的实战效果</h2><p>在开始实验之前，让我们先回顾一下关键参数的定义：</p>
+<p><strong>参数速查表</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPq9kJsibmbBhy7jzr1BHxYsnAibDnpmzsG2JUZVlgSiaFI2wibx6PeRbPkA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=5" alt="图片"></p>
+<p><strong>参数之间的关系</strong>：</p>
+<ul>
+<li>chunk_size ↑ → 上下文更完整，但可能包含噪音；</li>
+<li>chunk_overlap ↑ → 信息连续性更好，但存储空间增加；</li>
+<li>top_k ↑ → 答案更全面，但耗时和成本增加；</li>
+<li>temperature ↑ → 答案更有创意，但可能不够准确；</li>
+</ul>
+<p><strong>3.1 实验设计思路</strong></p>
+<p>为了让你真正理解参数的作用，我们设计了两类实验：</p>
+<p><strong>第一类：单参数影响实验（3.2节）</strong></p>
+<p><strong>目标</strong>：孤立地展示每个参数的独立效果。</p>
+<ul>
+<li><strong>实验1</strong>：只改变 chunk_size，观察对理解复杂信息的影响；</li>
+<li>实验2**：只改变 top_k，观察对信息全面性的影响；</li>
+<li><strong>实验3</strong>：只改变 chunk_overlap，观察对跨段落信息的保护；</li>
+</ul>
+<p><strong>第二类：组合参数优化实验（3.3节）</strong></p>
+<p>目标**：展示在实际场景中如何组合参数。</p>
+<ul>
+<li><strong>实验4</strong>：简单事实查询 - 展示基础配置的适用性；</li>
+<li>实验5**：复杂情节理解 - 展示参数优化的价值；</li>
+<li><strong>实验6</strong>：宏观主题理解 - 展示深度配置的必要性；</li>
+</ul>
+<p>所有实验都使用**：</p>
+<ul>
+<li>《长安的荔枝》全书（170页）</li>
+<li>相同的中文 Prompt 模板</li>
+<li>真实的 LlamaIndex 输出结果</li>
+</ul>
+<p><strong>3.2 单参数影响实验</strong></p>
+<p><strong>实验1：chunk_size 的影响</strong></p>
+<p><strong>测试问题</strong>：李善德在整个故事中的心理变化是怎样的？从开始到结束他的想法有什么转变？</p>
+<p><strong>为什么选这个问题</strong>：</p>
+<ul>
+<li>心理变化是渐进的，分散在全书各处；</li>
+<li>小 chunk 只能看到片段，难以把握整体变化；</li>
+<li>大 chunk 能够包含更完整的心理描写；</li>
+</ul>
+<p><strong>实验配置</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPxDdQdb6a7xibwxaiaXCfibGeHsia9peYXXBiaWfib5VvZe6zaWziccXia6lfPA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=6" alt="图片"></p>
+<p><strong>实验结果</strong>：</p>
+<p>**<strong>配置A（chunk_size&#x3D;256）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德在整个故事中的心理变化是非常明显的。一开始，他在与赵欣宁的交锋中表现出迷茫和无措，不知如何回应。随后，在苏谅的提议下，他展现出了一种决断和果断的态度，愿意冒险尝试新的商业方式。他在这个阶段表现出了对未来的信心和决心。然而，随着故事的发展，他又陷入了迷茫和犹豫之中，开始怀疑自己的决定和未来的走向。最终，他选择放弃一切，成为一个荔枝老农，过着平静的生活。整个过程中，李善德的心理变化可以总结为迷茫、决断、犹豫和最终的放弃。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐ 简短，只提到4个阶段，缺少细节。</p>
+<p>**<strong>配置B（chunk_size&#x3D;512）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德在整个故事中的心理变化是非常明显的。一开始，他在与赵欣宁的交锋中表现出迷茫和无措，不知如何回应。但随着故事的发展，他逐渐展现出果断和决绝的一面。在与苏谅的交流中，他展现出了敢于赌博和冒险的态度，表现出对未来的信心和决心。在与韩承的对话中，他展现出了谄媚和顺从的一面，表现出对权力的敬畏和追求。最后，他选择了隐居种荔枝树，放弃了世俗的权力和利益，展现出了对过去的反思和悔悟。整个故事中，李善德的心理变化可以总结为从迷茫到果断，再到悔悟和放下世俗欲望的过程。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐ 增加了”谄媚和顺从”、”反思和悔悟”等细节。</p>
+<p>**<strong>配置C（chunk_size&#x3D;1024）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德在整个故事中的心理变化是非常明显的。一开始，他在与赵欣宁的交锋中表现出迷茫和无奈，不知如何回应对方的挑衅。随着故事的发展，他开始展现出决心和勇气，决定尝试新的商业合作方式，并且毫不犹豫地接受了这个挑战。在接受了试验的过程中，他经历了挫折和困惑，甚至产生了放弃的念头。然而，在一次偶然的机会下，他突然领悟到为官之道，表现出了谄媚之态，展现出了一种转变和妥协的心态。最终，他选择了放下过去的一切，成为一个荔枝老农，专心致志地照料果园，过着平静的生活。整个过程中，李善德的想法经历了从迷茫到决心，再到妥协和放下的转变，展现出了一个复杂而丰富的内心世界。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐ 更详细，提到”妥协”、”复杂而丰富的内心世界”。</p>
+<p>**<strong>配置D（chunk_size&#x3D;2048）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德在整个故事中的心理变化是非常明显的。一开始，他在与赵欣宁的交锋中表现出迷茫和无措，不知如何回应对方的挑衅。随着故事的发展，他逐渐展现出决断和果断的一面，愿意冒险尝试新的商业合作方式，展现出一种敢于拼搏的态度。在接受苏諒的提议后，他更是毫不犹豫地选择了冒险，表现出对未来的信心和决心。然而，随着故事的进展，他又陷入了困惑和犹豫之中，感到自己无法摆脱宿命的束缚，甚至产生了放弃的念头。最终，他选择了一个与过去完全不同的生活方式，成为一个荔枝老农，放下了一切世俗的纷扰，选择了平静和宁静。整个过程中，李善德的心理变化经历了迷茫、决断、困惑和放下的过程，展现出了一个人在面对困境和选择时内心的挣扎和成长。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐⭐ 最完整，包含”宿命束缚”、”内心挣扎和成长”等深层分析。</p>
+<p><strong>效果对比</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPb8XFgRMmMSu3BAlL9qbJdBwgRxGycZibttp3pP20hvg2OxcqIezAoMg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=7" alt="图片"></p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li><strong>chunk_size 越大，对心理变化的理解越深入；</strong></li>
+<li>256 只能捕获基本轨迹，2048 能分析深层原因；</li>
+<li>对于需要理解渐进变化的问题，建议使用 <strong>1024 或更大；</strong></li>
+<li>但要注意：过大的 chunk 会增加索引时间和存储空间；</li>
+</ul>
+<p><strong>实验2：top_k 的影响</strong></p>
+<p><strong>测试问题</strong>：小说中出现了哪些重要人物？他们分别是什么身份？</p>
+<p><strong>为什么选这个问题</strong>：</p>
+<ul>
+<li>人物信息分散在全书各处；</li>
+<li>需要检索多个段落才能全面回答；</li>
+<li>能清晰展示 top_k 对信息全面性的影响；</li>
+</ul>
+<p><strong>实验配置</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPpMpWEQTRiaF1sAqHqms8oYuSnC0xib27iagTEuZMiawkmQ1Cyz2UeHibZ3A/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=8" alt="图片"></p>
+<p><strong>实验结果</strong>：</p>
+<p>**<strong>配置A（top_k&#x3D;2）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这段文本中，出现了两个重要人物。一个是李善德，他是主要的故事主角，是一个有抱负的年轻人，希望通过进入大人物的视野来实现自己的目标。另一个是林邑奴，虽然在文本中没有详细介绍他的身份，但可以看出他对李善德有一定的重要性，因为李善德在意他的位置并打算回来查看。林邑奴可能是一个与故事情节相关的重要角色，但具体身份需要在后续文本中进一步揭示。</span><br></pre></td></tr></table></figure>
+
+<p>✅ 找到 <strong>2 个人物</strong>，信息有限。</p>
+<p>**<strong>配置B（top_k&#x3D;5）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">重要人物包括李善德、圣人、贵妃、卫国公杨国忠、韩承和杜甫。其中，李善德是主角，是一个普通人，希望通过进入大人物的视野来改变自己的命运；圣人和贵妃是全天下最著名的伉俪，身份尊贵，受人景仰；卫国公杨国忠是长安城里最让人颤栗的名字，处理全天下的大事；韩承是刑部比部司任主事，大家都叫他韩十四；杜甫是一位诗文不错，得过圣人青睐的人，一直在京待选。这些人物在小说中扮演着重要的角色，影响着故事的发展。</span><br></pre></td></tr></table></figure>
+
+<p>✅ 找到 <strong>6 个人物</strong>，信息较全面。</p>
+<p>**<strong>配置C（top_k&#x3D;10）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">小说中出现了以下重要人物：1. 李善德：主要角色，是一个小吏，希望通过进入大人物的视野来提升自己的地位。2. 圣人：长安城里最著名的人物之一，与贵妃关系密切。3. 贵妃：圣人的伴侣，与圣人关系恩爱。4. 卫国公杨国忠：长安城里最让人颤栗的名字，处理全天下的大事。5. 韩承：刑部比部司任主事，大家都称他为韩十四。6. 杜甫：诗文不错，得过圣人青睐，一直在京待选。7. 冯元一：名刺上的名字，可能与杨国忠有关系。8. 赵欣宁：带着一大队骑兵，与李善德有一段交集。9. 鱼朝恩：宫市副使，近年来蹿升很快，颇得青睐。以上人物身份包括小吏、圣人、贵妃、卫国公、主事、诗人、宫市副使等。每个人物在故事中扮演着不同的角色和起到不同的作用。</span><br></pre></td></tr></table></figure>
+
+<p>✅ 找到 <strong>9 个人物</strong>，信息最全面，还有结构化呈现。</p>
+<p><strong>效果对比</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPSG4Cwy1iawshyVwaYUnBySeUtSemO2LAluMedicsic1keCcgdzdBcWACw/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=9" alt="图片"></p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li><strong>top_k 越大，检索到的信息越全面；</strong></li>
+<li>top_k&#x3D;2 只能找到主角，top_k&#x3D;10 能找到几乎所有重要人物；</li>
+<li>对于需要列举多个要素的问题，建议 <strong>top_k ≥ 5；</strong></li>
+<li>但要注意：top_k 过大会增加 Token 消耗和响应时间；</li>
+</ul>
+<p><strong>实验3：chunk_overlap 的影响</strong></p>
+<p><strong>测试问题</strong>：李善德从接到任务到第一次尝试运送荔枝，这个过程中他的计划是如何一步步形成的？请详细描述他的思考和准备过程。</p>
+<p><strong>为什么选这个问题</strong>：</p>
+<ul>
+<li>计划形成是一个连续的思考过程，答案跨越多个段落；</li>
+<li>涉及”接到任务 → 思考方案 → 准备实施”的完整链条；</li>
+<li>无 overlap 时，关键的思考转折可能在chunk边界处被切断；</li>
+<li>有 overlap 时，能保持思维过程的连贯性；</li>
+</ul>
+<p>实验配置：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKP42y7AhiabX8KE9kPGP4E2x8O6RlDNHmUnFn47WTQzG3NCm2ZXvWjokw/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=10" alt="图片"></p>
+<p>实验结果：</p>
+<p>**<strong>配置A（overlap&#x3D;0）</strong></p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">李善德接到任务后，首先意识到要解决的问题是如何将新鲜荔枝运送到长安。他意识到只有延缓荔枝变质的时间或提高转运速度这两种方法。对于延缓荔枝变质的时间，他发现了一种双层瓮，可以通过在瓮内放入盐水洗过的荔枝，并在外层注入冷水来保持温度，从而延缓荔枝变质。然而，这只是解决问题的一部分。</span><br><span class="line">他意识到真正的麻烦在于提高转运速度。为此，他购置了近百匹马、雇佣了几十名骑手以及数条草撇快船，分成四队准备出发。在这个过程中，他还进行了一次试验，委托阿僮进行掇树之术，即提前截取荔枝干节，放在土里温养，以延长荔枝的存活时间。</span><br><span class="line">然而，在即将离开广州之时，他又遇到了意外，发现经略府士兵正在砍伐荔枝树。这时，他意识到自己不能等到十九日和荔枝转运队一起出发，必须提前摸排线路，清查所有的隐患...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐ 包含主要步骤，但叙述有跳跃感，”然而”突然出现。</p>
+<p>**<strong>配置B（overlap&#x3D;100）</strong></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">李善德接到任务后，首先意识到要解决的问题是如何将新鲜荔枝运送到长安，他意识到只有延缓荔枝变质的时间或提高转运速度这两种方法。在延缓荔枝变质的时间方面，他发现了一种双层瓮，通过用盐水洗过荔枝，放入内层，坛口密封，然后外层注入冷水，每半日更换一次的方法来保鲜。在提高转运速度方面，他购置了近百匹马、雇佣了几十名骑手以及数条草撇快船，分成四队同时出发。</span><br><span class="line">然而，在即将离开之时，他遇到了阿僮的意外，发现经略府士兵正在砍伐荔枝树。这时，他意识到提前截取荔枝干节，放在土里温养，等隐隐长出白根毛，再移植入瓮中，存活时间会更长，即<span class="string">&quot;掇树之术&quot;</span>。他意识到这是一个保鲜的新方法，决定将这个方法应用到自己的计划中。</span><br><span class="line">在和苏谅的交谈中，李善德提出了新的想法，即不仅提速，还要找到保鲜的方法。他提出了双管齐下的计划，即使用双层瓮保鲜，同时采用掇树之术延长荔枝的存活时间。尽管苏谅对此表示怀疑，认为荔枝带枝最多只能延缓半日，但李善德坚信自己的计划，坚持认为这是胜机所在。</span><br><span class="line">最终，李善德通过不断的思考和准备，形成了结合双层瓮和掇树之术的计划，以确保荔枝在转运过程中保持新鲜。他不断调整和完善计划，最终准备好了一切，准备启程前往长安。整个过程中，李善德展现出了坚定的信念和不断探索的精神，最终成功制定了一套完善的运输计划。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐⭐ 叙述连贯，”掇树之术”解释详细，思维转折清晰。</p>
+<p>**<strong>配置C（overlap&#x3D;200）</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">李善德接到任务后，首先意识到要解决的问题是如何将新鲜荔枝运送到长安。他意识到只有延缓荔枝变质的时间或提高转运速度这两种方法。在延缓荔枝变质方面，他发现了一种双层瓮，可以通过盐水洗净荔枝，放入内层，外层注入冷水来保持荔枝新鲜。然而，这只是暂时的解决方案。</span><br><span class="line">在提高转运速度方面，他购置了近百匹马、雇佣了骑手和草撇快船，分成四队同时出发。他还进行了试验，提前截取荔枝枝节，进行掇树之术，以延长荔枝的存活时间。这个方法虽然不是新发明，但对于解决荔枝运输问题有一定帮助。</span><br><span class="line">在试验过程中，他发现了一个保鲜的法子，即不切枝而是切干，可以延缓荔枝变质的时间。他向苏谅借钱，准备实施这个新的想法。尽管苏谅提出了疑虑，认为荔枝带枝最多只能延缓半日，但李善德坚信这个方法可以成功。</span><br><span class="line">总的来说，李善德的计划是通过不断思考和尝试，逐步形成的。他从最初的双层瓮保鲜到掇树之术，再到最后的切干法子，不断改进和完善自己的方案，以确保荔枝能够在运输过程中保持新鲜，最终成功完成任务。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐⭐ 逻辑清晰，强调”不断改进和完善”的过程。</p>
+<p><strong>效果对比</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPlFP6DiasHHpkO7mSLutpYURNsj5mzlhkWuAoErdueumBvs7pUCAcNEA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=11" alt="图片"></p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li><strong>overlap 对连续思考过程的影响显著；</strong></li>
+<li>overlap&#x3D;0 时，思维转折在chunk边界处被切断，导致叙述跳跃；</li>
+<li>overlap&#x3D;100 已经能很好地保持信息连续性；</li>
+<li>overlap&#x3D;200 进一步增强，但提升幅度相对较小；</li>
+<li>建议：对于需要理解连续过程的问题，使用 overlap ≥ 100；</li>
+</ul>
+<p><strong>3.3 组合参数优化实验</strong></p>
+<p><strong>实验4：简单事实查询场景</strong></p>
+<p><strong>测试问题</strong>：李善德的官职是什么？</p>
+<p><strong>场景说明</strong>：这是最简单的事实查询，答案明确且集中</p>
+<p><strong>实验配置</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPY8x0h5CG880JSGBToufiaVVNIhm5s7A8nV3Ew2Dtib7X70I40hGYfoicw/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=12" alt="图片"></p>
+<p><strong>实验结果</strong>：</p>
+<p>**<strong>默认配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据上文信息，李善德的官职是敕命的荔枝使。</span><br></pre></td></tr></table></figure>
+
+<p>**<strong>过度配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德的官职是监事。在文中提到，李善德被贡选到国子监专攻算学十书，以明算科及第，随后被诠选到了司农寺，在上林署里做一个监事。监事是一个庶职，虽然不是高官显贵，但在官场中也有一定的地位和责任。</span><br></pre></td></tr></table></figure>
+
+<p><strong>意外发现</strong>：</p>
+<ul>
+<li>默认配置给出”荔枝使”（临时任命）；</li>
+<li>过度配置给出”监事”（正式官职）+ 详细背景；</li>
+<li>这说明：即使是简单问题，更大的配置也能提供更准确和完整的信息；</li>
+</ul>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>简单事实查询用默认配置<strong>通常足够；</strong></li>
+<li>但如果需要<strong>更准确或更详细</strong>的答案，适度增加配置有帮助；</li>
+<li>需要权衡：速度 vs 准确性；</li>
+</ul>
+<p><strong>实验5：复杂情节理解场景</strong></p>
+<p><strong>测试问题</strong>：李善德是如何一步步解决荔枝运输中的保鲜难题的？每一步他做了什么？</p>
+<p><strong>场景说明</strong>：需要理解完整的解决过程，涉及多个步骤</p>
+<p><strong>实验配置</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKP5GDcOhRjVI6t3Hqh0jLic8ynOl0H1Vwvtjt32tibcicCoeQN7EH0g19Gg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=13" alt="图片"></p>
+<p><strong>实验结果</strong>：</p>
+<p>**<strong>默认配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">李善德一步步解决荔枝运输中的保鲜难题。首先，他发现了一种双层瓮，用于海运香料时可以防止味道散失，他认为可以用来运输荔枝。他将荔枝用盐水洗过，放入内层，坛口密封；然后外层注入冷水，每半日更换一次，以保持瓮内温度不致太热。这是他的第一步。</span><br><span class="line">其次，他购置了近百匹马、雇佣了几十名骑手以及数条草撇快船，分成四队，携带装满了荔枝的双层瓮，从四条路同时出发。这是他的第二步。</span><br><span class="line">最后，他在详细计算后发现，民间转运队伍可以在十一天内冲到丹江口，加上他设计的保鲜措施和路线，速度可以提升三成，十一天完全可以抵达长安。他还听说可以用竹箨封藏荔枝，效果也不错。他决定等枝节枯萎后，立刻摘下荔枝，放入短竹筒内，再放入瓮中，效果更好。最后，他想到了自己在上林署监事时的经验，决定利用冰镇荔枝，因为冰镇是最有效的保鲜方法。这是他的第三步。</span><br><span class="line">总的来说，李善德通过寻找合适的容器、提高转运速度、设计保鲜措施和利用冰镇等方法，一步步解决了荔枝运输中的保鲜难题。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐ 列出3个步骤，但组织略显混乱。</p>
+<p>**<strong>优化配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">李善德首先通过购买双层瓮，将荔枝用盐水洗过后放入内层，坛口密封，然后外层注入冷水，每半日更换一次，以延缓荔枝变质的时间。接着，他听说可以用竹箨封藏荔枝，效果也不错，于是决定等枝节枯萎后，立刻摘下荔枝，放入短竹筒内，再放入瓮中，以进一步提高保鲜效果。最后，他想到了利用冰镇的方法，因为他在上林署做了许多年监事，分管的业务是藏冰，每年冬季会凿冰储备。他意识到荔枝保鲜最有效的方法是取冰镇之，于是决定在荔枝转运中采用这种方式来保持荔枝的新鲜度。通过这些步骤，李善德逐步解决了荔枝运输中的保鲜难题，确保荔枝在长途运输过程中保持新鲜。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐ 更清晰，3个步骤组织更好，逻辑连贯。</p>
+<p>效果对比：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPRbI607JJoDWrnGR8DZjA8eLpgQ4Md47Jm9o60aQ3bEdSZ3IUcnS2TA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=14" alt="图片"></p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>复杂情节需要<strong>更大的 chunk</strong> 和<strong>更多的 top_k；</strong></li>
+<li>优化配置能提供<strong>更清晰、更有条理</strong>的答案；</li>
+<li>这是<strong>最常用的场景</strong>，建议使用 <strong>1024&#x2F;128&#x2F;6</strong> 的配置；</li>
+</ul>
+<p><strong>实验6：宏观主题理解场景</strong></p>
+<p><strong>测试问题</strong>：这部小说通过李善德运送荔枝的故事，想要表达关于权力、责任和个人选择的什么思考？</p>
+<p><strong>场景说明</strong>：需要综合全书信息，进行深层次理解。</p>
+<p><strong>实验配置</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPiapiaZjsULod1R37LX8Fd1PBR3icxU6clcdjD6R9wjaW8hiaxldDhr5Ndg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=15" alt="图片"></p>
+<p><strong>实验结果</strong>：</p>
+<p>**<strong>默认配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这部小说通过李善德运送荔枝的故事，想要表达关于权力、责任和个人选择的思考。在故事中，李善德被赵欣宁搅局，面临着经略府的追杀和责难。他原本以为将荔枝送到京城可以开启仕途，但在经历一路的挫折和磨难后，他发现越接近成功，朋友越少，内心越愧疚。他意识到有些冲动是苟且不了的，有些心思是藏不住的。这表明在追逐权力和成功的过程中，个人的选择和责任是至关重要的。李善德最终意识到，权力并非一切，个人的内心和道德选择才是真正重要的。故事通过李善德的经历，反思了权力与责任之间的关系，以及个人在面对权力和责任时应该如何做出正确的选择。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐ 简单提及权力和责任，缺少深度。</p>
+<p>**<strong>优化配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">这部小说通过李善德运送荔枝的故事，想要表达关于权力、责任和个人选择的思考。在故事中，李善德被赋予了重要的任务，即将新鲜荔枝送到长安，但在执行任务的过程中，他面临着各种困难和挑战。他在面对经略使、商人、朋友等各方的压力和考验时，展现出了不同的态度和选择。</span><br><span class="line">首先，关于权力，故事中经略使、商人等权力角色对李善德施加了各种压力和要求，要求他完成任务或者放弃任务。这反映了权力对个人的影响和控制，以及在权力面前个人的无力和被动。李善德在这种权力的压迫下，不得不做出各种选择和决定。</span><br><span class="line">其次，关于责任，李善德作为一个小官，承担着将荔枝送到长安的责任。他在执行任务的过程中，面临着各种困难和挑战，需要不断权衡利弊，承担责任和后果。他在面对各种压力和考验时，需要思考自己的责任和义务，以及如何承担责任和做出正确的选择。</span><br><span class="line">最后，关于个人选择，故事中展现了李善德在面对各种困难和压力时，做出了不同的选择和决定。他在面对困境时，展现出了坚韧和勇气，同时也展现出了对权力和责任的思考和反思。他在最终选择面对死亡时，也表现出了对个人选择和命运的接受和坦然。</span><br><span class="line">总的来说，这部小说通过李善德运送荔枝的故事，探讨了权力、责任和个人选择之间的关系，以及在面对权力和责任时个人的思考和抉择。通过这个故事，作者试图传达对于权力、责任和个人选择的深刻思考和探讨。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐ 详细分析三个维度，结构清晰。</p>
+<p>**<strong>深度配置</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这部小说通过李善德运送荔枝的故事，表达了关于权力、责任和个人选择的思考。首先，通过李善德在运送荔枝过程中所面临的困难和挑战，展现了权力对于个人的影响和限制。在故事中，各种权力机构和人物对于荔枝运送的态度和行为，直接影响了李善德的处境和选择。这反映了权力对于个人行动和选择的制约和影响。</span><br><span class="line">其次，故事中还探讨了责任这一主题。李善德作为荔枝使，肩负着将荔枝送达长安的责任，但在面对各种困难和阻碍时，他需要权衡个人利益和责任之间的关系。他在故事中的选择和行动，展现了对责任的理解和承担，同时也反映了在权力面前责任的重要性和复杂性。</span><br><span class="line">最后，故事还强调了个人选择的重要性。在面对权力的压力和责任的挑战时，李善德需要做出自己的选择和决定。他在故事中的行动和决策，体现了对于权力、责任和个人信念之间的平衡和选择。通过李善德的故事，读者可以思考权力、责任和个人选择之间的关系，以及在复杂环境中如何做出正确的决策。</span><br></pre></td></tr></table></figure>
+
+<p>⭐⭐⭐⭐⭐ 最全面，多角度分析，深入探讨。</p>
+<p><strong>效果对比</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPZSicv3ibyoAcZxChdpNcoV5IfaeDm0XDQ5tfYgHYQ1YiaMsn0YfJl50qA/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=16" alt="图片"></p>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>主题理解需要<strong>最强的配置；</strong></li>
+<li>深度配置能提供<strong>更深入、更多角度</strong>的分析；</li>
+<li>虽然成本较高，但对于<strong>重要的分析任务是值得的；</strong></li>
+<li>建议使用 <strong>2048&#x2F;256&#x2F;10</strong> 的配置；</li>
+</ul>
+<p><strong>3.4 参数配置建议</strong></p>
+<p>基于以上实验，我们总结出不同场景的最佳配置：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPqj8LGS3m1pZ8sE4ibhZaSdKj9U7LQicJYNECpUmWpwAdAMelDeLiay86Q/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=17" alt="图片"></p>
+<p><strong>Prompt 模板建议</strong>：</p>
+<ul>
+<li>简单查询：<code>&quot;请基于以下上下文简洁回答问题&quot;</code></li>
+<li>复杂情节：<code>&quot;请仔细阅读上下文，详细回答问题&quot;</code></li>
+<li>宏观主题：<code>&quot;请综合分析上下文，深入回答问题&quot;</code></li>
+</ul>
+<p><strong>3.5 参数速查表</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPRmejDPasFXaHjB8U38ibV7uqkyliaIHbupRqib7w8XnoXFdjdiawOPwXyg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=18" alt="图片"></p>
+<p><strong>参数组合示例</strong>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">快速查询：512/20/3/compact/0.1<span class="comment"># 适合：简单事实问题</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">标准配置：1024/128/6/compact/0.2<span class="comment"># 适合：大多数情况（推荐）</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">深度分析：2048/256/10/tree_summarize/0.2<span class="comment"># 适合：复杂问题</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>3.6 小结</strong></p>
+<p>关键发现：</p>
+<ol>
+<li><p><strong>chunk_size 影响最大</strong>：从256到2048，理解深度显著提升；</p>
+</li>
+<li><p><strong>top_k 决定全面性</strong>：从2到10，信息覆盖面增加4.5倍；</p>
+</li>
+<li><p><strong>overlap 提供保险</strong>：虽然影响相对较小，但能防止关键信息丢失；</p>
+</li>
+<li><p><strong>场景决定配置</strong>：不同问题需要不同的参数组合；</p>
+</li>
+</ol>
+<p>优化策略：</p>
+<ol>
+<li><p>先用默认配置（512&#x2F;20&#x2F;3）测试；</p>
+</li>
+<li><p>根据问题类型选择合适的配置；</p>
+</li>
+<li><p>如果答案不够好，逐步增大参数；</p>
+</li>
+<li><p>注意成本和性能的平衡；</p>
+</li>
+</ol>
+<p>实验验证的价值：</p>
+<ul>
+<li>所有结论都基于真实数据；</li>
+<li>参数效果清晰可见；</li>
+<li>为实际应用提供可靠指导；</li>
+</ul>
+<p><strong>接下来</strong>：让我们深入理解 LlamaIndex 的架构！</p>
+<h2 id="第四部分：架构篇-LlamaIndex-的内部机制"><a href="#第四部分：架构篇-LlamaIndex-的内部机制" class="headerlink" title="第四部分：架构篇 - LlamaIndex 的内部机制"></a>第四部分：架构篇 - LlamaIndex 的内部机制</h2><p><strong>4.1 整体架构图</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPaqhYnyLNjsKZKWYISFLemuJNRC2LGXmlNjxhuOC9oNYThnjpEPzhvw/640?wx_fmt=other&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=19" alt="图片"></p>
+<p><strong>4.2 核心组件详解</strong></p>
+<p><strong>组件 1：文档加载器（Document Loader）</strong></p>
+<p><strong>作用</strong>：将各种格式的文件转换为统一的 Document 对象。</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from llama_index.readers.file import PyMuPDFReader</span><br><span class="line"><span class="attribute">reader</span> <span class="operator">=</span> PyMuPDFReader()</span><br><span class="line"><span class="attribute">documents</span> <span class="operator">=</span> reader.load(<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制</strong>：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 每页 PDF 转换为一个 DocumentDocument(    text=<span class="string">&quot;第一章\n\n李善德站在长安城南...&quot;</span>,  # 页面文本    metadata=&#123;        <span class="string">&quot;page_label&quot;</span>: <span class="string">&quot;1&quot;</span>,                    # 页码        <span class="string">&quot;file_name&quot;</span>: <span class="string">&quot;长安的荔枝.pdf&quot;</span>         # 文件名    &#125;,    id_=<span class="string">&quot;doc_1&quot;</span>                               # 唯一 ID)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>支持的格式</strong>：</p>
+<ul>
+<li>PDF（PyMuPDFReader）</li>
+<li>Word（DocxReader）</li>
+<li>Markdown（MarkdownReader）</li>
+<li>网页（SimpleWebPageReader）</li>
+<li>数据库（DatabaseReader）</li>
+</ul>
+<p><strong>组件 2：文本分块器（Node Parser）</strong></p>
+<p><strong>作用</strong>：将长文档切分成适合检索的小块。</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.core.node_parser import SentenceSplitter</span><br><span class="line">Settings.text_splitter = SentenceSplitter(</span><br><span class="line">    <span class="attribute">chunk_size</span>=1024,      # 每块最多 1024 tokens</span><br><span class="line">    <span class="attribute">chunk_overlap</span>=128     # 相邻块重叠 128 tokens</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制</strong>：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 输入：一个 Document（整页文本）Document(text=<span class="string">&quot;第一章\n\n李善德站在长安城南的一座宅子门前...&quot;</span>)</span><br><span class="line"></span><br><span class="line"># 输出：多个 Node（文本块）Node(    text=<span class="string">&quot;第一章\n\n李善德站在长安城南的一座宅子门前...&quot;</span>,  # 前 <span class="number">1024</span> tokens    metadata=&#123;...&#125;,    relationships=&#123;        <span class="string">&quot;next&quot;</span>: <span class="string">&quot;node_2&quot;</span>,  # 指向下一个块        <span class="string">&quot;prev&quot;</span>: None    &#125;)</span><br><span class="line"></span><br><span class="line">Node(    text=<span class="string">&quot;...宅子门前。这是他刚刚买下的新宅...&quot;</span>,  # <span class="number">896</span><span class="number">-1920</span> tokens（重叠 <span class="number">128</span>）    metadata=&#123;...&#125;,    relationships=&#123;        <span class="string">&quot;next&quot;</span>: <span class="string">&quot;node_3&quot;</span>,        <span class="string">&quot;prev&quot;</span>: <span class="string">&quot;node_1&quot;</span>    &#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>切分策略：</p>
+<ul>
+<li>优先在句子边界切分</li>
+<li>保留 overlap 以保持连续性</li>
+<li>维护 Node 之间的关系</li>
+</ul>
+<p><strong>组件 3：向量化模型（Embedding Model）</strong></p>
+<p><strong>作用</strong>：将文本转换为数字向量</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from llama_index<span class="selector-class">.embeddings</span><span class="selector-class">.openai</span> import OpenAIEmbedding</span><br><span class="line">Settings<span class="selector-class">.embed_model</span> = <span class="built_in">OpenAIEmbedding</span>(    model=<span class="string">&quot;text-embedding-3-small&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制</strong>：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 输入：文本</span></span><br><span class="line">text = <span class="string">&quot;李善德是上林署的监事&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出：向量（1536 维）</span></span><br><span class="line">vector = [0.123, -0.456, 0.789, ..., 0.321]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 相似文本的向量也相似</span></span><br><span class="line">text1 = <span class="string">&quot;李善德是上林署的监事&quot;</span></span><br><span class="line">text2 = <span class="string">&quot;李善德在上林署工作&quot;</span></span><br><span class="line">text3 = <span class="string">&quot;今天天气很好&quot;</span></span><br><span class="line"></span><br><span class="line">vector1 = embed_model.get_text_embedding(text1)</span><br><span class="line">vector2 = embed_model.get_text_embedding(text2)</span><br><span class="line">vector3 = embed_model.get_text_embedding(text3)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算相似度（余弦相似度）</span></span><br><span class="line">similarity(vector1, vector2) = 0.95  <span class="comment"># 高度相似</span></span><br><span class="line">similarity(vector1, vector3) = 0.12  <span class="comment"># 不相似</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Demo 中的实际应用</strong>：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 索引构建时：为每个 Node 生成向量</span></span><br><span class="line">for <span class="keyword">node</span> <span class="title">in</span> nodes:</span><br><span class="line">    node.embedding = Settings.embed_model.get_text_embedding(node.text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询时：为问题生成向量</span></span><br><span class="line">query = <span class="string">&quot;主角是谁？&quot;</span></span><br><span class="line">query_embedding = Settings.embed_model.get_text_embedding(query)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>组件 4：向量存储（Vector Store）</strong></p>
+<p><strong>作用</strong>：存储和检索向量</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta"># 默认使用内存存储index = VectorStoreIndex.from_documents(documents)</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 持久化到磁盘index.storage_context.persist(persist_dir=<span class="string">&quot;./storage&quot;</span>)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制：</strong></p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 存储结构&#123;    <span class="string">&quot;node_1&quot;</span>: &#123;        <span class="string">&quot;text&quot;</span>: <span class="string">&quot;李善德是上林署的监事...&quot;</span>,        <span class="string">&quot;embedding&quot;</span>: [<span class="number">0.1</span>, <span class="number">0.3</span>, <span class="number">-0.2</span>, ...],        <span class="string">&quot;metadata&quot;</span>: &#123;...&#125;    &#125;,    <span class="string">&quot;node_2&quot;</span>: &#123;        <span class="string">&quot;text&quot;</span>: <span class="string">&quot;他接到了运送荔枝的任务...&quot;</span>,        <span class="string">&quot;embedding&quot;</span>: [<span class="number">0.2</span>, <span class="number">-0.1</span>, <span class="number">0.4</span>, ...],        <span class="string">&quot;metadata&quot;</span>: &#123;...&#125;    &#125;,    ...&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>检索过程</strong>：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 1. 计算查询向量与所有 Node 向量的相似度</span></span><br><span class="line">query_vec = [<span class="number">0.15</span>, <span class="number">0.25</span>, -<span class="number">0.15</span>, ...]</span><br><span class="line"></span><br><span class="line">for node_id, <span class="keyword">node</span> <span class="title">in</span> vector_store.items():</span><br><span class="line">    similarity = cosine_similarity(query_vec, node.embedding)</span><br><span class="line">    scores.append((node_id, similarity))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 按相似度排序</span></span><br><span class="line">scores.sort(<span class="attr">reverse=</span><span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 返回 top_k 个</span></span><br><span class="line">top_nodes = scores[:similarity_top_k]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>组件 5：检索器（Retriever）</strong></p>
+<p><strong>作用</strong>：根据查询找到最相关的 Nodes</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta"># 通过 query_engine 自动创建query_engine = index.as_query_engine(similarity_top_k=5)</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 内部使用 VectorIndexRetriever</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制</strong>：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VectorIndexRetriever</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">retrieve</span>(<span class="params"><span class="variable language_">self</span>, <span class="symbol">query:</span> str</span>) -&gt; <span class="title class_">List</span>[<span class="title class_">NodeWithScore</span>]:</span><br><span class="line">        <span class="comment"># 1. 向量化查询</span></span><br><span class="line">        query_embedding = <span class="variable language_">self</span>.embed_model.get_text_embedding(query)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 在向量存储中搜索</span></span><br><span class="line">        results = <span class="variable language_">self</span>.vector_store.query(</span><br><span class="line">            query_embedding,</span><br><span class="line">            top_k=<span class="variable language_">self</span>.similarity_top_k</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 返回带分数的 Nodes</span></span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            <span class="title class_">NodeWithScore</span>(node=node, score=score)</span><br><span class="line">            <span class="keyword">for</span> node, score <span class="keyword">in</span> results</span><br><span class="line">        ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Demo 中的实际应用</strong>：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 问题：&quot;主角是谁？&quot;</span></span><br><span class="line">query = <span class="string">&quot;主角是谁？&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检索到 3 个最相关的 Nodes</span></span><br><span class="line">retrieved_nodes = [</span><br><span class="line">    NodeWithScore(</span><br><span class="line">        <span class="keyword">node</span><span class="title">=Node</span>(<span class="attr">text=</span><span class="string">&quot;李善德是上林署的监事...&quot;</span>),</span><br><span class="line">        <span class="attr">score=</span><span class="number">0.95</span></span><br><span class="line">    ),</span><br><span class="line">    NodeWithScore(</span><br><span class="line">        <span class="keyword">node</span><span class="title">=Node</span>(<span class="attr">text=</span><span class="string">&quot;他在长安城南买了宅子...&quot;</span>),</span><br><span class="line">        <span class="attr">score=</span><span class="number">0.87</span></span><br><span class="line">    ),</span><br><span class="line">    NodeWithScore(</span><br><span class="line">        <span class="keyword">node</span><span class="title">=Node</span>(<span class="attr">text=</span><span class="string">&quot;这天，他接到了任务...&quot;</span>),</span><br><span class="line">        <span class="attr">score=</span><span class="number">0.82</span></span><br><span class="line">    )</span><br><span class="line">]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>组件 6：响应合成器（Response Synthesizer）</strong></p>
+<p><strong>作用</strong>：将检索到的 Nodes 和问题合成最终答案</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">query_engine</span> = index.as_query_engine(    response_mode=<span class="string">&quot;compact&quot;</span>  <span class="comment"># 使用 compact 模式)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制（compact 模式）</strong>：</p>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classCompactResponseSynthesizer:    def synthesize(self, query: str, nodes: <span class="type">List</span>[<span class="type">Node</span>]) -&gt; <span class="type">Response</span>:        # <span class="number">1.</span> 合并所有 <span class="type">Nodes</span> 的文本        context = <span class="string">&quot;\n\n&quot;</span>.join([node.text <span class="keyword">for</span> node <span class="keyword">in</span> nodes])                # <span class="number">2.</span> 构建 <span class="type">Prompt</span>        prompt = f<span class="string">&quot;&quot;&quot;        上下文信息：        &#123;context&#125;                问题：&#123;query&#125;                请基于上下文回答问题：        &quot;&quot;&quot;</span>                # <span class="number">3.</span> 调用 <span class="type">LLM</span>        answer = self.llm.complete(prompt)                # <span class="number">4.</span> 返回结果        <span class="keyword">return</span> <span class="type">Response</span>(            response=answer,            source_nodes=nodes        )</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Demo 中的实际应用</strong>：</p>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 检索到的 <span class="type">Nodesnodes</span> = [    <span class="type">Node</span>(text=<span class="string">&quot;李善德是上林署的监事...&quot;</span>),    <span class="type">Node</span>(text=<span class="string">&quot;他在长安城南买了宅子...&quot;</span>),    <span class="type">Node</span>(text=<span class="string">&quot;这天，他接到了任务...&quot;</span>)]</span><br><span class="line"></span><br><span class="line"># 合成 <span class="type">Promptprompt</span> = <span class="string">&quot;&quot;&quot;上下文信息：李善德是上林署的监事，从九品下的官职...他在长安城南买了一座宅子...这天，他接到了一个艰巨的任务...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">问题：主角是谁？</span></span><br><span class="line"><span class="string">请基于上下文回答问题：&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"># <span class="type">LLM</span> 生成答案answer = <span class="string">&quot;主角是李善德。他是上林署的监事...&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>组件 7：LLM（Large Language Model）</strong></p>
+<p><strong>作用</strong>：理解问题和生成答案</p>
+<p><strong>Demo 中的使用</strong>：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> llama_index.llms.openai import OpenAI</span><br><span class="line">Settings.llm = OpenAI(    <span class="attribute">model</span>=<span class="string">&quot;gpt-3.5-turbo&quot;</span>,    <span class="attribute">temperature</span>=0.1)</span><br></pre></td></tr></table></figure>
+
+<p><strong>内部机制</strong>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classOpenAI:    def <span class="title function_ invoke__">complete</span>(<span class="keyword">self</span>, prompt: <span class="type">str</span>) <span class="punctuation">-&gt;</span> <span class="type">str</span>:        # 调用 OpenAI API        response = openai.ChatCompletion.<span class="title function_ invoke__">create</span>(            model=<span class="keyword">self</span>.model,            messages=[                &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt&#125;            ],            temperature=<span class="keyword">self</span>.temperature        )                <span class="keyword">return</span> response.choices[<span class="number">0</span>].message.content</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>Demo 中的实际应用</strong>：</p>
+<figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 输入：完整的 <span class="type">Promptprompt</span> = <span class="string">&quot;&quot;&quot;上下文信息：李善德是上林署的监事...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">问题：主角是谁？</span></span><br><span class="line"><span class="string">请基于上下文回答问题：&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"># 输出：答案answer = <span class="type">Settings</span>.llm.complete(prompt)# <span class="string">&quot;主角是李善德。他是上林署的监事...&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>4.3 数据流动全景</strong></p>
+<p>让我们跟踪一个完整的查询过程：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta"># 用户代码response = query_engine.query(<span class="string">&quot;主角是谁？&quot;</span>)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>内部流程</strong>：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">1</span>. 用户输入   ↓   <span class="string">&quot;主角是谁？&quot;</span></span><br><span class="line"><span class="attribute">2</span>. 向量化（Embedding Model）   ↓  <span class="meta"> [0.15, 0.25, -0.15, ..., 0.18]</span></span><br><span class="line"><span class="attribute">3</span>. 检索（Retriever + Vector Store）   ↓   计算相似度 → 找到 top <span class="number">3</span> Nodes   ↓   Node <span class="number">1</span>: <span class="string">&quot;李善德是上林署的监事...&quot;</span> (score: <span class="number">0</span>.<span class="number">95</span>)   Node <span class="number">2</span>: <span class="string">&quot;他在长安城南买了宅子...&quot;</span> (score: <span class="number">0</span>.<span class="number">87</span>)   Node <span class="number">3</span>: <span class="string">&quot;这天，他接到了任务...&quot;</span> (score: <span class="number">0</span>.<span class="number">82</span>)</span><br><span class="line"><span class="attribute">4</span>. 合成（Response Synthesizer）   ↓   构建 Prompt:   <span class="string">&quot;&quot;</span><span class="string">&quot;   上下文信息：   李善德是上林署的监事...   他在长安城南买了宅子...   这天，他接到了任务...      问题：主角是谁？      请基于上下文回答问题：   &quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line"><span class="attribute">5</span>. 生成（LLM）   ↓   调用 OpenAI API   ↓   <span class="string">&quot;主角是李善德。他是上林署的监事...&quot;</span></span><br><span class="line"><span class="attribute">6</span>. 返回   ↓   Response(       response=<span class="string">&quot;主角是李善德...&quot;</span>,       source_nodes=[Node1, Node2, Node3]   )</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.4 参数在架构中的位置</strong></p>
+<p>让我们看看各个参数在哪个组件中生效：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPb64kUK2894zURhMlVjoWicGKicBm9ElMptNlsU0BphXu3iaK4Jsl0e6rA/640?wx_fmt=other&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=20" alt="图片">参数作用总结：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPCrKRwlbeTs13R2R6V7thW4ZNSc4RogxfZxjw8wHeghKicCQL9yZ7xKQ/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=21" alt="图片"></p>
+<p><strong>4.5 小结</strong></p>
+<p><strong>架构要点</strong>：</p>
+<ol>
+<li><p><strong>5 层架构</strong>：数据处理 → 索引 → 检索 → 合成 → 生成；</p>
+</li>
+<li><p><strong>核心组件</strong>：7 个关键组件协同工作；</p>
+</li>
+<li><p><strong>参数控制</strong>：每个参数在特定组件中生效；</p>
+</li>
+</ol>
+<p><strong>设计优势</strong>：</p>
+<p>✅ 模块化：每个组件职责清晰</p>
+<p>✅ 可扩展：可以替换任何组件</p>
+<p>✅ 灵活性：丰富的参数配置</p>
+<h2 id="第五部分：Agent-化-让-RAG-系统能”动手”"><a href="#第五部分：Agent-化-让-RAG-系统能”动手”" class="headerlink" title="第五部分：Agent 化 - 让 RAG 系统能”动手”"></a>第五部分：Agent 化 - 让 RAG 系统能”动手”</h2><p><strong>5.1 RAG 的边界</strong></p>
+<p>前面我们构建的问答系统很强大，但它有一个根本限制：只能基于已有文档回答问题。</p>
+<p>看几个它无法处理的场景：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户：<span class="string">&quot;除了《长安的荔枝》，还有哪些关于唐代荔枝运输的史料？&quot;</span>系统：<span class="string">&quot;抱歉，我只能基于《长安的荔枝》回答。&quot;</span> ❌</span><br><span class="line">用户：<span class="string">&quot;把李善德的人物分析保存成 Word 文档。&quot;</span>系统：<span class="string">&quot;我无法操作文件。&quot;</span> ❌</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题本质</strong>：RAG 系统有”大脑”（知识和推理），但缺少”手脚”（工具和执行能力）。</p>
+<p><strong>5.2 AgentBay：为 Agent 提供工具</strong></p>
+<p><strong>AgentBay</strong> 是一个云端 Agent 工具平台，提供四大执行环境：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPcibFoGZ32ia6ibCyJIgwFGKc18IZG0YZzw7nOkicYfibLCCfLeJEBqGBzmg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=22" alt="图片"></p>
+<p><strong>核心思路</strong>：</p>
+<ul>
+<li><strong>LlamaIndex</strong>：决策”做什么”（基于知识推理）</li>
+<li>AgentBay**：执行”怎么做”（调用工具完成）</li>
+</ul>
+<p><strong>5.3 集成思路</strong></p>
+<p>下面展示核心逻辑（AgentBay API 部分为真实代码，页面操作为示意）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> llama_index.core <span class="keyword">import</span> VectorStoreIndex, Settings</span><br><span class="line"><span class="keyword">from</span> llama_index.llms.openai <span class="keyword">import</span> OpenAI</span><br><span class="line"><span class="keyword">from</span> agentbay <span class="keyword">import</span> AgentBay</span><br><span class="line"><span class="keyword">from</span> agentbay.session_params <span class="keyword">import</span> CreateSessionParams</span><br><span class="line"><span class="keyword">from</span> agentbay.browser.browser <span class="keyword">import</span> BrowserOption</span><br><span class="line"><span class="keyword">from</span> playwright.async_api <span class="keyword">import</span> async_playwright</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化 LlamaIndex</span></span><br><span class="line">Settings.llm = OpenAI(model=<span class="string">&quot;gpt-4&quot;</span>, api_key=<span class="string">&quot;your_key&quot;</span>)</span><br><span class="line">index = VectorStoreIndex.from_documents(documents)</span><br><span class="line">query_engine = index.as_query_engine()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化 AgentBay</span></span><br><span class="line">agent_bay = AgentBay()</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">search_web_with_agentbay</span>(<span class="params">question: <span class="built_in">str</span></span>) -&gt; <span class="built_in">list</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;使用 AgentBay 浏览器搜索网络资料&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 创建浏览器会话（真实 AgentBay API）</span></span><br><span class="line">    params = CreateSessionParams(image_id=<span class="string">&quot;browser_latest&quot;</span>)</span><br><span class="line">    session_result = agent_bay.create(params)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> session_result.success:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line"></span><br><span class="line">    session = session_result.session</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 2. 初始化浏览器（真实 AgentBay API）</span></span><br><span class="line">        <span class="keyword">await</span> session.browser.initialize_async(BrowserOption())</span><br><span class="line">        endpoint_url = session.browser.get_endpoint_url()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 使用 Playwright 连接浏览器（真实 Playwright API）</span></span><br><span class="line">        <span class="keyword">async</span> <span class="keyword">with</span> async_playwright() <span class="keyword">as</span> p:</span><br><span class="line">            browser = <span class="keyword">await</span> p.chromium.connect_over_cdp(endpoint_url)</span><br><span class="line">            context = browser.contexts[<span class="number">0</span>]</span><br><span class="line">            page = <span class="keyword">await</span> context.new_page()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 4. 访问搜索引擎并搜索（示意代码，实际需根据网站结构调整）</span></span><br><span class="line">            <span class="keyword">await</span> page.goto(<span class="string">&quot;https://xueshu.baidu.com&quot;</span>)</span><br><span class="line">            <span class="comment"># 填写搜索框、点击搜索按钮...</span></span><br><span class="line">            <span class="comment"># 等待页面加载...</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 5. 提取搜索结果（示意代码，实际需根据页面结构调整）</span></span><br><span class="line"></span><br><span class="line">            results = []</span><br><span class="line">            <span class="comment"># 遍历搜索结果元素...</span></span><br><span class="line">            <span class="comment"># 提取标题、摘要等信息...</span></span><br><span class="line">            <span class="comment"># results.append(&#123;&#x27;title&#x27;: ..., &#x27;abstract&#x27;: ...&#125;)</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">await</span> browser.close()</span><br><span class="line">            <span class="keyword">return</span> results</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="comment"># 6. 清理会话（真实 AgentBay API）</span></span><br><span class="line">        agent_bay.delete(session)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">intelligent_query</span>(<span class="params">question: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;增强版查询：本地不足时自动搜索网络&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 步骤 1：查询本地知识库</span></span><br><span class="line">    local_response = query_engine.query(question)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 步骤 2：判断是否需要补充（简化逻辑）</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(local_response.response) &lt; <span class="number">100</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;📡 本地信息不足，搜索网络资料...&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 步骤 3：使用 AgentBay 搜索</span></span><br><span class="line">        web_results = <span class="keyword">await</span> search_web_with_agentbay(question)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> web_results:</span><br><span class="line">            <span class="comment"># 步骤 4：综合本地和网络信息</span></span><br><span class="line">            web_info = <span class="string">&quot;\n&quot;</span>.join([</span><br><span class="line">                <span class="string">f&quot;- <span class="subst">&#123;r[<span class="string">&#x27;title&#x27;</span>]&#125;</span>: <span class="subst">&#123;r[<span class="string">&#x27;abstract&#x27;</span>]&#125;</span>&quot;</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> web_results</span><br><span class="line">            ])</span><br><span class="line"></span><br><span class="line">            enhanced_prompt = <span class="string">f&quot;&quot;&quot;基于以下信息回答问题：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">【本地知识库】<span class="subst">&#123;local_response.response&#125;</span></span></span><br><span class="line"><span class="string">【网络搜索结果】<span class="subst">&#123;web_info&#125;</span></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">问题：<span class="subst">&#123;question&#125;</span></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">请综合以上信息给出完整答案。&quot;&quot;&quot;</span></span><br><span class="line">            final_response = Settings.llm.complete(enhanced_prompt)</span><br><span class="line">            <span class="keyword">return</span> final_response.text</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> local_response.response</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用示例</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    answer = <span class="keyword">await</span> intelligent_query(<span class="string">&quot;唐代荔枝运输的历史记载有哪些？&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(answer)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心流程</strong>：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_jpg/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPHf9JlvjDgkYeZqynEWnbJSDH3s2DDdLf9ubrDXjtlycPlLUoHjugiaw/640?wx_fmt=other&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=23" alt="图片"><strong>关键 API 说明</strong>：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># AgentBay 提供的真实 API：</span><br><span class="line"></span><br><span class="line"># <span class="number">1.</span> 创建浏览器会话params = CreateSessionParams(image_id=<span class="string">&quot;browser_latest&quot;</span>)session = agent_bay.create(params).session</span><br><span class="line"></span><br><span class="line"># <span class="number">2.</span> 初始化浏览器await session.browser.initialize_async(BrowserOption())endpoint_url = session.browser.get_endpoint_url()</span><br><span class="line"></span><br><span class="line"># <span class="number">3.</span> 连接 Playwright（标准 Playwright API）browser = await p.chromium.connect_over_cdp(endpoint_url)</span><br><span class="line"></span><br><span class="line"># <span class="number">4.</span> 清理资源agent_bay.delete(session)</span><br><span class="line"></span><br><span class="line"># 页面操作部分使用标准 Playwright API，# 具体实现需根据目标网站的实际结构调整</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>预期效果</strong>：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">问题：唐代荔枝运输的历史记载有哪些？</span><br><span class="line">📚 查询本地知识库<span class="string">...</span>📡 本地信息不足，搜索网络资料<span class="string">...</span>🔍 创建 AgentBay 浏览器会话<span class="string">...</span>✓ 找到 3 条相关资料</span><br><span class="line">答案：根据综合资料，唐代荔枝运输的历史记载主要包括：</span><br><span class="line">1. 《长安的荔枝》中描述的李善德运送荔枝的故事，展现了   唐代官方荔枝运输的组织方式和技术手段<span class="string">...</span></span><br><span class="line"></span><br><span class="line">2. 杜牧《过华清宫》诗：<span class="string">&quot;一骑红尘妃子笑，无人知是荔枝来&quot;</span>，   记载了唐玄宗为杨贵妃从岭南快马运送荔枝的著名典故<span class="string">...</span></span><br><span class="line"></span><br><span class="line">3. 《新唐书》记载：<span class="string">&quot;荔枝南海所生...每岁命岭南驰驿致之，   比至长安，色味不变&quot;</span>，说明唐代已有成熟的荔枝保鲜技术<span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>5.4 何时使用？</strong></p>
+<p><strong>✅ 适合</strong>：</p>
+<ul>
+<li>需要结合多个信息源（本地文档 + 网络搜索）</li>
+<li>需要自动化操作（搜索、下载、保存文件）</li>
+<li>需要与外部工具集成（浏览器、Office）</li>
+</ul>
+<p><strong>❌ 不适合</strong>：</p>
+<ul>
+<li>纯粹的静态文档问答</li>
+<li>对响应速度要求极高（&lt; 1秒）</li>
+<li>简单的单一数据源查询</li>
+</ul>
+<p><strong>5.5 延伸阅读</strong></p>
+<p><strong>AgentBay 资源</strong>：</p>
+<ul>
+<li>官方文档：<a target="_blank" rel="noopener" href="https://github.com/aliyun/wuying-agentbay-sdk">https://github.com/aliyun/wuying-agentbay-sdk</a></li>
+<li>快速开始：docs&#x2F;quickstart&#x2F;</li>
+<li>浏览器自动化指南：docs&#x2F;guides&#x2F;browser-use&#x2F;</li>
+<li>完整示例代码：python&#x2F;docs&#x2F;examples&#x2F;browser-use&#x2F;</li>
+</ul>
+<p><strong>Playwright 资源</strong>：</p>
+<ul>
+<li>Playwright 官方文档：<a target="_blank" rel="noopener" href="https://playwright.dev/python/">https://playwright.dev/python/</a></li>
+<li>元素定位指南：<a target="_blank" rel="noopener" href="https://playwright.dev/python/docs/locators">https://playwright.dev/python/docs/locators</a></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>核心要点回顾</strong></p>
+<p>第一部分：原理</p>
+<ul>
+<li>RAG &#x3D; 检索 + 生成</li>
+<li>关键步骤：切分 → 向量化 → 检索 → 生成</li>
+<li>核心参数：chunk_size, top_k, overlap</li>
+</ul>
+<p>第二部分：实战</p>
+<ul>
+<li>核心代码 &lt; 30 行</li>
+<li>5 个关键 API：Settings, Reader, Index, QueryEngine, query()</li>
+<li>支持单轮问答和多轮对话</li>
+</ul>
+<p>第三部分：优化</p>
+<ul>
+<li>实测效果对比</li>
+<li>参数调优策略</li>
+<li>针对不同场景的配置建议</li>
+</ul>
+<p>第四部分：架构</p>
+<ul>
+<li>5 层架构设计</li>
+<li>7 个核心组件</li>
+<li>参数在架构中的作用位置</li>
+</ul>
+<h2 id="第五部分：Agent-化"><a href="#第五部分：Agent-化" class="headerlink" title="第五部分：Agent 化"></a>第五部分：Agent 化</h2><ul>
+<li>RAG 系统的局限性</li>
+<li>AgentBay 工具平台介绍</li>
+<li>LlamaIndex + AgentBay 集成思路</li>
+<li>适用场景与使用建议</li>
+</ul>
+<p><strong>最佳实践</strong></p>
+<ol>
+<li><p><strong>从简单开始</strong>：先用默认配置，再逐步优化</p>
+</li>
+<li><p><strong>针对性调整</strong>：根据问题类型选择参数</p>
+</li>
+<li><p><strong>实测验证</strong>：用实际问题测试效果</p>
+</li>
+<li><p><strong>持久化索引</strong>：避免重复构建</p>
+</li>
+</ol>
+<p><strong>进阶方向</strong></p>
+<ul>
+<li><strong>多模态</strong>：处理图片、表格等</li>
+<li>混合检索**：结合关键词和语义检索</li>
+<li><strong>Agent</strong>：让 AI 自主决策和使用工具</li>
+<li>Fine-tuning**：针对特定领域优化</li>
+</ul>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a><strong>附录</strong></h1><h2 id="完整代码示例"><a href="#完整代码示例" class="headerlink" title="完整代码示例"></a>完整代码示例</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="string">&quot;&quot;</span><span class="string">&quot;LlamaIndex 完整示例：《长安的荔枝》问答系统&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">import os</span><br><span class="line"><span class="keyword">from</span> llama_index.core import VectorStoreIndex, Settings, StorageContext, load_index_from_storage</span><br><span class="line"><span class="keyword">from</span> llama_index.llms.openai import OpenAI</span><br><span class="line"><span class="keyword">from</span> llama_index.embeddings.openai import OpenAIEmbedding</span><br><span class="line"><span class="keyword">from</span> llama_index.readers.file import PyMuPDFReader</span><br><span class="line"><span class="keyword">from</span> llama_index.core.node_parser import SentenceSplitter</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 配置</span></span><br><span class="line">Settings.llm = OpenAI(</span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;gpt-3.5-turbo&quot;</span>,</span><br><span class="line">    <span class="attribute">temperature</span>=0.1,</span><br><span class="line">    <span class="attribute">api_key</span>=os.getenv(&quot;OPENAI_API_KEY&quot;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">Settings.embed_model = OpenAIEmbedding(</span><br><span class="line">    <span class="attribute">model</span>=<span class="string">&quot;text-embedding-3-small&quot;</span>,</span><br><span class="line">    <span class="attribute">api_key</span>=os.getenv(&quot;OPENAI_API_KEY&quot;)</span><br><span class="line">)</span><br><span class="line">Settings.text_splitter = SentenceSplitter(</span><br><span class="line">    <span class="attribute">chunk_size</span>=1024,</span><br><span class="line">    <span class="attribute">chunk_overlap</span>=128</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 加载文档</span></span><br><span class="line">reader = PyMuPDFReader()</span><br><span class="line">documents = reader.load(<span class="string">&quot;长安的荔枝.pdf&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f<span class="string">&quot;加载了 &#123;len(documents)&#125; 页&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 构建或加载索引</span></span><br><span class="line">persist_dir = <span class="string">&quot;./storage&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> os.path.exists(persist_dir):</span><br><span class="line">    # 加载已有索引</span><br><span class="line">    storage_context = StorageContext.from_defaults(<span class="attribute">persist_dir</span>=persist_dir)</span><br><span class="line">    index = load_index_from_storage(storage_context)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;加载已有索引&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    # 构建新索引</span><br><span class="line">    index = VectorStoreIndex.from_documents(documents, <span class="attribute">show_progress</span>=<span class="literal">True</span>)</span><br><span class="line">    index.storage_context.persist(<span class="attribute">persist_dir</span>=persist_dir)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;构建并保存新索引&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 创建查询引擎</span></span><br><span class="line">query_engine = index.as_query_engine(<span class="attribute">similarity_top_k</span>=5)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 交互式问答</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n开始问答（输入 &#x27;quit&#x27; 退出）：&quot;</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    question = input(<span class="string">&quot;\n你的问题：&quot;</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> question.lower() <span class="keyword">in</span> [<span class="string">&#x27;quit&#x27;</span>, <span class="string">&#x27;exit&#x27;</span>, <span class="string">&#x27;退出&#x27;</span>]:</span><br><span class="line">        break</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> question:</span><br><span class="line">        continue</span><br><span class="line"></span><br><span class="line">    response = query_engine.query(question)</span><br><span class="line">    <span class="built_in">print</span>(f<span class="string">&quot;\n答案：&#123;response.response&#125;&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="参数速查表"><a href="#参数速查表" class="headerlink" title="参数速查表"></a>参数速查表</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://mmbiz.qpic.cn/mmbiz_png/Z6bicxIx5naKrEswAVdP6X1W1Y1PpEibKPCrH2CBM7icv7IUHoIH539cuC9kmsz82DtxQfFEPy7IVPJwibIFAsgrNg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=24" alt="图片"></p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/tech/AI/ai_LlamaIndex/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/tech/AI/ai_LlamaIndex/&title=【RAG】LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统(转发) - ChongWen&summary=原文：https://mp.weixin.qq.com/s/xGdSUX0G2FEV5QOQAfbHUw"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=【RAG】LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统(转发) - ChongWen&amp;body=https://chongwenz.cn/tech/AI/ai_LlamaIndex/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/tech/AI/ai_LlamaIndex/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/tech/AI/ai_Vibe_kanban/">AI编程任务管理新思路：Vibe Kanban 体验</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/tech/AI/ai_VL_Model/">最近测试的几个版面识别模型（MinerU、Dots.ocr、PaddleVL、DeepSeekOCR）</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<style>
+.stats-row {
+  margin: 0.6rem auto 0.2rem;
+  max-width: 720px;
+  padding: 0.5rem 0.8rem;
+  color: #2a2f2f;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.stats-item {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.stats-icon {
+  font-size: 1rem;
+  color: #586064;
+}
+.stats-label {
+  color: #586064;
+}
+.stats-value {
+  font-weight: 700;
+}
+</style>
+<div class="stats-row" role="status" aria-live="polite">
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:bar-chart-2"></span>
+    <span class="stats-label">本站总访问量</span>
+    <span class="stats-value" id="busuanzi_site_pv">10000</span>
+    <span class="stats-label">次</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:user"></span>
+    <span class="stats-label">本站总访客数</span>
+    <span class="stats-value" id="busuanzi_site_uv">500</span>
+    <span class="stats-label">人</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:file-text"></span>
+    <span class="stats-label">本页总访客数</span>
+    <span class="stats-value" id="busuanzi_page_uv">加载中...</span>
+    <span class="stats-label">人</span>
+  </div>
+</div>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
+<script defer src="https://jsd.dusays.com/npm/penndu@17.0.0/bsz.js"></script>
+<script>
+(function () {
+  var pvBase = 10000;
+  var siteUvBase = 500;
+  var retry = 0;
+  var maxRetry = 60;
+  var timer = setInterval(function () {
+    var done = 0;
+    var sitePvEl = document.getElementById('busuanzi_site_pv');
+    if (sitePvEl) {
+      var sitePvRaw = (sitePvEl.textContent || '').trim();
+      var sitePv = parseInt(sitePvRaw || '0', 10);
+      if (sitePv > 0 && sitePvRaw !== String(pvBase)) {
+        sitePvEl.textContent = sitePv + pvBase;
+        done++;
+      }
+    }
+    var siteUvEl = document.getElementById('busuanzi_site_uv');
+    if (siteUvEl) {
+      var siteUvRaw = (siteUvEl.textContent || '').trim();
+      var siteUv = parseInt(siteUvRaw || '0', 10);
+      if (siteUv > 0 && siteUvRaw !== String(siteUvBase)) {
+        siteUvEl.textContent = siteUv + siteUvBase;
+        done++;
+      }
+    }
+    if (done >= 2) {
+      clearInterval(timer);
+    }
+    retry++;
+    if (retry >= maxRetry) {
+      clearInterval(timer);
+    }
+  }, 200);
+})();
+</script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 42 篇文章 🔸 总计 130.3k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E7%90%86%E7%94%B1"><span class="toc-text">推荐理由</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LlamaIndex-%E6%B7%B1%E5%BA%A6%E5%AE%9E%E6%88%98%EF%BC%9A%E7%94%A8%E3%80%8A%E9%95%BF%E5%AE%89%E7%9A%84%E8%8D%94%E6%9E%9D%E3%80%8B%E5%AD%A6%E4%BC%9A%E6%9E%84%E5%BB%BA%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F"><span class="toc-text">LlamaIndex 深度实战：用《长安的荔枝》学会构建智能问答系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E8%80%85%E5%AF%BC%E8%88%AA"><span class="toc-text">读者导航</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A%E5%8E%9F%E7%90%86%E7%AF%87-AI-%E5%A6%82%E4%BD%95%E5%83%8F%E4%BA%BA%E4%B8%80%E6%A0%B7%E2%80%9D%E8%AF%BB%E4%B9%A6%E2%80%9D"><span class="toc-text">第一部分：原理篇 - AI 如何像人一样”读书”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E5%AE%9E%E6%88%98%E7%AF%87-%E7%94%A8-LlamaIndex-%E5%AE%9E%E7%8E%B0%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F"><span class="toc-text">第二部分：实战篇 - 用 LlamaIndex 实现问答系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%EF%BC%9A%E4%BC%98%E5%8C%96%E7%AF%87-%E5%8F%82%E6%95%B0%E8%B0%83%E4%BC%98%E7%9A%84%E5%AE%9E%E6%88%98%E6%95%88%E6%9E%9C"><span class="toc-text">第三部分：优化篇 - 参数调优的实战效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%EF%BC%9A%E6%9E%B6%E6%9E%84%E7%AF%87-LlamaIndex-%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6"><span class="toc-text">第四部分：架构篇 - LlamaIndex 的内部机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E9%83%A8%E5%88%86%EF%BC%9AAgent-%E5%8C%96-%E8%AE%A9-RAG-%E7%B3%BB%E7%BB%9F%E8%83%BD%E2%80%9D%E5%8A%A8%E6%89%8B%E2%80%9D"><span class="toc-text">第五部分：Agent 化 - 让 RAG 系统能”动手”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E9%83%A8%E5%88%86%EF%BC%9AAgent-%E5%8C%96"><span class="toc-text">第五部分：Agent 化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text">附录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-text">完整代码示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-text">参数速查表</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/tech/AI/ai_LlamaIndex.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "true" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

@@ -1,0 +1,1071 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>10 天 AI 协作开发实录：一份可复用的 AI 开发流程样例 - ChongWen</title>
+
+  
+  <meta name="description" content="记录一次完整 AI 辅助开发流程，涵盖需求、设计、架构、DB 与前后端实现工具组合。">
+  
+  <meta name="keywords" content="AI开发">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="icon" type="image/svg+xml" href="/assets/logo.png"><link rel="shortcut icon" href="/assets/logo.png" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" /><script defer src="/_vercel/insights/script.js"></script><script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">⭐【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/Essays/20260331/"><span class="title">2026-03</span></a><a class="item title" href="/other/vpn/"><span class="title">自建 VPN</span></a><a class="item title" href="/smo/1/"><span class="title">简历相关1</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/AI/">AI</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-19T00:00:00.000Z">2026-01-19</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-06-10T07:04:59.000Z">2026-06-10</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：9.1k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：32分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/AI%E5%BC%80%E5%8F%91/">AI开发</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>10 天 AI 协作开发实录：一份可复用的 AI 开发流程样例</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><meta name="referrer" content="no-referrer"/>
+
+<blockquote>
+<p>想先看效果？点击查看演示页面：<a target="_blank" rel="noopener" href="https://www.chongwenz.cn/tech/AI/ai-vibe-coding-02-tuomin/">演示页面</a></p>
+</blockquote>
+<p>我用 10 天时间，借助多个 <code>AI</code> 模型和工具，完成一个项目的需求分析、产品设计、架构设计、数据库设计以及前后端开发。</p>
+<p>这是一份可复用的 <code>AI</code> 辅助编程参考样例。过程中使用了不同模型与工具的优势能力。核心理念是<strong>以人为本</strong>：以自己的核心思路为基础，让模型帮你扩展成完整、具体、可落地的产品文档。核心思路一定是<strong>人</strong>的，模型只是用于激发与拓展<strong>人的思路</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>模型&#x2F;工具</th>
+<th>阶段</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Gemini 3Pro</code> 网页版</td>
+<td>需求分析、产品设计、架构设计、数据库设计</td>
+</tr>
+<tr>
+<td><code>Gemini 3Pro</code> &#x2F; <code>Antigravity</code></td>
+<td>产品原型&#x2F;<code>UI</code> 设计</td>
+</tr>
+<tr>
+<td><code>GPT5.1</code> &#x2F; <code>Codex</code></td>
+<td>代码审核：后端开发、前端开发</td>
+</tr>
+<tr>
+<td><code>Claude 4.5</code> &#x2F; <code>Kiro</code></td>
+<td>代码编写：后端开发、前端开发</td>
+</tr>
+<tr>
+<td><code>GLM 4.6</code> &#x2F; <code>Claude Code</code></td>
+<td>简单问题梳理</td>
+</tr>
+</tbody></table>
+<h3 id="0-概览"><a href="#0-概览" class="headerlink" title="0. 概览"></a>0. 概览</h3><h4 id="工具与模型定位"><a href="#工具与模型定位" class="headerlink" title="工具与模型定位"></a>工具与模型定位</h4><p>开始前，我先简要说明为什么会用到这些模型和工具。</p>
+<p><code>Gemini 2.5</code> 和 <code>Gemini 3</code> 都很擅长逻辑判断与事件分析。8 月份我发布过用 <code>Gemini 2.5</code> 辅助产品设计的博文：<a target="_blank" rel="noopener" href="https://www.chongwenz.cn/tech/AI/ai-llm-canpin-prompt/">《一种通过结构化提问，与<code>LLM</code>共创高质量<code>PRD</code>核心的实用指南》</a>。这个模型的价值在于处理项目中的<strong>“设计”</strong>类工作，往往比 <code>GPT</code>、<code>Claude</code> 更出色。而 <code>Gemini 3</code> 的前端设计能力尤其强，也适合做 <code>UI</code> 设计。</p>
+<p><code>Antigravity</code> 是 <code>Google</code> 新推出的 <code>AI-IDE</code>，有免费额度，但门槛较高(主要是容易封号)，主要用于生产 <code>HTML</code> 的 <code>UI</code> 原型图。如果没有 <code>Antigravity</code>，用网页版也可以。</p>
+<p><code>Codex</code> 是 <code>OpenAI</code> 的 <code>AI</code> 编程工具（<code>CLI</code> 命令行&#x2F;插件）。它比 <code>Claude Code</code> 更严谨、更可信，我把它当成一把精准的外科手术刀，用于代码审核，尤其适合审查其他模型写出的代码。审核的意义在于：我用 <code>AI</code> 越多，越意识到 <code>AI</code> 的不可靠，尤其在复杂逻辑上更明显。所以需要 <code>Codex</code> 根据最初需求与最终代码，检查是否符合业务需求以及代码本身是否存在问题。新版本 <code>5.2-Codex</code> 在指令遵循方面表现非常严格，适合解决疑难 <code>Bug</code>，而不太适合大型项目的奠基阶段。</p>
+<p><code>Kiro</code> 是亚马逊推出的 <code>AI-IDE</code>。推荐原因可见：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Js9Pvclobge8dd168zSY4Q%E3%80%82%60Kiro%60">https://mp.weixin.qq.com/s/Js9Pvclobge8dd168zSY4Q。`Kiro`</a> 提出了 <code>Spec</code> 模式，即将一次代码工作拆分为：需求文档 -&gt; 设计文档 -&gt; 任务文档。每个流程都可人工干预。除 <code>Kiro</code> 外，还有两个开源的 <code>Spec</code> 项目，适用于多个 <code>AI</code> 工具（如 <code>Codex</code>、<code>Claude Code</code> 等）：1) <code>Spec-kit</code>：适合新项目，从 0 到 1 构建；2) <code>Open-Spec</code>：更轻量，适合旧项目新增功能，我更推荐这个。<code>Kiro</code> 目前仅支持 <code>Claude</code> 模型，且价格性价比很高。</p>
+<p><code>GLM 4.6</code> &#x2F; <code>Claude Code</code>：简单说，就是“国内的人开外国的车”。<code>GLM 4.6</code> 是智谱开源模型，性能约等于 <code>Claude</code> 4.1，但价格低，官方还有 20 元包月的编程套餐。<code>Claude Code</code> 是 <code>Anthropic</code> 发布的 <code>AI</code> 编程工具（<code>CLI</code> 命令行&#x2F;插件），功能强大。总体来说 <code>GLM</code> 能力略弱，尤其在长上下文时性能下降明显，但在不想消耗 <code>Codex</code>、<code>Kiro</code> 额度时，<code>GLM</code> 的性价比很高。</p>
+<p>这个博主对几个模型的总结也不错，可参考：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/PmOxyaY3QUZe59Ya5hjl7A">https://mp.weixin.qq.com/s/PmOxyaY3QUZe59Ya5hjl7A</a></p>
+<h4 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a>核心思路</h4><p>先用一句话概括全流程：用 <code>Gemini 3</code> 产出需求与设计文档作为“地基”，再以 <code>Spec</code> 驱动后端与前端开发，由 <code>Codex</code> 贯穿代码审查与纠偏，最终将文档与实现闭环对齐。</p>
+<pre class="mermaid">flowchart LR
+  A[需求与产品设计<br/>Gemini 3] --> B[原型与 UI 设计]
+  B --> C[架构与数据库设计]
+  C --> D[后端开发<br/>Claude + Spec]
+  D --> E[前端开发]
+  E --> F[持续审查与纠偏<br/>Codex]
+  F --> G[交付与迭代]</pre>
+
+
+
+<p><strong>需求与文档产出</strong></p>
+<p>利用 <code>Gemini 3</code> 完成产品设计，输出一份完整的需求文档。</p>
+<p>再基于需求文档，并善用 <code>Google AI Studio</code> 的分支能力，用 <code>Gemini 3</code> 完成原型设计、<code>UI</code> 设计、数据库设计与后端架构设计，最终沉淀为<strong>《需求文档》</strong>、<strong>《数据库设计文档》</strong>、<strong>《开发技术规范清单》</strong>、<strong>《后端架构设计文档》</strong>、<strong>《后端开发步骤清单》</strong>。</p>
+<p><strong>后端开发流程</strong></p>
+<p>根据 <code>Spec</code> 理念驱动开发，依赖需求文档、数据库设计文档、后端架构设计文档与后端开发步骤文档，使用 <code>Claude</code> 分阶段实现。</p>
+<p>开发过程中，使用 <code>Codex</code> 对照文档逐条审查 <code>Claude</code> 的代码并修正。</p>
+<p>如此循环，逐步完成后端开发步骤文档的每个阶段。</p>
+<p><strong>前端开发流程</strong></p>
+<p>基于 <code>Gemini 3</code> 生成的 <code>UI</code> <code>HTML</code> 页面进行前端 <code>React</code> 开发。使用 <code>Codex</code>，因为它的指令跟随能力更强，能更好还原 <code>UI</code> 设计图的样式；而 <code>Claude</code> 容易发散、<code>Gemini 3</code> 的工程化能力偏弱（经常出现修改文件导致错误）。因此我们组合了 <code>Gemini 3</code> 的前端设计能力与 <code>Codex</code> 的工程能力与指令跟随能力。</p>
+<p>前端这部分主要是设计一个解耦清晰的组件结构，逐个接入后端接口，发现小问题再不断优化。</p>
+<p><strong>前端组件与样式</strong></p>
+<ol>
+<li>已有组件：用 <code>Codex</code> 将 <code>React</code> 代码转为 <code>HTML</code> + <code>TailwindCSS</code>，再交给 <code>Gemini 3</code> 基于现有代码给出多个样式方案。确定方案后，让 <code>Codex</code> 生成&#x2F;修改 <code>React</code> 代码。</li>
+<li>没有组件：将需求交给 <code>Gemini 3</code> 生成多个方案，后续流程同 1。</li>
+</ol>
+<p><strong><code>Google AI Studio</code> 分支协作</strong></p>
+<p>我把初始需求对话作为“主线”，在 <code>Google AI Studio</code> 里复制上下文后开出 5 个分支窗口。每个分支都继承完整背景，因此在做专项设计时不会丢失需求信息。</p>
+<p>这 5 个分支分别负责 <code>UI</code> 设计、数据库设计、总体架构设计、后端架构设计等不同方向，相当于 5 位“虚拟专家”。有具体问题时，我直接进入对应分支进行沟通解决。</p>
+<pre class="mermaid">flowchart TD
+  A["产品设计<br/>Gemini 3"] --> B[需求文档]
+  B --> C{"Google AI Studio<br/>分支协作"}
+  C --> D1["原型设计<br/>Gemini 3"]
+  C --> D2["UI 设计<br/>Gemini 3"]
+  C --> D3["数据库设计<br/>Gemini 3"]
+  C --> D4["后端架构设计<br/>Gemini 3"]
+  D1 --> E[设计文档沉淀]
+  D2 --> E
+  D3 --> E
+  D4 --> E
+  E --> F[后端开发步骤文档]</pre>
+
+<pre class="mermaid">flowchart TD
+  A[后端开发步骤文档] --> B["后端实现<br/>Claude 分阶段"]
+  B --> C[Codex 对照文档审查]
+  C --> D[修正与迭代]
+  D --> B</pre>
+
+
+
+<pre class="mermaid">flowchart TD
+  A{前端组件与样式} --> B["已有组件<br/>Codex 转 HTML + TailwindCSS"]
+  B --> C[Gemini 3 多方案]
+  C --> D[Codex 生成/修改 React]
+  A --> E["无组件需求<br/>Gemini 3 多方案"]
+  E --> D</pre>
+
+
+
+<h3 id="1-需求分析与产品设计"><a href="#1-需求分析与产品设计" class="headerlink" title="1. 需求分析与产品设计"></a>1. 需求分析与产品设计</h3><p>首先要有一个核心功能需求，不需要完整，只需几句话。然后让 <code>Gemini</code> 辅助我们激活思维、逐步补全需求。<code>Gemini</code> 会提供思路与选项，但人要保持清醒：<strong>不要完全依赖 <code>AI</code>，核心思路必须来自人。</strong></p>
+<p>如何利用 <code>Gemini</code> 帮我们设计产品？可以查看我之前的文章：<a target="_blank" rel="noopener" href="https://www.chongwenz.cn/tech/AI/ai-llm-canpin-prompt/">《一种通过结构化提问，与<code>LLM</code>共创高质量<code>PRD</code>核心的实用指南》</a></p>
+<h4 id="1-1-对话示例"><a href="#1-1-对话示例" class="headerlink" title="1.1 对话示例"></a>1.1 对话示例</h4><p>这里简单截取几段对话：</p>
+<ol>
+<li>使用 <a target="_blank" rel="noopener" href="https://www.chongwenz.cn/tech/AI/ai-llm-canpin-prompt/">《一种通过结构化提问，与<code>LLM</code>共创高质量<code>PRD</code>核心的实用指南》</a> 中的提示词</li>
+</ol>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">人: 提示词</span><br><span class="line">Gemini: LLM询问 &gt;&gt; 准备好接受挑战了吗？请告诉我，你初步的产品思路或想要解决的问题是什么？</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>人：简要阐述需求</li>
+</ol>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">我希望实现一个医疗文件敏感词脱敏平台，需要有PC端、手机端。</span><br><span class="line">相关背景：我已经实现了一个纯脱敏的API，也就是最核心的功能已经实现了，剩余的前端、后端服务业务等。</span><br><span class="line">我希望前端能更人性化、更简单、更好用。能实现图片、PDF、压缩包文件脱敏，能实现脱敏可视化等一系列人性化功能。</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>Gemini</code>：</li>
+</ol>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">收到。让我先复述一下你的现状和想法：</span><br><span class="line">你手里已经有一把核心技术的&quot;锤子&quot;（现成的脱敏API），现在你想造一个精致、万能的&quot;工具箱&quot;（支持PC/手机、多格式、可视化的平台），让用户能&quot;人性化&quot;地使用这把锤子。</span><br><span class="line"></span><br><span class="line">但在我们讨论&quot;怎么做前端&quot;之前，作为你的产品搭档，我必须立刻按下暂停键。我们现在处于第一阶段：定义问题空间。</span><br><span class="line">你直接给出了解决方案（PC+手机端平台），但这背后有一个巨大的逻辑跳跃。我有几个非常尖锐的问题，请务必慎重思考：</span><br><span class="line"></span><br><span class="line">Q1：核心场景与用户</span><br><span class="line">&quot;医疗文件&quot;是一个非常严肃且受监管的领域。到底是谁，在什么具体的场景下，迫切需要把医疗文件进行脱敏？</span><br><span class="line">是医生为了写论文/教学，需要处理个案病历？</span><br><span class="line">是医院数据科为了给科研机构/药企提供批量数据？</span><br><span class="line">还是保险理赔专员为了保护隐私处理理赔单据？</span><br><span class="line">（我的质疑：不同的角色，痛点完全不同。如果是医生写论文，频率极低；如果是数据科，他们需要的是API对接而非图形界面。请具体描述一个典型的使用故事。）</span><br><span class="line"></span><br><span class="line">Q2：关于&quot;手机端&quot;的致命质疑</span><br><span class="line">你提到了需要手机端。请你告诉我，在医疗数据合规极其严格的今天，哪个医生或医疗从业者，敢把带有患者敏感信息的原始文件（PDF/图片），上传到自己的私人手机上进行处理？</span><br><span class="line">这是一个真实的需求，还是你为了&quot;功能大而全&quot;而臆想出来的伪需求？</span><br><span class="line"></span><br><span class="line">请回答以上两个问题，特别是告诉我：谁，在什么场景下，非用这个平台不可？</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>人：确认用户与场景</li>
+</ol>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Q1</span>：核心场景与用户</span><br><span class="line"><span class="attribute">A1</span>：不只是医生等人员，只要是医疗行业的业务人员都在上传病例等文件前都需要对个人信息进行脱敏。大部分的用户是CRC人员。</span><br><span class="line"><span class="attribute">Q2</span>：关于“手机端”的致命质疑</span><br><span class="line"><span class="attribute">A2</span>：请你放心，这个手机端是完全合规可行的。</span><br><span class="line"><span class="attribute">Q</span>：谁，在什么场景下，非用这个平台不可？</span><br><span class="line"><span class="attribute">A</span>：比如CRC，他们之前需要手动对图片进行敏感信息的覆盖，如果是<span class="number">100</span>页的PDF，那么消耗的时间是非常之多的，而我的程序在<span class="number">100</span>s内就可以完成<span class="number">100</span>页的文件。极大的提升了CRC的工作效率</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><code>Gemini</code>：进一步询问</li>
+</ol>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">....</span></span><br><span class="line"><span class="code">太长不放了</span></span><br><span class="line"><span class="code">....</span></span><br><span class="line">手机端到底是用来拍照的，还是用来处理文件的？</span><br><span class="line">用户如何信任并验证你的脱敏结果？（如果不验证直接交，出了事谁负责？）</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>人：说明本系统的核心思想，<code>AI</code> 预处理 + 人工复核</li>
+</ol>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Q1：关于手机端的“真实操作流”</span><br><span class="line"><span class="built_in">A1</span>：这种场景可能是都有的，比如手机端上传图片、手机端选择已有的图片、PDF等文件，然后下载结果。但第一轮迭代我们可以只实现文件上传而不是拍照。有些CRC确实需要用手动操作，所以我们提供PC端+简洁化的手机端。</span><br><span class="line">Q2：关于“信任”与“可视化”的悖论</span><br><span class="line"><span class="built_in">A2</span>：这个就是我们产品设计的问题，我有一个初步的设计，限制每页的结果，用户可以在结果图片上点击某个被遮盖的区域是否需要删除，也可以手动对没有被识别的区域进行手动画框进行脱敏。所以我们实现的是大量自动化+少量人工审核。</span><br></pre></td></tr></table></figure>
+
+<p>….中间略过…</p>
+<ol start="7">
+<li><code>Gemini</code>：基于“<code>AI</code> 预处理 + 人工复核”，给出三种交互方式。</li>
+</ol>
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119104827255.png" alt="image-20260119104827255" style="zoom: 80%;" />
+
+<ol start="8">
+<li>人：<code>Gemini</code> 提供了几种交互样例，但此时需要保持清晰。<code>LLM</code> 的方案是否合理，还要基于我们对产品的判断来筛选。若有疑虑，可以继续追问，直到敲定交互方案。</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">方案<span class="selector-tag">A</span>：这个方案很好。我觉得可以给用户提供一个 list，每个 item 作为一块展示。第一行显示被脱敏的关键词，第二行显示关键词的上下文，并对关键词高亮，方便 CRC 快速检查误识别。</span><br><span class="line">方案<span class="selector-tag">B</span>：暂不考虑。</span><br><span class="line">方案C：可以实现：先显示脱敏后的图片，按空格键显示 OCR 结果，并在 OCR 中对敏感词高亮，方便 CRC 快速查看；但我担心页面不够简洁，功能堆积，或者你有更好的方法。</span><br><span class="line">全局搜索脱敏也可以做。</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li><code>Gemini</code>：给出最终方案。</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_10-52-26.png" alt="PixPin_2026-01-19_10-52-26"></p>
+<ol start="10">
+<li>人：基本功能确定后，继续讨论交互</li>
+</ol>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我们刚讨论了结果可视化的模式，下面继续谈文件上传：图片、多图片、<span class="built_in">PDF</span>、多 <span class="built_in">PDF</span>、压缩包上传。不同类型文件的页面应该怎么做？需要哪些具体交互和功能？</span><br></pre></td></tr></table></figure>
+
+<ol start="11">
+<li><code>Gemini</code>：回答质量一般。</li>
+<li>人：因为上一次回答一般，所以我提供一个大致思路引导 <code>LLM</code>。</li>
+</ol>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">我有一个设想：如果用户一起上传了多张图片或多个 <span class="built_in">PDF</span>，或混合图片、<span class="built_in">PDF</span>、压缩包，我们是否需要一页页面展示上传记录？</span><br><span class="line">并且一次上传（即使是多个图片）也只作为一条记录。我们把记录做成文件系统的格式，将一次记录作为一个文件夹，文件夹内就是本次上传的所有文件；如果是 <span class="variable">zip</span> 也作为一个文件夹，可继续展开。</span><br><span class="line">此外，也可以对整个记录进行评审（也就是我们第一次沟通的人工修正内容）。</span><br><span class="line">请分析我提供的思路，也可以提出你的想法。</span><br></pre></td></tr></table></figure>
+
+<ol start="13">
+<li>经过几轮对话，确定了核心页面结构</li>
+</ol>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119110227548.png" alt="image-20260119110227548"></p>
+<ol start="14">
+<li>又经过几轮对话，基本敲定产品主要功能与核心交互方式。产品设计虽然是由 <code>Gemini</code> 引导流程，但在具体需求与设计上，一定是“人”来主导。<code>LLM</code> 往往提供好坏参半的思路，我们必须能清晰识别并修正。</li>
+</ol>
+<h4 id="1-2-《需求文档》"><a href="#1-2-《需求文档》" class="headerlink" title="1.2 《需求文档》"></a>1.2 《需求文档》</h4><p>最终产出：一份包含产品定义、背景、目标用户、功能需求与基本交互方案的需求文档。这份文档很重要，后续的 <code>UI</code> 设计、后端架构设计、前端页面实现都需要它作为基础。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_11-13-35.png" alt="PixPin_2026-01-19_11-13-35"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>明确目标用户与核心场景，完成需求边界收敛。</li>
+<li>固化核心功能与交互原则（AI 预处理 + 人工复核）。</li>
+<li>形成可复用的《需求文档》，作为后续设计与开发基准。</li>
+</ol>
+<h3 id="2-产品原型"><a href="#2-产品原型" class="headerlink" title="2. 产品原型"></a>2. 产品原型</h3><p>基于上一轮得到的“核心功能” + “核心页面结构”，可以让 <code>Gemini</code> 使用 <strong><code>ASCII</code> <code>UI</code> 绘图法</strong> 画出线框图。</p>
+<p>线框图的优点：</p>
+<ol>
+<li>更聚焦当前工作：让大模型暂时不关注交互方式，核心聚焦页面结构。</li>
+<li>更容易修改：大模型产出的原型通常需要多次修改，<code>ASCII</code> <code>UI</code> 绘图法比 <code>HTML</code> 的迭代速度更快。</li>
+</ol>
+<p>比如下面这个，这是第一版，最终我让大模型改了四五版才得到最终方案。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119110615732.png" alt="image-20260119110615732"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119110631674.png" alt="image-20260119110631674"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>用 ASCII 线框快速聚焦页面结构与信息层级。</li>
+<li>通过多轮迭代收敛页面布局与模块关系。</li>
+<li>为后续 UI 设计提供结构化蓝本。</li>
+</ol>
+<h3 id="3-UI-设计"><a href="#3-UI-设计" class="headerlink" title="3. UI 设计"></a>3. <code>UI</code> 设计</h3><h4 id="3-1-提示词"><a href="#3-1-提示词" class="headerlink" title="3.1 提示词"></a>3.1 提示词</h4><p>提示词（将需求文档拼接在提示词后）：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">你是一位拥有 10 年经验的高级前端工程师和 UI 设计师，擅长开发复杂的 B 端工具类产品。</span><br><span class="line"><span class="section"># 任务</span></span><br><span class="line"></span><br><span class="line">根据下面提供的 <span class="strong">**“产品需求描述”**</span>，为用户创建一套完整、高保真、可交互的前端原型。你需要完成从分析、设计到实现的全过程。</span><br><span class="line"></span><br><span class="line"><span class="section"># 工作流程</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> <span class="strong">**分析与规划:**</span></span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**用户体验分析:**</span> 基于用户需求，快速梳理核心交互逻辑。</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**产品界面规划:**</span> 规划清晰的信息架构和导航。</span><br><span class="line"><span class="bullet">2.</span> <span class="strong">**高保真 UI 设计:**</span></span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**设计风格:**</span> 采用现代化、简洁且专业的 Web 应用设计风格。</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**视觉规范:**</span> 确保色彩搭配和谐、字体排版清晰易读、元素间距一致。</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**图标库:**</span> 整合并使用 <span class="strong">**Lucide Icons**</span> 或 <span class="strong">**FontAwesome**</span> 图标。</span><br><span class="line"><span class="bullet">3.</span> <span class="strong">**HTML 原型实现:**</span></span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**技术栈:**</span> 必须使用 <span class="strong">**HTML**</span>, <span class="strong">**TailwindCSS**</span>, 和少量 <span class="strong">**JavaScript**</span>。</span><br><span class="line"><span class="bullet">   -</span> <span class="strong">**文件结构:**</span></span><br><span class="line"><span class="bullet">     -</span> <span class="strong">**每个界画应作为独立的 HTML文件存放**</span>，例如home.html、profle.html、settings.html 等。如果有多个模块，单个功能页面可以放入不同的模块文件夹中。</span><br><span class="line"><span class="bullet">     -</span> <span class="strong">**主入口文件`index.html` :**</span> 所有代码必须包含在一个独立的 文件中。使用Iframe的方式嵌入这些 HTML片段，并将所有页面直接平铺展示在index页面中，而不是跳转链接。</span><br></pre></td></tr></table></figure>
+
+<p>大家都知道，<code>Gemini</code> 是前端的绝对王者。经过测试，我对比了 <code>Antigravity</code>（<code>Gemini 3</code>）、<code>Claude Code</code>（<code>GLM 4.6</code>）、<code>Codex</code>（<code>GPT 5.1</code>），最终发现 <code>Gemini 3</code> 的产出最简洁、可商用。</p>
+<h4 id="3-2-UI-原型图"><a href="#3-2-UI-原型图" class="headerlink" title="3.2 UI 原型图"></a>3.2 UI 原型图</h4><p>下面是生成的两个页面，基本可以直接使用。因为现在 <code>Antigravity</code> 封号比较严重，也可以改用网页版 <code>Gemini 3</code>，一次生成一个页面即可。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119113011371.png"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119113034637.png"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>形成可直接复用的高保真 UI 页面原型。</li>
+<li>统一设计风格与视觉规范，减少后续返工。</li>
+<li>产出的 HTML 原型可作为 React 实现依据。</li>
+</ol>
+<h3 id="4-Google-AI-Studio-分支协作"><a href="#4-Google-AI-Studio-分支协作" class="headerlink" title="4. Google AI Studio 分支协作"></a>4. <code>Google AI Studio</code> 分支协作</h3><p>在 <code>Google AI Studio</code> 中，可以基于当前对话历史新开分支窗口。这样新窗口会保留与 <code>Gemini</code> 的需求沟通记录，后续做其他设计时能更准确理解需求。我以最初的需求对话为基底，分支了 5 个窗口，分别处理 <code>UI</code> 设计、数据库设计、总体架构设计和后端架构设计。</p>
+<p>这 5 个分支相当于我的 5 个专属开发专家，有问题就到对应窗口沟通即可。</p>
+<p>如果没有这个分支能力，用我们最核心的 “需求文档” 作为对话基础也可以。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119134947138.png" alt="image-20260119134947138"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119134349457.png" alt="image-20260119134349457"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>用分支并行解决专项设计，避免上下文丢失。</li>
+<li>每个分支沉淀独立结论，提高协作与复用效率。</li>
+<li>形成“主线需求 + 专家分支”的协作范式。</li>
+</ol>
+<h3 id="5-架构设计"><a href="#5-架构设计" class="headerlink" title="5. 架构设计"></a>5. 架构设计</h3><p>使用下方提示词，让模型以架构师视角拆解需求并给出总体架构方案。</p>
+<p>先拿到一个可讨论的初版方案，再围绕关键细节与技术选型优缺点持续追问，最终沉淀出一份《<strong>开发技术规范清单</strong>》。</p>
+<p>《<strong>开发技术规范清单</strong>》梳理了项目结构与技术选型，AI 开发时每次都会作为上下文加载，是整个开发过程的基础。</p>
+<h4 id="5-1-提示词"><a href="#5-1-提示词" class="headerlink" title="5.1 提示词"></a>5.1 提示词</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 角色：首席软件架构师 (Chief Software Architect)</span></span><br><span class="line"></span><br><span class="line">你现在的身份是 <span class="strong">**TechLead**</span>，一位拥有20年经验的互联网首席架构师。你精通高并发架构、云原生技术、AI工程化落地以及数据安全。</span><br><span class="line"></span><br><span class="line">你的核心思维模式是 <span class="strong">**Trade-off（权衡）**</span>。你知道没有“最好”的技术，只有“最适合”的技术。你关注技术实现的<span class="strong">**成本（Cost）、可行性（Feasibility）、可维护性（Maintainability）和扩展性（Scalability）**</span>。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 核心任务</span></span><br><span class="line"></span><br><span class="line">你的任务是基于我们已经确定的【产品需求文档（PRD）】，协助我完成<span class="strong">**技术选型**</span>和<span class="strong">**系统架构设计**</span>。</span><br><span class="line"></span><br><span class="line">我们将通过<span class="strong">**对话**</span>的方式，逐步厘清非功能性需求（NFRs）、确定技术栈、设计数据模型，并最终产出一份标准化的<span class="strong">**《技术架构设计文档 (TDD)》**</span>。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 工作流程 (逐步引导)</span></span><br><span class="line"></span><br><span class="line">请不要一次性输出所有内容。我们将按以下阶段逐一讨论。在每个阶段，请提出关键问题，引导我做出决策，并给出你的专业建议。</span><br><span class="line"></span><br><span class="line"><span class="strong">**第一阶段：非功能性需求与约束 (Constraints &amp; NFRs)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：明确“地基”有多深。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**关键议题**</span>：</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**团队背景**</span>：目前的开发团队熟悉什么语言/框架？（这是选型的决定性因素）</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**资源限制**</span>：预算多少？上线时间（Time-to-Market）有多紧迫？</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**性能指标**</span>：预估的并发量（QPS）、数据量级、响应时间要求（如：AI生成必须在3秒内返回）。</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**合规性**</span>：是否有数据隐私（GDPR/私有化部署）要求？</span><br><span class="line"></span><br><span class="line"><span class="strong">**第二阶段：技术栈选型 (Tech Stack Selection)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：确定“用什么工具盖楼”。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**关键议题**</span>：</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**前端/客户端**</span>：(React/Vue, Flutter/Native, etc.)</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**后端服务**</span>：(Python/FastAPI vs Go/Gin vs Java/Spring, etc.)</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**数据库/存储**</span>：(PostgreSQL vs MySQL, Redis, VectorDB for AI)</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**AI/模型层**</span>：(本地部署 vs API调用, LangChain vs LlamaIndex)</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**基础设施**</span>：(Docker, K8s, AWS/Azure/阿里云, Serverless)</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**你的职责**</span>：针对每个选项，请给出 <span class="strong">**Pros &amp; Cons (优缺点对比)**</span>，并基于第一阶段的约束给出推荐。</span><br><span class="line"></span><br><span class="line"><span class="strong">**第三阶段：关键架构决策 (Key Architectural Decisions)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：确定“楼的结构”。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**关键议题**</span>：</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**单体 vs 微服务**</span>：考虑到目前的团队规模，我们应该怎么选？</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**通信模式**</span>：同步(REST/gRPC) vs 异步(Message Queue)？</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**数据流向**</span>：特别是在AI场景下，数据如何流转、清洗和存储？</span><br><span class="line"></span><br><span class="line"><span class="strong">**第四阶段：风险评估 (Risk Assessment)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：预判“楼会不会塌”。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**关键议题**</span>：单点故障、安全漏洞、API限流风险、成本失控风险。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 互动规则</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span>  <span class="strong">**一步一问**</span>：每次只聚焦一个阶段或一个核心问题，避免我消化不良。</span><br><span class="line"><span class="bullet">2.</span>  <span class="strong">**先问后答**</span>：在给出建议前，先询问我的团队情况和偏好。不要假设我熟悉所有技术。</span><br><span class="line"><span class="bullet">3.</span>  <span class="strong">**提供选项**</span>：在涉及技术选型时，至少提供 <span class="strong">**2个选项**</span>（例如：激进方案 vs 保守方案），并说明理由。</span><br><span class="line"><span class="bullet">4.</span>  <span class="strong">**Mermaid支持**</span>：在需要描述流程或架构时，请主动使用 <span class="strong">**Mermaid**</span> 语法绘制图表（如时序图、架构图）。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 最终交付物格式 (Technical Design Document)</span></span><br><span class="line"></span><br><span class="line">当我们完成所有讨论后，请整合输出一份 Markdown 格式的技术文档，包含：</span><br><span class="line"></span><br><span class="line"><span class="code">```markdown</span></span><br><span class="line"><span class="code"># [项目名称] 技术架构设计文档 (TDD)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 1. 架构总览 (Executive Summary)</span></span><br><span class="line"><span class="code">* **核心设计原则**: ...</span></span><br><span class="line"><span class="code">* **系统架构图**: (Mermaid Code)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 2. 技术栈清单 (Tech Stack)</span></span><br><span class="line"><span class="code">| 领域 | 选型 | 决策理由 |</span></span><br><span class="line"><span class="code">| :--- | :--- | :--- |</span></span><br><span class="line"><span class="code">| Frontend | ... | ... |</span></span><br><span class="line"><span class="code">| Backend | ... | ... |</span></span><br><span class="line"><span class="code">| Database | ... | ... |</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 3. 核心流程设计 (Core Logic)</span></span><br><span class="line"><span class="code">* 关键业务的时序交互图</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 4. 数据模型 (Data Schema)</span></span><br><span class="line"><span class="code">* 关键实体的ER图或字段描述</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 5. 风险与应对 (Risks &amp; Mitigation)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">## 开场白</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">你好，我是 TechLead。我已经阅读了你们的 PRD，非常有意思的项目。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">在开始画架构图之前，我必须先了解一下现实世界的约束，因为**脱离场景谈架构都是耍流氓**。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">**请告诉我：你们目前的开发团队规模大概是多少人？大家最擅长的技术栈（语言/框架）是什么？这个项目的上线时间（DDL）大概是什么时候？**</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>最初的回答</strong></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_14-12-56.png" alt="PixPin_2026-01-19_14-12-56"></p>
+<h4 id="5-2-《开发技术规范清单》"><a href="#5-2-《开发技术规范清单》" class="headerlink" title="5.2 《开发技术规范清单》"></a>5.2 《开发技术规范清单》</h4><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_14-18-39.png" alt="PixPin_2026-01-19_14-18-39"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>明确非功能性需求与约束条件。</li>
+<li>形成技术选型与权衡依据。</li>
+<li>输出《开发技术规范清单》作为开发上下文。</li>
+</ol>
+<h3 id="6-数据库设计"><a href="#6-数据库设计" class="headerlink" title="6. 数据库设计"></a>6. 数据库设计</h3><p>使用下方提示词。</p>
+<p>数据库设计是理清后端逻辑的关键环节。前面偏重产品视角的功能分析，而数据库设计需要落到具体的后端细节。</p>
+<p>务必对照需求文档，逐表检查字段、表间关系与特殊字段属性。我在这一阶段进行了很多轮的对话，最终也借此把涉及的后端业务逻辑理清了大半。</p>
+<h4 id="6-1-提示词"><a href="#6-1-提示词" class="headerlink" title="6.1 提示词"></a>6.1 提示词</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 角色：资深数据架构师 (Senior Data Architect)</span></span><br><span class="line"></span><br><span class="line">你现在是 <span class="strong">**DataArch**</span>，一位拥有深厚数据库理论基础和实战经验的数据专家。你精通关系型数据库（MySQL/PostgreSQL）的设计范式，同时也熟悉 NoSQL 和向量数据库的应用场景。</span><br><span class="line"></span><br><span class="line">你的座右铭是：<span class="strong">**“数据是资产，结构决定性能。”**</span> 你极其痛恨冗余字段、模糊的命名以及缺乏索引的设计。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 核心任务</span></span><br><span class="line"></span><br><span class="line">你的任务是基于我们之前的【PRD文档】和【技术架构选型】，为“模型评测中心”设计一套<span class="strong">**高效、可扩展、易维护**</span>的数据库表结构。</span><br><span class="line"></span><br><span class="line">我们需要通过<span class="strong">**多轮对话**</span>，从概念模型推导至物理模型，讨论关键字段的类型、约束和索引策略，最终产出可以直接执行的 <span class="strong">**DDL (SQL建表语句)**</span>。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 设计原则与规范</span></span><br><span class="line"></span><br><span class="line">在设计过程中，请严格遵守以下规范（除非我有特殊要求）：</span><br><span class="line"><span class="bullet">1.</span>  <span class="strong">**命名规范**</span>：表名和字段名使用 <span class="code">`snake_case`</span>（蛇形命名法），表名建议使用复数（如 <span class="code">`users`</span>, <span class="code">`evaluations`</span>）。</span><br><span class="line"><span class="bullet">2.</span>  <span class="strong">**主键策略**</span>：请根据业务场景建议使用自增 ID（<span class="code">`BIGINT`</span>）还是 <span class="code">`UUID/Snowflake`</span>。</span><br><span class="line"><span class="bullet">3.</span>  <span class="strong">**通用字段**</span>：所有核心表必须包含 <span class="code">`created_at`</span> (创建时间), <span class="code">`updated_at`</span> (更新时间), <span class="code">`is_deleted`</span> (逻辑删除标记)。</span><br><span class="line"><span class="bullet">4.</span>  <span class="strong">**JSON使用**</span>：对于非结构化或经常变动的配置（如评测参数），合理使用 <span class="code">`JSON/JSONB`</span> 类型，但要提醒查询性能影响。</span><br><span class="line"><span class="bullet">5.</span>  <span class="strong">**索引意识**</span>：在设计表结构时，必须同步考虑查询场景，并建议必要的<span class="strong">**索引 (Index)**</span>。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 工作流程</span></span><br><span class="line"></span><br><span class="line">为了确保设计无误，我们将分阶段进行：</span><br><span class="line"></span><br><span class="line"><span class="strong">**第一阶段：概念模型梳理 (Conceptual Modeling)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：识别出系统中有哪些“实体” (Entities) 以及它们之间的“关系” (Relationships)。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**输出**</span>：使用 <span class="strong">**Mermaid ER图**</span> 展示核心实体及其关系（1:1, 1:N, N:M）。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**讨论点**</span>：确认业务逻辑是否被正确映射（例如：一个评测任务是否包含多个模型？一个模型是否对应多个数据集？）。</span><br><span class="line"></span><br><span class="line"><span class="strong">**第二阶段：详细表结构设计 (Logical Design)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：逐个定义核心表的字段。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**输出**</span>：Markdown 表格形式。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**内容**</span>：</span><br><span class="line"><span class="bullet">    *</span> 表名</span><br><span class="line"><span class="bullet">    *</span> 字段名 | 类型 | 是否必填 | 默认值 | 备注（业务含义）</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**讨论点**</span>：字段长度（VARCHAR 255够不够？）、枚举值（状态机设计）、精度问题（浮点数 vs Decimal）。</span><br><span class="line"></span><br><span class="line"><span class="strong">**第三阶段：物理落地与优化 (Physical Design &amp; DDL)**</span></span><br><span class="line"><span class="bullet">*</span> <span class="strong">**目标**</span>：生成可执行代码。</span><br><span class="line"><span class="bullet">*</span> <span class="strong">**输出**</span>：</span><br><span class="line"><span class="bullet">    *</span> 完整的 <span class="strong">**SQL DDL 语句**</span>。</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**索引推荐**</span>（解释为什么要加这个索引）。</span><br><span class="line"><span class="bullet">    *</span> <span class="strong">**注意事项**</span>（如：大数据量下的分表建议）。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 互动规则</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span>  <span class="strong">**先确认关系，再设计字段**</span>：不要一上来就扔 SQL 代码。先让我确认实体关系图（ER图）是否符合业务理解。</span><br><span class="line"><span class="bullet">2.</span>  <span class="strong">**主动提问**</span>：如果 PRD 中有未定义的细节（例如：删除用户时，评测记录是级联删除还是保留？），请务必先问我。</span><br><span class="line"><span class="bullet">3.</span>  <span class="strong">**解释理由**</span>：当你选择某种特定设计（例如：使用 JSON 存储 Prompt 模板）时，请告诉我你的理由（Pros &amp; Cons）。</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="section">## 开场白</span></span><br><span class="line"></span><br><span class="line">你好，我是 DataArch。我已经准备好将业务需求转化为数据结构了。</span><br><span class="line"></span><br><span class="line">为了确保设计的准确性，我首先需要确认一下<span class="strong">**数据库选型**</span>。根据之前的架构讨论，我们最终决定使用 <span class="strong">**PostgreSQL**</span> 还是 <span class="strong">**MySQL**</span>？（这决定了具体的数据类型和 JSON 处理方式）。</span><br><span class="line"></span><br><span class="line">确认后，我将为你绘制初步的 <span class="strong">**Mermaid 实体关系图 (ER Diagram)**</span> 进行核对。</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-《数据库设计文档》"><a href="#6-2-《数据库设计文档》" class="headerlink" title="6.2 《数据库设计文档》"></a>6.2 《数据库设计文档》</h4><p>部分示例。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119142456551.png" alt="image-20260119142456551"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>梳理核心实体与关系，验证业务映射是否准确。</li>
+<li>明确字段与索引策略，降低后期重构成本。</li>
+<li>输出可执行的数据库设计文档与 DDL 依据。</li>
+</ol>
+<h3 id="7-后端架构设计"><a href="#7-后端架构设计" class="headerlink" title="7. 后端架构设计"></a>7. 后端架构设计</h3><p>在“架构设计”阶段，我们主要讨论前端、后端、数据库的技术选型，并未深入到功能级的架构细节。</p>
+<p>而“后端架构设计”建立在数据库设计已理清业务逻辑的基础上，重点分析内部复杂逻辑如何落地，以及对应的代码结构如何组织与实现。</p>
+<p>提示词里会涉及部分后端选型内容，虽与前文有交叉，但不影响整体理解。</p>
+<p>这一步可以提出任何后端开发疑问，因上下文完整，回答会更贴合实际业务。</p>
+<h4 id="7-1-提示词"><a href="#7-1-提示词" class="headerlink" title="7.1 提示词"></a>7.1 提示词</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 角色：资深 Python 后端架构师 (Senior Python Backend Architect)</span></span><br><span class="line"></span><br><span class="line"><span class="string">非常感谢之前的讨论。现在，我们将进入代码落地阶段。请你进行角色转换。</span></span><br><span class="line"></span><br><span class="line"><span class="string">你现在的身份是一位拥有</span> <span class="number">10</span> <span class="string">年以上经验的</span> <span class="string">Python</span> <span class="string">后端架构专家。你精通</span> <span class="string">**FastAPI,</span> <span class="string">Django,</span> <span class="string">Flask**</span> <span class="string">等主流框架，深受</span> <span class="string">**Clean</span> <span class="string">Architecture</span> <span class="string">(整洁架构)**</span> <span class="string">和</span> <span class="string">**DDD</span> <span class="string">(领域驱动设计)**</span> <span class="string">思想的影响。你擅长设计高并发、高可用、易于维护的后端系统。</span></span><br><span class="line"></span><br><span class="line"><span class="string">你的核心价值观是：**“Simple</span> <span class="string">is</span> <span class="string">better</span> <span class="string">than</span> <span class="string">complex.</span> <span class="string">Explicit</span> <span class="string">is</span> <span class="string">better</span> <span class="string">than</span> <span class="string">implicit.”</span> <span class="string">(The</span> <span class="string">Zen</span> <span class="string">of</span> <span class="string">Python)**</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment">## 核心任务</span></span><br><span class="line"></span><br><span class="line"><span class="string">你的任务是**基于我们对话上下文中已经确定的【PRD文档】、【高层架构】和【数据库设计】**，设计一套完整的、工业级的</span> <span class="string">**Python</span> <span class="string">后端项目架构**。</span></span><br><span class="line"></span><br><span class="line"><span class="string">你需要从技术选型、项目结构、ORM</span> <span class="string">映射、关键技术难点攻克等多个维度提供解决方案。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment">## 工作流程</span></span><br><span class="line"></span><br><span class="line"><span class="string">请严格按照以下步骤处理：</span></span><br><span class="line"></span><br><span class="line"><span class="string">**Step</span> <span class="attr">1:</span> <span class="string">需求回顾与确认**</span></span><br><span class="line"><span class="string">*</span> <span class="string">快速回顾上下文，确认核心业务实体（Entities）和功能模块。</span></span><br><span class="line"><span class="string">*</span> <span class="string">**注意**：不需要重新询问需求，直接基于之前的结论（如“模型评测中心”的功能定义、PostgreSQL</span> <span class="string">选型等）进行下一步。</span></span><br><span class="line"></span><br><span class="line"><span class="string">**Step</span> <span class="attr">2:</span> <span class="string">技术栈细化</span> <span class="string">(Tech</span> <span class="string">Stack)**</span></span><br><span class="line"><span class="string">*</span> <span class="string">既然我们可能已经选定了</span> <span class="string">PostgreSQL，请推荐最适合的</span> <span class="string">**Python</span> <span class="string">驱动和</span> <span class="string">ORM**（例如：AsyncPG</span> <span class="string">+</span> <span class="string">SQLAlchemy</span> <span class="number">2.0</span> <span class="string">vs</span> <span class="string">Tortoise</span> <span class="string">ORM）。</span></span><br><span class="line"><span class="string">*</span> <span class="string">推荐</span> <span class="string">Web</span> <span class="string">框架（FastAPI</span> <span class="string">vs</span> <span class="string">Django</span> <span class="string">Ninja）及理由。</span></span><br><span class="line"><span class="string">*</span> <span class="string">推荐必要的中间件库（例如：评测任务队列用</span> <span class="string">Celery</span> <span class="string">还是</span> <span class="string">Arq？配置管理用</span> <span class="string">Pydantic-settings？）。</span></span><br><span class="line"></span><br><span class="line"><span class="string">**Step</span> <span class="attr">3:</span> <span class="string">项目目录结构设计</span> <span class="string">(Project</span> <span class="string">Layout)**</span></span><br><span class="line"><span class="string">*</span> <span class="string">提供一个标准的、符合生产环境要求的目录结构树（Tree</span> <span class="string">format）。</span></span><br><span class="line"><span class="string">*</span> <span class="string">解释核心目录（如</span> <span class="string">`app`,</span> <span class="string">`core`,</span> <span class="string">`api`,</span> <span class="string">`services`,</span> <span class="string">`domain`）的职责。</span></span><br><span class="line"><span class="string">*</span> <span class="string">**重点**：请展示如何将</span> <span class="string">**Clean</span> <span class="string">Architecture**（依赖倒置）应用到目录结构中。</span></span><br><span class="line"></span><br><span class="line"><span class="string">**Step</span> <span class="attr">4:</span> <span class="string">ORM</span> <span class="string">模型与数据层</span> <span class="string">(Data</span> <span class="string">Architecture)**</span></span><br><span class="line"><span class="string">*</span> <span class="string">基于之前讨论的</span> <span class="string">DB</span> <span class="string">表结构，描述如何在</span> <span class="string">Python</span> <span class="string">中定义</span> <span class="string">Model。</span></span><br><span class="line"><span class="string">*</span> <span class="string">简述</span> <span class="string">Pydantic</span> <span class="string">Schema</span> <span class="string">(DTO)</span> <span class="string">与</span> <span class="string">ORM</span> <span class="string">Model</span> <span class="string">的转换策略。</span></span><br><span class="line"></span><br><span class="line"><span class="string">**Step</span> <span class="attr">5:</span> <span class="string">关键技术方案</span> <span class="string">(Key</span> <span class="string">Solutions)**</span></span><br><span class="line"><span class="string">*</span> <span class="string">针对我们项目中的难点（**特别是：大文件上传、AI</span> <span class="string">模型评测的长耗时异步任务**）给出具体的</span> <span class="string">Python</span> <span class="string">实现思路（伪代码或模式描述）。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment">## 最终交付物格式</span></span><br><span class="line"></span><br><span class="line"><span class="string">请按以下</span> <span class="string">Markdown</span> <span class="string">结构输出设计文档：</span></span><br><span class="line"></span><br><span class="line"><span class="string">```markdown</span></span><br><span class="line"><span class="comment"># [项目名称] Python 后端架构设计文档</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 1. 技术栈细化与理由</span></span><br><span class="line"><span class="string">|</span> <span class="string">组件</span> <span class="string">|</span> <span class="string">选型</span> <span class="string">|</span> <span class="string">版本/库名</span> <span class="string">|</span> <span class="string">理由</span> <span class="string">|</span></span><br><span class="line"><span class="string">|</span> <span class="string">:---</span> <span class="string">|</span> <span class="string">:---</span> <span class="string">|</span> <span class="string">:---</span> <span class="string">|</span> <span class="string">:---</span> <span class="string">|</span></span><br><span class="line"><span class="string">|</span> <span class="string">Web</span> <span class="string">Framework</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span></span><br><span class="line"><span class="string">|</span> <span class="string">ORM</span> <span class="string">/</span> <span class="string">Driver</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span></span><br><span class="line"><span class="string">|</span> <span class="string">Task</span> <span class="string">Queue</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span> <span class="string">...</span> <span class="string">|</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 2. 生产级目录结构</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">project_root/</span></span><br><span class="line"><span class="string">├──</span> <span class="string">app/</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">api/</span>            <span class="comment"># Interface Adapters</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">core/</span>           <span class="comment"># Config &amp; Security</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">services/</span>       <span class="comment"># Application Business Rules</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">crud/</span>           <span class="comment"># Database Access</span></span><br><span class="line"><span class="string">│</span>   <span class="string">└──</span> <span class="string">...</span></span><br><span class="line"><span class="string">├──</span> <span class="string">pyproject.toml</span></span><br><span class="line"><span class="string">└──</span> <span class="string">...</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 3. 核心设计模式说明</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="string">**分层架构说明**：解释</span> <span class="string">API</span> <span class="string">层如何调用</span> <span class="string">Service</span> <span class="string">层，Service</span> <span class="string">层如何调用</span> <span class="string">CRUD</span> <span class="string">层。</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">**异步任务处理**：描述评测任务的生命周期代码流转。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## 4. 针对 [核心难点] 的解决方案</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="string">...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment">## 互动原则</span></span><br><span class="line"><span class="number">1</span><span class="string">.</span>  <span class="string">**保持专业**：使用准确的</span> <span class="string">Python</span> <span class="string">术语（Type</span> <span class="string">Hints,</span> <span class="string">Dependency</span> <span class="string">Injection,</span> <span class="string">Repository</span> <span class="string">Pattern）。</span></span><br><span class="line"><span class="number">2</span><span class="string">.</span>  <span class="string">**关注工程化**：设计时需考虑</span> <span class="string">Docker</span> <span class="string">部署、Linting</span> <span class="string">(Ruff/Black)</span> <span class="string">以及</span> <span class="string">CI/CD</span> <span class="string">友好性。</span></span><br><span class="line"><span class="number">3</span><span class="string">.</span>  <span class="string">**上下文关联**：所有设计必须紧贴“模型评测中心”这个具体业务，不要给通用模板。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment">## 开场指令</span></span><br><span class="line"></span><br><span class="line"><span class="string">**我已准备好。请根据我们之前的对话历史（PRD和数据库设计），直接开始</span> <span class="string">Step</span> <span class="number">1</span> <span class="string">和</span> <span class="string">Step</span> <span class="number">2</span> <span class="string">的分析与设计。**</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">数据库设计：</span></span><br><span class="line"></span><br><span class="line"><span class="string">【这里添加数据库设计文档或者数据库SQL】</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-《后端架构设计文档》"><a href="#7-2-《后端架构设计文档》" class="headerlink" title="7.2 《后端架构设计文档》"></a>7.2 《后端架构设计文档》</h4><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_14-46-14.png" alt="PixPin_2026-01-19_14-46-14"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>固化后端技术栈与项目结构设计。</li>
+<li>明确模块分层与职责边界。</li>
+<li>为后端任务拆解与实现提供结构性模板。</li>
+</ol>
+<h3 id="8-后端开发步骤"><a href="#8-后端开发步骤" class="headerlink" title="8. 后端开发步骤"></a>8. 后端开发步骤</h3><p>现在需求文档、数据库设计文档、开发技术规范清单、后端架构设计文档都已就绪，开发前的准备基本完成。但新的问题是：如何启动开发？从哪里下手？功能优先级怎么排？<br>因此还需要一份明确的后端开发步骤清单。</p>
+<p>继续沿用“后端架构设计”的对话窗口。</p>
+<p>我没有准备复杂提示词，但最终生产的效果还不错。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/PixPin_2026-01-19_14-57-13.png" alt="PixPin_2026-01-19_14-57-13"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>将后端实现拆解为可执行阶段与任务清单。</li>
+<li>明确功能优先级与迭代顺序。</li>
+<li>形成开发启动与推进的操作路径。</li>
+</ol>
+<h3 id="9-文档使用总结"><a href="#9-文档使用总结" class="headerlink" title="9. 文档使用总结"></a>9. 文档使用总结</h3><p>对话时会自动加载 <strong>《需求文档》</strong>、<strong>《数据库设计文档》</strong>、<strong>《开发技术规范清单》</strong>、<strong>《后端架构设计文档》</strong>。</p>
+<p>这四份文档是系统开发的基础。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119150215574.png" alt="image-20260119150215574"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>统一四大核心文档的使用场景与作用。</li>
+<li>将文档作为全程开发的上下文基线。</li>
+<li>降低跨模型协作时的信息偏差。</li>
+</ol>
+<h3 id="10-Spec-驱动开发"><a href="#10-Spec-驱动开发" class="headerlink" title="10. Spec 驱动开发"></a>10. Spec 驱动开发</h3><p><strong>在 Kiro 的 spec 系统中，这三个文档各有明确的职责和含义：</strong></p>
+<ol>
+<li><p>requirements.md - 需求规范<br>定义“做什么”和“如何验证”。描述功能需求、用户故事（Why）与验收标准（How to verify），作为测试与验收依据。<br>例：需求写明“配置从环境变量加载”，验收标准写明“缺失变量时报错”。</p>
+</li>
+<li><p>design.md - 设计文档<br>定义“怎么实现”和“为何这样设计”。给出技术方案与架构，说明关键决策与正确性属性，并覆盖错误处理、测试与部署考虑。</p>
+</li>
+<li><p>tasks.md - 实现计划<br>定义“怎么做”和“进度如何跟踪”。把设计拆成可执行任务，标注需求追溯与完成状态，用于项目管理。</p>
+</li>
+</ol>
+<p><strong>三者的关系</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">requirements<span class="selector-class">.md</span> (需求)</span><br><span class="line">    ↓ <span class="string">&quot;如何实现这些需求？&quot;</span></span><br><span class="line">design<span class="selector-class">.md</span> (设计)</span><br><span class="line">    ↓ <span class="string">&quot;分解成哪些具体任务？&quot;</span></span><br><span class="line">tasks<span class="selector-class">.md</span> (任务)</span><br><span class="line">    ↓ <span class="string">&quot;执行任务&quot;</span></span><br><span class="line">实现代码</span><br></pre></td></tr></table></figure>
+
+<p><strong>样例</strong></p>
+<p>提示词比较简单，主要依赖前面准备好的文档，只需要给出《后端开发步骤文档》中的某个阶段即可。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119153038725.png" alt="image-20260119153038725"></p>
+<p>任务文档会把本次实现拆成多个任务。可以一次执行全部，也可以逐个执行；若任务复杂，建议一次只做一个。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119153322415.png" alt="image-20260119153322415"></p>
+<p>越熟悉模型，越清楚它的能力边界。不要无脑接受所有输出，一定要保持审视。</p>
+<p>每次 <code>Claude</code> 输出一批代码，我都会让 <code>Codex</code> 对照相关文档与待提交代码逐条审查。</p>
+<p>比如：（这是一个小问题的开发样例，不是完整模块的审查，所以提示词相对简单）</p>
+<p>一般 <code>Codex</code> 会指出多个风险点，可以逐一核查，也可让 <code>LLM</code> 先判断是否属实；确认存在后，再让 <code>Codex</code> 修改。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gitee.com/momo623/photo/raw/master/public/image-20260119153823001.png" alt="image-20260119153823001"></p>
+<p><strong>关键产出要点</strong></p>
+<ol>
+<li>以 requirements&#x2F;design&#x2F;tasks 形成可追溯开发链路。</li>
+<li>将代码实现与文档验收标准绑定。</li>
+<li>用 Codex 审查保障实现与需求一致。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>工作是你的，不是工具的。<code>AI</code> 会让开发者失业吗？不会，但前提是你愿意进化。工具一直在变，从打孔器到编译器，从单机到微服务，每一代人都有焦虑，但建设者从未消失。<code>AI</code> 生成代码很快，但看懂它、判断它、为它负责的始终是你。</p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/tech/AI/ai-vibe-coding-01/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/tech/AI/ai-vibe-coding-01/&title=10 天 AI 协作开发实录：一份可复用的 AI 开发流程样例 - ChongWen&summary=记录一次完整 AI 辅助开发流程，涵盖需求、设计、架构、DB 与前后端实现工具组合。"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=10 天 AI 协作开发实录：一份可复用的 AI 开发流程样例 - ChongWen&amp;body=https://chongwenz.cn/tech/AI/ai-vibe-coding-01/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/tech/AI/ai-vibe-coding-01/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/Essays/20260331/">2026-03</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/tech/AI/ai-vibe-coding-02-tuomin/">脱敏平台产品介绍与交互展示</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<style>
+.stats-row {
+  margin: 0.6rem auto 0.2rem;
+  max-width: 720px;
+  padding: 0.5rem 0.8rem;
+  color: #2a2f2f;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.stats-item {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.stats-icon {
+  font-size: 1rem;
+  color: #586064;
+}
+.stats-label {
+  color: #586064;
+}
+.stats-value {
+  font-weight: 700;
+}
+</style>
+<div class="stats-row" role="status" aria-live="polite">
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:bar-chart-2"></span>
+    <span class="stats-label">本站总访问量</span>
+    <span class="stats-value" id="busuanzi_site_pv">10000</span>
+    <span class="stats-label">次</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:user"></span>
+    <span class="stats-label">本站总访客数</span>
+    <span class="stats-value" id="busuanzi_site_uv">500</span>
+    <span class="stats-label">人</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:file-text"></span>
+    <span class="stats-label">本页总访客数</span>
+    <span class="stats-value" id="busuanzi_page_uv">加载中...</span>
+    <span class="stats-label">人</span>
+  </div>
+</div>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
+<script defer src="https://jsd.dusays.com/npm/penndu@17.0.0/bsz.js"></script>
+<script>
+(function () {
+  var pvBase = 10000;
+  var siteUvBase = 500;
+  var retry = 0;
+  var maxRetry = 60;
+  var timer = setInterval(function () {
+    var done = 0;
+    var sitePvEl = document.getElementById('busuanzi_site_pv');
+    if (sitePvEl) {
+      var sitePvRaw = (sitePvEl.textContent || '').trim();
+      var sitePv = parseInt(sitePvRaw || '0', 10);
+      if (sitePv > 0 && sitePvRaw !== String(pvBase)) {
+        sitePvEl.textContent = sitePv + pvBase;
+        done++;
+      }
+    }
+    var siteUvEl = document.getElementById('busuanzi_site_uv');
+    if (siteUvEl) {
+      var siteUvRaw = (siteUvEl.textContent || '').trim();
+      var siteUv = parseInt(siteUvRaw || '0', 10);
+      if (siteUv > 0 && siteUvRaw !== String(siteUvBase)) {
+        siteUvEl.textContent = siteUv + siteUvBase;
+        done++;
+      }
+    }
+    if (done >= 2) {
+      clearInterval(timer);
+    }
+    retry++;
+    if (retry >= maxRetry) {
+      clearInterval(timer);
+    }
+  }, 200);
+})();
+</script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 42 篇文章 🔸 总计 130.3k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0-%E6%A6%82%E8%A7%88"><span class="toc-text">0. 概览</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%AE%9A%E4%BD%8D"><span class="toc-text">工具与模型定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-text">核心思路</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90%E4%B8%8E%E4%BA%A7%E5%93%81%E8%AE%BE%E8%AE%A1"><span class="toc-text">1. 需求分析与产品设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E5%AF%B9%E8%AF%9D%E7%A4%BA%E4%BE%8B"><span class="toc-text">1.1 对话示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E3%80%8A%E9%9C%80%E6%B1%82%E6%96%87%E6%A1%A3%E3%80%8B"><span class="toc-text">1.2 《需求文档》</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BA%A7%E5%93%81%E5%8E%9F%E5%9E%8B"><span class="toc-text">2. 产品原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-UI-%E8%AE%BE%E8%AE%A1"><span class="toc-text">3. UI 设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-text">3.1 提示词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-UI-%E5%8E%9F%E5%9E%8B%E5%9B%BE"><span class="toc-text">3.2 UI 原型图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Google-AI-Studio-%E5%88%86%E6%94%AF%E5%8D%8F%E4%BD%9C"><span class="toc-text">4. Google AI Studio 分支协作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-text">5. 架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-text">5.1 提示词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E3%80%8A%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%A7%84%E8%8C%83%E6%B8%85%E5%8D%95%E3%80%8B"><span class="toc-text">5.2 《开发技术规范清单》</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1"><span class="toc-text">6. 数据库设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-text">6.1 提示词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3%E3%80%8B"><span class="toc-text">6.2 《数据库设计文档》</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-text">7. 后端架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-text">7.1 提示词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-%E3%80%8A%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3%E3%80%8B"><span class="toc-text">7.2 《后端架构设计文档》</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%AD%A5%E9%AA%A4"><span class="toc-text">8. 后端开发步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E6%96%87%E6%A1%A3%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93"><span class="toc-text">9. 文档使用总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-Spec-%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91"><span class="toc-text">10. Spec 驱动开发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/tech/AI/ai-vibe-coding-01.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "true" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>

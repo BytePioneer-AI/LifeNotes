@@ -1,0 +1,3187 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.1.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>任务队列 Celery+RabbitMQ - ChongWen</title>
+
+  
+  <meta name="description" content="【第 1 章：为什么需要异步任务与消息队列】1️⃣ 本章要解决什么问题（Why）你在做一个 Web 服务（比如下单、注册、生成报告、发邮件、图片处理）。典型的“天真写法”是：
+
+用户请求来了 → 服务器把所有事情都做完 → 最后再返回响应
+
+这在低并发时没问题，但一上量就会出现三个工程灾难：
+...">
+  
+  <meta name="keywords" content="基础知识">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+
+  
+
+  <meta name="baidu-site-verification" content="codeva-IdsBFUJOrH"><meta name="msvalidate.01" content="2DB9FDA68025BDEB7D4F1F9DB43E05FC" /><link rel="icon" type="image/svg+xml" href="/assets/logo.png"><link rel="shortcut icon" href="/assets/logo.png" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" /><script defer src="/_vercel/insights/script.js"></script><script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/img_config/logo.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">chongwen</div><div class="sub normal cap">代码如诗，行行皆美</div><div class="sub hover cap" style="opacity:0"> 欢迎听到我的声音</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="专栏" href="/topic/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/llm-timeline/"><span class="title">⭐【实时更新】大模型发布时间轴</span></a><a class="item title" href="/Essays/20250214%E5%88%9D%E5%A7%8B%E7%AF%87/"><span class="title">初始篇</span></a><a class="item title" href="/Essays/20250324%E4%B8%89%E6%9C%88/"><span class="title">2025-03</span></a><a class="item title" href="/Essays/20250428%E5%9B%9B%E6%9C%88/"><span class="title">2025-04</span></a><a class="item title" href="/Essays/20250603%E4%BA%94%E6%9C%88/"><span class="title">2025-05</span></a><a class="item title" href="/Essays/20250219%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"><span class="title">24年终总结</span></a><a class="item title" href="/Essays/20250720%E5%85%AD%E6%9C%88/"><span class="title">2025-06、07</span></a><a class="item title" href="/Essays/20260331/"><span class="title">2026-03</span></a><a class="item title" href="/other/vpn/"><span class="title">自建 VPN</span></a><a class="item title" href="/smo/1/"><span class="title">简历相关1</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-15T10:00:00.000Z">2026-01-15</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-06-10T07:04:59.000Z">2026-06-10</time></span></div><div class="flex-row" id="page-words"><span style="padding: 4px;">本文：14.5k字</span><span class="sep updated" style="padding: 4px;"></span><span class="text updated" style="padding: 4px;">阅读时长：57分</span></div><div class="flex-row" id="tag"> <span>&nbsp标签：</span><a class="cap breadcrumb-link" href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a>&nbsp</div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>任务队列 Celery+RabbitMQ</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="【第-1-章：为什么需要异步任务与消息队列】"><a href="#【第-1-章：为什么需要异步任务与消息队列】" class="headerlink" title="【第 1 章：为什么需要异步任务与消息队列】"></a>【第 1 章：为什么需要异步任务与消息队列】</h2><h3 id="1️⃣-本章要解决什么问题（Why）"><a href="#1️⃣-本章要解决什么问题（Why）" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>你在做一个 Web 服务（比如下单、注册、生成报告、发邮件、图片处理）。典型的“天真写法”是：</p>
+<blockquote>
+<p>用户请求来了 → 服务器把所有事情都做完 → 最后再返回响应</p>
+</blockquote>
+<p>这在低并发时没问题，但一上量就会出现三个工程灾难：</p>
+<ol>
+<li><strong>响应时间爆炸</strong></li>
+</ol>
+<ul>
+<li>发邮件 2s、调用第三方 3s、生成 PDF 10s</li>
+<li>用户等 15 秒，前端超时，体验崩了</li>
+</ul>
+<ol>
+<li><strong>吞吐下降 + 资源被拖死</strong></li>
+</ol>
+<ul>
+<li>Web 线程&#x2F;进程被长任务占着</li>
+<li>新请求进不来，排队堆积，最后雪崩</li>
+</ul>
+<ol>
+<li><strong>故障扩散</strong>（最关键）</li>
+</ol>
+<ul>
+<li>第三方接口抖一下，你的主链路就跟着挂</li>
+<li>“下单成功”这种核心路径被“发短信失败”拖垮，非常不划算</li>
+</ul>
+<p>所以我们需要把系统拆成两类工作：</p>
+<ul>
+<li><strong>必须立刻完成的（同步）</strong>：返回给用户的核心逻辑</li>
+<li><strong>可以稍后完成的（异步）</strong>：耗时、可重试、可并行的任务</li>
+</ul>
+<p>这就是“异步任务”和“消息队列”出现的根本原因：</p>
+<blockquote>
+<p><strong>把主链路变短，把非关键工作移出请求线程，用队列实现解耦、削峰、可靠交付。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）"><a href="#2️⃣-核心概念与角色（What）" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>先把名词讲清楚（这些会贯穿 RabbitMQ + Celery 全套体系）：</p>
+<p> ✅ 异步任务（Async Task）</p>
+<ul>
+<li>“现在先别做，稍后做”</li>
+<li>关键点：<strong>提交任务</strong> 与 <strong>执行任务</strong> 分离</li>
+</ul>
+<p> ✅ 消息队列（Message Queue, MQ）</p>
+<ul>
+<li>一种“中间缓冲层”</li>
+<li>生产者把消息放进去，消费者从里面取出来处理</li>
+<li>关键价值：<strong>解耦、削峰、异步、可靠传递</strong></li>
+</ul>
+<p> ✅ 角色关系说明（必须记住）</p>
+<ul>
+<li><strong>Producer（生产者）</strong>：产生任务的人（通常是你的 Web 服务）</li>
+<li><strong>Broker（消息代理）</strong>：队列系统（RabbitMQ 就是它）</li>
+<li><strong>Consumer&#x2F;Worker（消费者&#x2F;工人）</strong>：执行任务的人（Celery worker）</li>
+<li><strong>Message&#x2F;Task（消息&#x2F;任务）</strong>：传递的工作描述（“做什么 + 参数”）</li>
+</ul>
+<p>用一个非常直白的类比：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Web 服务 = 前台收银员（Producer）</span><br><span class="line">RabbitMQ  = 取号机 + 等候区（Broker）</span><br><span class="line">Celery Worker = 后厨厨师（Consumer）</span><br><span class="line">消息/任务 = 订单小票（<span class="keyword">Message</span>）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3️⃣-工作原理（How）"><a href="#3️⃣-工作原理（How）" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p> 3.1 从“同步直做”到“异步投递”</p>
+<p><strong>同步直做（问题模型）</strong>：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Client -&gt; Web Server -&gt; <span class="function"><span class="params">(发邮件<span class="regexp">/调用第三方/</span>生成报表...)</span> -&gt;</span> Response</span><br><span class="line">                        ^ 耗时 &amp; 易失败 &amp; 不可控</span><br></pre></td></tr></table></figure>
+
+<p><strong>异步 + MQ（改造模型）</strong>：</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Client -&gt; Web Server -&gt; 把任务丢进 MQ -&gt; Response(立刻返回)</span><br><span class="line">                           |</span><br><span class="line">                           <span class="type">v</span></span><br><span class="line">                     Worker 从 MQ 取任务 -&gt; 执行 -&gt; 记录结果/重试</span><br></pre></td></tr></table></figure>
+
+<p> 3.2 Mermaid 流程图：任务的最小生命周期（概念版）</p>
+<pre class="mermaid">flowchart LR
+    A[Client 请求] --> B[Web 服务/Producer]
+    B -->|Send Task Message| C[(Message Broker / RabbitMQ)]
+    C -->|Consume| D[Worker/Consumer]
+    D --> E[执行任务逻辑]
+    E --> F[(结果存储 可选)]</pre>
+
+<p>这里你先记住一句话：</p>
+<blockquote>
+<p><strong>MQ 的核心是“存下来再说”，Worker 的核心是“取出来去做”。</strong></p>
+</blockquote>
+<p> 3.3 为什么 MQ 能解决那些灾难？</p>
+<ul>
+<li><strong>解耦</strong>：Web 不关心任务怎么执行、执行多久、失败怎么办</li>
+<li><strong>削峰</strong>：流量瞬间 10 万请求，队列先堆住，Worker 慢慢消化</li>
+<li><strong>可靠性</strong>：任务可以持久化，Worker 宕机后能恢复继续处理</li>
+<li><strong>可扩展</strong>：任务多了就加 Worker，不必扩 Web</li>
+</ul>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系"><a href="#4️⃣-与-RabbitMQ-Celery-的关系" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</h3><p>这一章你只需要建立“分工边界”的直觉：</p>
+<p> RabbitMQ（Broker 的一种实现）</p>
+<ul>
+<li>负责：<strong>可靠地收消息、存消息、按规则投递消息</strong></li>
+<li>不负责：执行任务逻辑</li>
+</ul>
+<p> Celery（分布式任务框架）</p>
+<ul>
+<li>负责：<strong>把函数变成任务、把任务投递给 Broker、Worker 拉取执行、管理重试&#x2F;并发&#x2F;路由&#x2F;结果</strong></li>
+<li>不负责：实现消息队列（它依赖 RabbitMQ&#x2F;Redis 等 Broker）</li>
+</ul>
+<p>所以 RabbitMQ + Celery 的经典组合就是：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Celery Producer  -&gt;  RabbitMQ<span class="function"><span class="params">(Broker)</span>  -&gt;</span>  Celery Workers</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>RabbitMQ 是“任务的物流系统”，Celery 是“任务的生产线管理系统”。</p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）"><a href="#5️⃣-最小可运行示例（Practice）" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>这一章的“最小示例”目标不是让你立刻跑 RabbitMQ（第 2 章开始我们会系统跑起来），<br>而是让你先形成<strong>异步任务拆分的代码形态</strong>：<strong>主流程只负责投递，耗时逻辑放到任务函数里</strong>。</p>
+<p> 5.1 目录结构（先记住这个形状）</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">proj</span>/</span><br><span class="line">  app.py         <span class="comment"># 模拟 Web 入口：只负责投递任务</span></span><br><span class="line">  tasks.py       <span class="comment"># 任务定义：耗时逻辑在这里</span></span><br></pre></td></tr></table></figure>
+
+<p> 5.2 tasks.py：把“耗时逻辑”封装成任务函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tasks.py</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_welcome_email</span>(<span class="params">user_id: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="comment"># 假装这是一个耗时、可能失败的外部操作</span></span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[task] welcome email sent to user=<span class="subst">&#123;user_id&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p> 5.3 app.py：主流程“只投递，不等待”（概念版）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">from</span> tasks <span class="keyword">import</span> send_welcome_email</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">register</span>(<span class="params">user_id: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="comment"># 1) 核心同步逻辑：注册成功（必须立刻完成）</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[web] user <span class="subst">&#123;user_id&#125;</span> registered&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2) 非核心逻辑：欢迎邮件（应该异步）</span></span><br><span class="line">    <span class="comment"># 现在我们先用“假装投递”的方式表达意图：</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[web] enqueue task: send_welcome_email&quot;</span>)</span><br><span class="line">    <span class="comment"># 在 Celery 中，这里会变成 delay()/apply_async()</span></span><br><span class="line">    <span class="comment"># send_welcome_email.delay(user_id)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3) 立刻返回给用户</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;ok&quot;</span>: <span class="literal">True</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="built_in">print</span>(register(<span class="number">42</span>))</span><br></pre></td></tr></table></figure>
+
+<p> 5.4 每一部分在系统中的作用（非常重要）</p>
+<ul>
+<li><code>register()</code>：主链路（同步），必须快、必须稳</li>
+<li><code>send_welcome_email()</code>：异步任务，慢也没关系，失败可重试</li>
+<li>“enqueue task”：未来用 RabbitMQ + Celery 实现真正投递</li>
+</ul>
+<p> 新手常见误区（提前点名）</p>
+<ol>
+<li><strong>把所有事情都异步化</strong><ul>
+<li>核心一致性逻辑（比如扣库存、支付确认）乱异步会导致业务错乱</li>
+</ul>
+</li>
+<li><strong>异步 &#x3D; 不可靠</strong><ul>
+<li>实际上设计得当，异步系统可以比同步更可靠（因为可重试、可恢复）</li>
+</ul>
+</li>
+<li><strong>以为 MQ 只是性能工具</strong><ul>
+<li>更重要的是“隔离故障 + 解耦依赖”，性能只是副产品</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结"><a href="#6️⃣-📒-本章笔记总结" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li>异步任务要解决的核心矛盾：<strong>主链路必须短、快、稳；非关键工作耗时且易失败</strong></li>
+<li>消息队列（MQ）的核心价值：<ul>
+<li><strong>解耦</strong>：生产者不依赖消费者的执行细节</li>
+<li><strong>削峰</strong>：突发流量先堆队列，慢慢消费</li>
+<li><strong>可靠传递</strong>：消息可持久化，宕机可恢复</li>
+<li><strong>水平扩展</strong>：任务多就加 worker</li>
+</ul>
+</li>
+<li>关键角色：Producer &#x2F; Broker &#x2F; Worker &#x2F; Message(Task)</li>
+<li>RabbitMQ vs Celery 分工：<ul>
+<li>RabbitMQ：负责“收、存、投递消息”</li>
+<li>Celery：负责“把函数任务化、投递、消费执行、并发&#x2F;重试&#x2F;路由&#x2F;结果管理”</li>
+</ul>
+</li>
+<li>工程原则：<strong>同步做必须立刻完成的，异步做可以延迟且可重试的</strong></li>
+</ul>
+<h3 id="7️⃣-📒-异步任务-MQ-问题总结"><a href="#7️⃣-📒-异步任务-MQ-问题总结" class="headerlink" title="7️⃣ 📒 异步任务 &amp; MQ 问题总结"></a>7️⃣ 📒 异步任务 &amp; MQ 问题总结</h3><p><strong>一、Web 框架已经是 async 了，为什么还需要 MQ？</strong></p>
+<p><strong>❓问题本质</strong></p>
+<blockquote>
+<p>FastAPI &#x2F; asyncio 已经是异步并发了，为什么还会有“阻塞 &#x2F; 等待 &#x2F; 雪崩”的问题？</p>
+</blockquote>
+<p><strong>✅ 核心结论</strong></p>
+<ul>
+<li><strong>Web async ≠ 异步任务系统</strong></li>
+<li>Web async 解决的是：<strong>IO 等待不阻塞线程</strong></li>
+<li>MQ + Worker 解决的是：<strong>系统级解耦、资源隔离、稳定性</strong></li>
+</ul>
+<p><strong>📌 关键区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Web async</th>
+<th>MQ + Worker</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>执行位置</td>
+<td>Web 进程内</td>
+<td>独立进程 &#x2F; 机器</td>
+</tr>
+<tr>
+<td>CPU 密集</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>外部依赖抖动</td>
+<td>❌ 容易拖垮</td>
+<td>✅ 被隔离</td>
+</tr>
+<tr>
+<td>限速 &#x2F; 削峰</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>失败重试</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>二、异步任务丢进 MQ 就返回了，结果什么时候知道？</strong></p>
+<p><strong>❓问题本质</strong></p>
+<blockquote>
+<p>没有同步返回结果，那任务“完成”的信号在哪里？</p>
+</blockquote>
+<p><strong>✅ 三种主流结果模型</strong></p>
+<p><strong>1️⃣ Fire-and-Forget（最常见）</strong></p>
+<ul>
+<li>不关心结果</li>
+<li>如：发邮件 &#x2F; 发短信 &#x2F; 同步数据</li>
+</ul>
+<p><strong>2️⃣ 轮询 &#x2F; 查询结果</strong></p>
+<ul>
+<li>提交任务 → 返回 task_id</li>
+<li>前端 &#x2F; 调用方轮询 DB &#x2F; Redis &#x2F; Celery backend</li>
+</ul>
+<p><strong>3️⃣ 推送 &#x2F; 回调（高级）</strong></p>
+<ul>
+<li>WebSocket &#x2F; SSE &#x2F; 回调接口</li>
+<li>少数强实时场景使用</li>
+</ul>
+<p><strong>📌 工程经验</strong></p>
+<blockquote>
+<p>90% 任务不需要立刻知道结果<br>异步系统天然是“最终一致性”</p>
+</blockquote>
+<hr>
+<p><strong>三、多长时间 &#x2F; 多大并发的任务适合用 MQ？</strong></p>
+<p><strong>❌ 错误判断方式</strong></p>
+<ul>
+<li>“超过 1s 才用 MQ”</li>
+<li>“必须是 100s 才值得”</li>
+</ul>
+<p><strong>✅ 正确判断维度（是否用 MQ）</strong></p>
+<table>
+<thead>
+<tr>
+<th>判断点</th>
+<th>如果是</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否阻塞 Web 主链路</td>
+<td>用 MQ</td>
+</tr>
+<tr>
+<td>是否调用外部系统</td>
+<td>用 MQ</td>
+</tr>
+<tr>
+<td>是否可能失败重试</td>
+<td>用 MQ</td>
+</tr>
+<tr>
+<td>是否可能突发流量</td>
+<td>用 MQ</td>
+</tr>
+<tr>
+<td>是否不希望跑在 Web 进程</td>
+<td>用 MQ</td>
+</tr>
+</tbody></table>
+<p><strong>📌 黄金法则（必记）</strong></p>
+<blockquote>
+<p><strong>凡是你不希望跑在 Web 进程里的逻辑，都应该进任务队列</strong></p>
+</blockquote>
+<hr>
+<p><strong>四、RabbitMQ 可以 Docker 跑吗？能给多个应用用吗？</strong></p>
+<p><strong>✅ Docker 运行 RabbitMQ</strong></p>
+<ul>
+<li>完全支持</li>
+<li>生产环境常态</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq:3-management</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5672：业务连接</li>
+<li>15672：管理后台</li>
+</ul>
+<p><strong>✅ 一个 MQ 服务多个应用（标准架构）</strong></p>
+<ul>
+<li>使用 <strong>Virtual Host &#x2F; Exchange &#x2F; Queue</strong> 隔离</li>
+<li>权限、命名、路由解耦</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">一个 RabbitMQ 集群</span><br><span class="line">  ├─ App A（vhost /a）</span><br><span class="line">  ├─ App B（vhost /b）</span><br><span class="line">  └─ App C（vhost /c）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>五、Celery 支持任务嵌套 &#x2F; 长任务拆分吗？</strong></p>
+<p><strong>✅ 支持，而且是核心能力</strong></p>
+<p>Celery 不推荐：</p>
+<ul>
+<li>在任务里 <code>get()</code> 等子任务结果（❌ 会阻塞 worker）</li>
+</ul>
+<p>Celery 推荐：</p>
+<ul>
+<li><strong>任务编排（Canvas）</strong></li>
+</ul>
+<p><strong>常用编排方式</strong></p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chain</td>
+<td>串行步骤依赖</td>
+</tr>
+<tr>
+<td>group</td>
+<td>并行子任务</td>
+</tr>
+<tr>
+<td>chord</td>
+<td>并行 + 汇总</td>
+</tr>
+<tr>
+<td>动态生成任务</td>
+<td>扇出数量运行时决定</td>
+</tr>
+</tbody></table>
+<p><strong>📌 工程原则</strong></p>
+<ul>
+<li>长任务 → 拆阶段</li>
+<li>可并行 → group &#x2F; chord</li>
+<li>不要在 worker 里“同步等待”</li>
+</ul>
+<hr>
+<hr>
+<h2 id="【第-2-章：RabbitMQ-是什么？核心思想与工作模型】"><a href="#【第-2-章：RabbitMQ-是什么？核心思想与工作模型】" class="headerlink" title="【第 2 章：RabbitMQ 是什么？核心思想与工作模型】"></a>【第 2 章：RabbitMQ 是什么？核心思想与工作模型】</h2><blockquote>
+<p>这一章的目标只有一个：<br><strong>把 RabbitMQ 从“一个黑盒中间件”拆成你脑子里能运转的模型</strong>。<br>看完这一章，你应该能回答：<br>👉 <em>“一条消息进来后，RabbitMQ 到底对它做了什么？”</em></p>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-1"><a href="#1️⃣-本章要解决什么问题（Why）-1" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>在第 1 章我们已经知道：<br><strong>MQ 是为了解耦生产者和消费者、保护系统稳定性而存在的</strong>。</p>
+<p>但这会立刻引出 3 个工程问题：</p>
+<ol>
+<li><strong>消息进来后放哪？</strong></li>
+<li><strong>有多个消费者时，消息怎么分发？</strong></li>
+<li><strong>不同类型的消息，怎么路由到不同处理逻辑？</strong></li>
+</ol>
+<p>如果 MQ 只是一个简单队列（FIFO）：</p>
+<ul>
+<li>所有消息挤在一起</li>
+<li>所有消费者只能“抢”</li>
+<li>无法区分任务类型</li>
+<li>扩展性和可维护性极差</li>
+</ul>
+<p>RabbitMQ 诞生的核心动机就是：</p>
+<blockquote>
+<p><strong>把“消息存储”和“消息路由”彻底解耦，让消息投递规则可配置、可扩展。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-1"><a href="#2️⃣-核心概念与角色（What）-1" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>这一章你先记住 <strong>4 个角色</strong>，它们构成 RabbitMQ 的最小心智模型：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>本质作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Producer</td>
+<td>发送消息的应用</td>
+</tr>
+<tr>
+<td>Exchange</td>
+<td><strong>消息路由器（不存消息）</strong></td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><strong>真正存消息的地方</strong></td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>从 Queue 取消息处理</td>
+</tr>
+</tbody></table>
+<h3 id="⚠️-非常重要的一句话"><a href="#⚠️-非常重要的一句话" class="headerlink" title="⚠️ 非常重要的一句话"></a>⚠️ 非常重要的一句话</h3><blockquote>
+<p><strong>Producer 从不直接把消息发给 Queue，而是发给 Exchange</strong></p>
+</blockquote>
+<p>这是 RabbitMQ 和“朴素队列”的根本区别。</p>
+<hr>
+<h3 id="3️⃣-工作原理（How）-1"><a href="#3️⃣-工作原理（How）-1" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们一步一步拆解“一条消息的完整旅程”。</p>
+<hr>
+<p><strong>3.1 最小消息流（核心路径）</strong></p>
+<pre class="mermaid">flowchart LR
+    P[Producer] -->|publish| E[Exchange]
+    E -->|route| Q[Queue]
+    Q -->|consume| C[Consumer]</pre>
+
+<p><strong>注意职责边界：</strong></p>
+<ul>
+<li>Producer：只管发消息，不知道 Queue 存在哪</li>
+<li>Exchange：只负责<strong>路由决策</strong></li>
+<li>Queue：只负责<strong>存消息</strong></li>
+<li>Consumer：只管取消息执行</li>
+</ul>
+<hr>
+<p><strong>3.2 为什么一定要有 Exchange？</strong></p>
+<p>假设没有 Exchange（Producer 直连 Queue）：</p>
+<ul>
+<li>Producer 必须知道所有 Queue</li>
+<li>新增消费者要改 Producer 代码</li>
+<li>路由逻辑散落在业务代码里</li>
+</ul>
+<p>有了 Exchange：</p>
+<ul>
+<li>Producer 只面向“规则”</li>
+<li>路由策略集中管理</li>
+<li>系统更像“可配置基础设施”</li>
+</ul>
+<p>📌 <strong>工程视角</strong></p>
+<blockquote>
+<p>Exchange 是 RabbitMQ 的“控制平面”，Queue 是“数据平面”。</p>
+</blockquote>
+<hr>
+<p><strong>3.3 Exchange 的核心工作：路由（不是存储）</strong></p>
+<p>Exchange 做的只有一件事：</p>
+<blockquote>
+<p><strong>根据“规则”，把消息复制 &#x2F; 投递到 0~N 个 Queue</strong></p>
+</blockquote>
+<p>Exchange <strong>不存消息</strong>，消息一旦路由完成，就和 Exchange 无关了。</p>
+<hr>
+<h3 id="4️⃣-与-Celery-的关系"><a href="#4️⃣-与-Celery-的关系" class="headerlink" title="4️⃣ 与 Celery 的关系"></a>4️⃣ 与 Celery 的关系</h3><p>这一章你要在脑子里建立这张映射表：</p>
+<table>
+<thead>
+<tr>
+<th>RabbitMQ</th>
+<th>Celery 中的角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Producer</td>
+<td><code>task.delay()</code> &#x2F; <code>apply_async()</code></td>
+</tr>
+<tr>
+<td>Exchange</td>
+<td>Celery 自动创建的 task exchange</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>Celery 的任务队列</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>Celery worker</td>
+</tr>
+</tbody></table>
+<p>当你写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">send_email.delay(user_id)</span><br></pre></td></tr></table></figure>
+
+<p>本质发生的是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Celery Producer</span><br><span class="line">  -&gt; publish 消息到 Exchange</span><br><span class="line">     -&gt; Exchange 路由到 Queue</span><br><span class="line">        -&gt; Worker 从 Queue 取任务</span><br></pre></td></tr></table></figure>
+
+<p>📌 <strong>关键认知</strong></p>
+<blockquote>
+<p>Celery 把 RabbitMQ 当作“可编程任务路由器”来用。</p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-📒-本章笔记总结"><a href="#5️⃣-📒-本章笔记总结" class="headerlink" title="5️⃣ 📒 本章笔记总结"></a>5️⃣ 📒 本章笔记总结</h3><ul>
+<li>RabbitMQ 的核心思想：<strong>消息存储 ≠ 消息路由</strong></li>
+<li>Producer 永远把消息发给 Exchange，而不是 Queue</li>
+<li>Exchange 不存消息，只做路由决策</li>
+<li>Queue 是消息的唯一存储单元</li>
+<li>Consumer 只从 Queue 拉消息</li>
+<li>RabbitMQ 通过 Exchange 实现“配置化路由”</li>
+<li>Celery 利用 RabbitMQ 的 Exchange&#x2F;Queue 机制完成任务分发</li>
+</ul>
+<h3 id="6️⃣-📒-第-2-章相关疑问"><a href="#6️⃣-📒-第-2-章相关疑问" class="headerlink" title="6️⃣ 📒 第 2 章相关疑问"></a>6️⃣ 📒 第 2 章相关疑问</h3><p><strong>Q1：pika 是什么？和 Celery 什么关系？</strong></p>
+<ul>
+<li><strong>pika</strong>：Python 的 RabbitMQ（AMQP）客户端库，偏底层。<ul>
+<li>能做：连接 RabbitMQ、声明 exchange&#x2F;queue&#x2F;binding、publish&#x2F;consume、ack 等。</li>
+</ul>
+</li>
+<li><strong>Celery</strong>：分布式任务框架（任务定义、投递、worker 并发、重试、路由、结果等一整套）。</li>
+<li><strong>两者关系</strong>：<ul>
+<li>用 pika：你在“手写消息通信细节”（更底层、学习 RabbitMQ 原理很适合）。</li>
+<li>用 Celery：Celery 通过自己的消息通信抽象（通常是 kombu）来和 RabbitMQ&#x2F;Redis 等 broker 通信；<strong>一般不需要你直接写 pika</strong>。</li>
+</ul>
+</li>
+<li><strong>工程结论</strong>：<ul>
+<li>学原理 → pika 很好</li>
+<li>落地任务系统 → 直接 Celery</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Q2：除了 RabbitMQ，还有什么消息队列？</strong></p>
+<p>按“模型&#x2F;适用场景”分两类更好记：</p>
+<p><strong>A 类：传统消息队列（偏任务分发&#x2F;路由&#x2F;ACK）</strong></p>
+<ul>
+<li>RabbitMQ（AMQP 模型，路由能力强）</li>
+<li>ActiveMQ &#x2F; Artemis（JMS 生态）</li>
+<li>NATS &#x2F; JetStream（轻量高速）</li>
+<li>Redis（常用作轻量 broker，但可靠性&#x2F;语义边界要清楚）</li>
+</ul>
+<p><strong>B 类：事件流&#x2F;日志平台（偏高吞吐、可回放、流处理）</strong></p>
+<ul>
+<li>Kafka（吞吐高、分区顺序、可回放）</li>
+<li>Pulsar（类似 Kafka，但多租户&#x2F;存储分层等特性不同）</li>
+</ul>
+<p><strong>选型速记</strong></p>
+<ul>
+<li>“任务队列 + 路由 + 重试&#x2F;ACK” → RabbitMQ 常见</li>
+<li>“海量事件流 + 回放 + 数据管道” → Kafka&#x2F;Pulsar</li>
+<li>“轻量、好部署、快速落地” → Redis（需明确可靠性策略）</li>
+</ul>
+<hr>
+<p><strong>Q3：Exchange 和 Queue 都是 RabbitMQ 的能力吗？</strong></p>
+<ul>
+<li><strong>是</strong>：在 RabbitMQ（以及 AMQP 风格模型）里，Exchange&#x2F;Queue&#x2F;Binding 是核心抽象。</li>
+<li>但要更精确：<ul>
+<li><strong>Queue</strong>：几乎所有 MQ 都有“存消息的地方”（名字可能叫 queue&#x2F;topic&#x2F;stream）。</li>
+<li><strong>Exchange</strong>：更像 RabbitMQ&#x2F;AMQP 的标志性“路由层抽象”，<strong>不是所有 MQ 都有同名概念</strong>（例如 Kafka 没有 Exchange）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Q4：AMQP 是什么？</strong></p>
+<ul>
+<li><p><strong>AMQP（Advanced Message Queuing Protocol）</strong>：一种<strong>消息通信协议&#x2F;规范</strong>。</p>
+</li>
+<li><p>定义了：客户端如何与 broker 通信，包括</p>
+<ul>
+<li>connection&#x2F;channel</li>
+<li>publish&#x2F;consume</li>
+<li>ack&#x2F;nack</li>
+<li>声明与绑定（exchange&#x2F;queue&#x2F;binding 的交互语义）</li>
+</ul>
+</li>
+<li><p><strong>一句话</strong>：</p>
+<blockquote>
+<p>AMQP 是“消息中间件的协议与语义标准”，RabbitMQ 是其典型实现之一。</p>
+</blockquote>
+</li>
+<li><p>pika 本质上就是在“讲 AMQP 这门协议”。</p>
+</li>
+</ul>
+<hr>
+<p><strong>Q5：如果使用 Redis，当 broker 时就不存在 Exchange 吗？</strong></p>
+<ul>
+<li><strong>基本结论：对，Redis broker 通常没有 RabbitMQ 那种 Exchange 路由层。</strong></li>
+<li>RabbitMQ：路由在 broker 内（Exchange 决策，支持 direct&#x2F;topic&#x2F;fanout 等）</li>
+<li>Redis：更常见是 Producer 直接写入某个队列 key（List&#x2F;Stream），<br>“路由”往往变成：<strong>你（或 Celery）选择写到哪个队列名&#x2F;哪个 key</strong></li>
+<li><strong>工程差异速记</strong>：<ul>
+<li>RabbitMQ：路由能力强、规则集中、天然支持广播&#x2F;复杂匹配</li>
+<li>Redis：部署简单、轻量，但复杂路由更多在应用&#x2F;Celery 侧实</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="【第-3-章：RabbitMQ-核心组件详解（Exchange-Queue-Binding）】"><a href="#【第-3-章：RabbitMQ-核心组件详解（Exchange-Queue-Binding）】" class="headerlink" title="【第 3 章：RabbitMQ 核心组件详解（Exchange &#x2F; Queue &#x2F; Binding）】"></a>【第 3 章：RabbitMQ 核心组件详解（Exchange &#x2F; Queue &#x2F; Binding）】</h2><h3 id="1️⃣-本章要解决什么问题（Why）-2"><a href="#1️⃣-本章要解决什么问题（Why）-2" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>在第 2 章你已经有了最小心智模型：</p>
+<blockquote>
+<p>Producer → Exchange → Queue → Consumer</p>
+</blockquote>
+<p>但只知道“有 Exchange&#x2F;Queue”还不够，上工程会马上遇到这些问题：</p>
+<ol>
+<li><strong>一条消息应该进哪个队列？</strong>（按任务类型&#x2F;业务域隔离）</li>
+<li><strong>一个消息要不要发给多个队列？</strong>（广播、同时触发多种处理）</li>
+<li><strong>如何做到“规则可配置”而不是写死在代码里？</strong></li>
+<li><strong>Celery 说的 routing_key &#x2F; queue &#x2F; exchange 到底对应 RabbitMQ 的什么？</strong></li>
+</ol>
+<p>如果没有 Binding 这套机制，你就只能让 Producer 直接指定队列名（强耦合），系统会迅速变成“改一个队列，所有服务改代码”。</p>
+<p>RabbitMQ 的解法是：</p>
+<blockquote>
+<p><strong>用 Exchange 做路由入口，用 Binding 把“路由规则”配置化，把消息送入一个或多个 Queue。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-2"><a href="#2️⃣-核心概念与角色（What）-2" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p><strong>2.1 三大组件定义（最关键）</strong></p>
+<ul>
+<li><strong>Exchange（交换机）</strong>：消息的“路由器”，决定消息去哪些队列<ul>
+<li>✅ 做路由</li>
+<li>❌ 不存消息</li>
+</ul>
+</li>
+<li><strong>Queue（队列）</strong>：消息的“存储容器”，消费者从这里取<ul>
+<li>✅ 存消息（内存&#x2F;磁盘，取决于持久化设置）</li>
+<li>✅ 支持消费者竞争消费&#x2F;并行扩展</li>
+</ul>
+</li>
+<li><strong>Binding（绑定）</strong>：把 Exchange 和 Queue 连起来的“路由规则”<ul>
+<li>它本质上是一条规则：<br><strong>(exchange, binding_key) → queue</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>2.2 角色关系说明（把图刻进脑子）</strong></p>
+<pre class="mermaid">flowchart LR
+    P[Producer 生产者] -->|publish + routing_key| E[Exchange 交换机]
+    E -->|match: routing_key vs binding_key| Q1[Queue A]
+    E -->|match: routing_key vs binding_key| Q2[Queue B]
+    E -->|match: routing_key vs binding_key| Q3[Queue C]
+    Q1 -->|consume| C1[Consumer/Worker A]
+    Q2 -->|consume| C2[Consumer/Worker B]
+    Q3 -->|consume| C3[Consumer/Worker C]</pre>
+
+<blockquote>
+<p>读法：生产者发布到 Exchange → Exchange 根据匹配规则把消息路由到一个或多个 Queue → 消费者从 Queue 拉取处理</p>
+</blockquote>
+<p>这里有 2 个“Key”新手最容易混：</p>
+<ul>
+<li><strong>routing_key</strong>：Producer 发消息时带的“标签”</li>
+<li><strong>binding_key</strong>：Queue 绑定到 Exchange 时声明的“匹配规则”</li>
+</ul>
+<p>📌 核心句（必背）</p>
+<blockquote>
+<p><strong>routing_key 是消息的“地址标签”，binding_key 是队列的“接收规则”。</strong><br>Exchange 做的事：拿 routing_key 去匹配 binding_key。</p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-2"><a href="#3️⃣-工作原理（How）-2" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>RabbitMQ 的路由能力主要由 <strong>Exchange 类型</strong>决定。你必须掌握四种类型：</p>
+<ul>
+<li>direct</li>
+<li>fanout</li>
+<li>topic</li>
+<li>headers（较少用）</li>
+</ul>
+<p>我用同一套“邮件&#x2F;短信&#x2F;日志”例子带你理解。</p>
+<hr>
+<p><strong>3.1 direct：精确匹配（最像”定向投递”）</strong></p>
+<p><strong>规则</strong>：<code>routing_key == binding_key</code> 才投递</p>
+<pre class="mermaid">flowchart LR
+  P[Producer rk=task.email] --> E[direct exchange]
+  E -->|binding_key=task.email| Q1[email-queue]
+  E -->|binding_key=task.sms| Q2[sms-queue]</pre>
+
+<ul>
+<li>发 <code>task.email</code> → 进 <code>email-queue</code></li>
+<li>发 <code>task.sms</code> → 进 <code>sms-queue</code></li>
+</ul>
+<p>✅ 适合：任务类型明确、队列划分明确（Celery 常用）</p>
+<hr>
+<p><strong>3.2 fanout：广播（最像”群发”）</strong></p>
+<p><strong>规则</strong>：忽略 routing_key，把消息复制到所有绑定队列</p>
+<pre class="mermaid">flowchart LR
+  P[Producer] --> E[fanout exchange]
+  E --> Q1[queue-A]
+  E --> Q2[queue-B]
+  E --> Q3[queue-C]</pre>
+
+<p>✅ 适合：</p>
+<ul>
+<li>配置变更广播</li>
+<li>缓存失效通知</li>
+<li>“所有下游都要知道的事件”</li>
+</ul>
+<p>⚠️ 误区：</p>
+<ul>
+<li>fanout 会让消息量 <em>队列数倍增</em>，要评估成本</li>
+</ul>
+<hr>
+<p><strong>3.3 topic：通配符匹配（最强但要规范）</strong></p>
+<p>topic 是 RabbitMQ 工程里最常用也最容易用乱的。</p>
+<p><strong>规则</strong>：<code>routing_key</code> 用 <code>.</code> 分段，<code>binding_key</code> 支持通配符：</p>
+<ul>
+<li><code>*</code> 匹配 <strong>恰好 1 段</strong></li>
+<li><code>#</code> 匹配 <strong>0~多段</strong></li>
+</ul>
+<p>例子：</p>
+<ul>
+<li>routing_key：<code>task.email.send</code></li>
+<li>binding_key：<ul>
+<li><code>task.*.send</code> ✅（匹配 task + 1段 + send）</li>
+<li><code>task.#</code> ✅（匹配以 task 开头的任何）</li>
+<li><code>task.email.*</code> ✅（匹配 task.email 下 1 段）</li>
+</ul>
+</li>
+</ul>
+<pre class="mermaid">flowchart LR
+  P[Producer rk=task.email.send] --> E[topic exchange]
+  E -->|binding_key=task.email.*| Q1[email-queue]
+  E -->|binding_key=task.#| Q2[all-task-queue]</pre>
+
+<p>✅ 适合：业务域分层路由（系统变大后很好用）</p>
+<p>⚠️ 新手常见误区：</p>
+<ul>
+<li>routing_key 命名没规范，topic 立刻变“玄学路由”</li>
+<li>建议统一：<code>域.子域.动作.版本</code> 或 <code>业务.模块.事件</code></li>
+</ul>
+<hr>
+<p><strong>3.4 headers：按消息头匹配（很少用）</strong></p>
+<p><strong>规则</strong>：不看 routing_key，看 message headers（键值对）</p>
+<p>✅ 适合：需要复杂条件组合，但一般 topic 已足够<br>⚠️ 复杂度高、可读性差，工程中不常见</p>
+<hr>
+<p><strong>3.5 一条消息能去哪？（0~N 个队列）</strong></p>
+<p>RabbitMQ 路由结果可能是：</p>
+<ul>
+<li><strong>0 个队列</strong>：消息被丢弃或触发 Return（看 mandatory 等设置）</li>
+<li><strong>1 个队列</strong>：最常见</li>
+<li><strong>N 个队列</strong>：广播&#x2F;多订阅者模型</li>
+</ul>
+<pre class="mermaid">flowchart LR
+  P --> E[Exchange]
+  E --> Q1
+  E --> Q2
+  E --> Q3</pre>
+
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系-1"><a href="#4️⃣-与-RabbitMQ-Celery-的关系-1" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</h3><p>这一节只讲“映射关系”，让你不再被术语绕晕。</p>
+<p><strong>4.1 Celery 的”路由”对应 RabbitMQ 的什么？</strong></p>
+<p>当你在 Celery 里配置：</p>
+<ul>
+<li><code>task_routes</code> &#x2F; <code>queue</code> &#x2F; <code>routing_key</code> &#x2F; <code>exchange</code></li>
+</ul>
+<p>对应 RabbitMQ：</p>
+<ul>
+<li>Celery Producer 发布消息到某个 <strong>Exchange</strong></li>
+<li>并带一个 <strong>routing_key</strong></li>
+<li>RabbitMQ 用 binding 规则把消息送到指定 <strong>Queue</strong></li>
+<li>Worker 监听对应 Queue</li>
+</ul>
+<p>你可以把 Celery 的任务路由理解为：</p>
+<blockquote>
+<p><strong>Celery 帮你生成 routing_key，并帮你声明 Exchange&#x2F;Queue&#x2F;Binding。</strong></p>
+</blockquote>
+<p><strong>4.2 为什么 Celery 常用 direct&#x2F;topic，而不是 fanout？</strong></p>
+<ul>
+<li>任务队列的核心诉求：<strong>一个任务只应该被一个 worker 消费</strong>（通常）</li>
+<li>fanout 会复制消息给多个队列，导致同一个任务可能被多方处理（除非你明确要广播）</li>
+<li>direct&#x2F;topic 更符合“按类型路由到单队列，再由队列内部竞争消费”的模式</li>
+</ul>
+<p>📌 工程经验</p>
+<blockquote>
+<p><strong>任务分发：direct&#x2F;topic</strong><br><strong>事件广播：fanout</strong></p>
+</blockquote>
+<pre class="mermaid">sequenceDiagram
+  participant P as Producer
+  participant E as Exchange
+  participant B as Bindings(规则表)
+  participant Q as Queue(s)
+
+  P->>E: publish(message, routing_key)
+  E->>B: 查询所有绑定规则
+  B-->>E: 返回 (queue, binding_key) 列表
+  E->>E: 按 exchange_type 执行匹配/路由
+  E->>Q: 投递到匹配成功的 0~N 个队列</pre>
+
+
+
+<hr>
+<h3 id="5️⃣-📒-本章笔记总结-1"><a href="#5️⃣-📒-本章笔记总结-1" class="headerlink" title="5️⃣ 📒 本章笔记总结"></a>5️⃣ 📒 本章笔记总结</h3><ul>
+<li>RabbitMQ 三核心组件：<ul>
+<li><strong>Exchange</strong>：路由器，不存消息</li>
+<li><strong>Queue</strong>：存消息，消费者从这里取</li>
+<li><strong>Binding</strong>：路由规则，把 Exchange 和 Queue 连接起来</li>
+</ul>
+</li>
+<li>两个 Key：<ul>
+<li><strong>routing_key（消息标签）</strong>：Producer 发布消息时携带</li>
+<li><strong>binding_key（接收规则）</strong>：Queue 绑定 Exchange 时声明</li>
+<li>Exchange 用 routing_key 匹配 binding_key 决定投递队列</li>
+</ul>
+</li>
+<li>Exchange 四类型：<ul>
+<li><strong>direct</strong>：精确匹配（rk&#x3D;&#x3D;bk）</li>
+<li><strong>fanout</strong>：广播（忽略 rk）</li>
+<li><strong>topic</strong>：通配符匹配（<code>*</code> 一段，<code>#</code> 多段）</li>
+<li><strong>headers</strong>：按消息头匹配（少用）</li>
+</ul>
+</li>
+<li>一条消息可投递到 0~N 个队列（取决于绑定规则）</li>
+<li>与 Celery 的关系：Celery 通过配置生成 exchange&#x2F;queue&#x2F;routing_key，并由 RabbitMQ 完成最终路由投递</li>
+<li>工程建议：<ul>
+<li><strong>任务分发</strong>优先 direct&#x2F;topic</li>
+<li><strong>事件广播</strong>才用 fanout</li>
+<li>topic 必须先定 routing_key 命名规范，否则会变“玄学路由”</li>
+</ul>
+</li>
+</ul>
+<h2 id="【第-4-章：Celery-是什么？它解决了什么问题】"><a href="#【第-4-章：Celery-是什么？它解决了什么问题】" class="headerlink" title="【第 4 章：Celery 是什么？它解决了什么问题】"></a>【第 4 章：Celery 是什么？它解决了什么问题】</h2><blockquote>
+<p>到这一章为止，你已经<strong>真正理解了 RabbitMQ</strong>：</p>
+<ul>
+<li>它能路由</li>
+<li>能存消息</li>
+<li>能投递</li>
+</ul>
+<p>那接下来一个自然的问题是：<br><strong>“那我为什么还需要 Celery？直接用 RabbitMQ + pika 不行吗？”</strong></p>
+<p>这一章，就是来回答这个“架构分水岭问题”的。</p>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-3"><a href="#1️⃣-本章要解决什么问题（Why）-3" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>假设你已经用 RabbitMQ + pika 跑起来了消息通信，很快你会遇到一串<strong>工程级痛点</strong>：</p>
+<ol>
+<li><strong>任务是什么？</strong></li>
+</ol>
+<ul>
+<li>只是一个字符串？JSON？函数调用？</li>
+<li>参数、版本、序列化怎么统一？</li>
+</ul>
+<ol>
+<li><strong>怎么并发执行？</strong></li>
+</ol>
+<ul>
+<li>一个进程拉几条消息？</li>
+<li>多进程还是多线程？</li>
+<li>CPU 密集 vs IO 密集怎么区分？</li>
+</ul>
+<ol>
+<li><strong>失败怎么办？</strong></li>
+</ol>
+<ul>
+<li>失败要不要重试？</li>
+<li>重试间隔？次数？</li>
+<li>哪些错误该重试，哪些不该？</li>
+</ul>
+<ol>
+<li><strong>结果去哪？</strong></li>
+</ol>
+<ul>
+<li>谁来记录任务成功&#x2F;失败？</li>
+<li>怎么查询任务状态？</li>
+<li>前端如何感知完成？</li>
+</ul>
+<ol>
+<li><strong>任务怎么路由？</strong></li>
+</ol>
+<ul>
+<li>不同任务进不同队列？</li>
+<li>不同 worker 处理不同任务？</li>
+<li>动态扩缩容怎么做？</li>
+</ul>
+<p>如果你全靠 pika 自己写，这意味着：</p>
+<blockquote>
+<p><strong>你在“手写一个简化版 Celery”。</strong></p>
+</blockquote>
+<p>Celery 存在的意义就是：</p>
+<blockquote>
+<p><strong>把“分布式任务系统”的通用复杂度，做成一套成熟框架。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-3"><a href="#2️⃣-核心概念与角色（What）-3" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>先给 Celery 一个<strong>准确定位</strong>：</p>
+<blockquote>
+<p><strong>Celery 是一个分布式异步任务队列&#x2F;任务调度框架</strong><br>它让你把“函数调用”升级为“可分布式执行的任务”。</p>
+</blockquote>
+<p><strong>Celery 里最重要的 4 个角色（先记住名字）</strong></p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task</td>
+<td>被执行的“任务定义”（函数 + 元数据）</td>
+</tr>
+<tr>
+<td>Producer</td>
+<td>提交任务的一方（通常是 Web 服务）</td>
+</tr>
+<tr>
+<td>Broker</td>
+<td>消息中间件（RabbitMQ &#x2F; Redis 等）</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td>实际执行任务的进程</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>你会发现：Celery 的角色 <strong>完全覆盖了 MQ 模型</strong>，但语义更高层。</p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-3"><a href="#3️⃣-工作原理（How）-3" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们从“你写一行 <code>delay()</code>”开始，拆解 Celery 到底做了什么。</p>
+<hr>
+<p><strong>3.1 一行代码背后的真实流程</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">send_email.delay(user_id=<span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+
+<p>背后发生的是一整套流程：</p>
+<pre class="mermaid">sequenceDiagram
+    participant App as Web / Producer
+    participant C as Celery Client
+    participant B as Broker (RabbitMQ)
+    participant W as Worker
+
+    App->>C: 调用 task.delay()
+    C->>C: 序列化任务名 + 参数
+    C->>B: 发送消息
+    B-->>W: 投递到队列
+    W->>W: 反序列化 + 执行任务函数</pre>
+
+<p>📌 <strong>关键点</strong></p>
+<ul>
+<li>你“调用函数”的感觉，其实是 <strong>发消息</strong></li>
+<li>Worker 才是真正调用函数的地方</li>
+</ul>
+<hr>
+<p><strong>3.2 Celery 帮你隐藏了哪些复杂度？</strong></p>
+<p>如果不用 Celery，你需要自己处理：</p>
+<ul>
+<li>任务序列化 &#x2F; 反序列化</li>
+<li>消息格式与版本</li>
+<li>Worker 并发模型</li>
+<li>心跳、断线重连</li>
+<li>ACK &#x2F; 重试 &#x2F; 失败处理</li>
+<li>任务超时、限速</li>
+<li>任务路由</li>
+<li>结果存储</li>
+</ul>
+<p>Celery 的核心价值一句话总结：</p>
+<blockquote>
+<p><strong>Celery 把“分布式执行函数”这件事，封装成了一个你能放心使用的基础设施。</strong></p>
+</blockquote>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系（边界非常重要）"><a href="#4️⃣-与-RabbitMQ-Celery-的关系（边界非常重要）" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界非常重要）"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界非常重要）</h3><p><strong>4.1 RabbitMQ vs Celery 的分工边界</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>RabbitMQ</th>
+<th>Celery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>消息存储</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>消息路由</td>
+<td>✅（Exchange&#x2F;Binding）</td>
+<td>⚠️（通过配置使用）</td>
+</tr>
+<tr>
+<td>任务语义</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>重试策略</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>并发执行</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>失败处理</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>结果管理</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>📌 <strong>关键认知</strong></p>
+<blockquote>
+<p>RabbitMQ 是“消息基础设施”，<br>Celery 是“任务执行与调度系统”。</p>
+</blockquote>
+<p><strong>4.2 Celery 如何”使用”RabbitMQ？</strong></p>
+<ul>
+<li>Celery 把 <strong>任务</strong> 当作 <strong>消息</strong></li>
+<li>把 RabbitMQ 当作 <strong>Broker</strong></li>
+<li>利用：<ul>
+<li>Exchange → 决定任务路由</li>
+<li>Queue → 存任务</li>
+<li>Consumer → Worker 拉取任务</li>
+</ul>
+</li>
+</ul>
+<p>但：</p>
+<blockquote>
+<p><strong>RabbitMQ 并不知道什么是“任务”</strong><br><strong>Celery 也不负责“存消息”</strong></p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-1"><a href="#5️⃣-最小可运行示例（Practice）-1" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>这一章给你一个<strong>真正的 Celery 最小示例</strong>，目标是：</p>
+<blockquote>
+<p><strong>跑起来一次任务，让你“感觉到 Celery 在干活”。</strong></p>
+</blockquote>
+<hr>
+<p><strong>5.1 环境准备</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install celery</span><br></pre></td></tr></table></figure>
+
+<p>RabbitMQ 已启动（复用前面章节）。</p>
+<hr>
+<p><strong>5.2 定义 Celery 应用与任务</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tasks.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">x, y</span>):</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.3 启动 Worker（非常关键的一步）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">celery -A tasks worker --loglevel=info</span><br></pre></td></tr></table></figure>
+
+<p>你会看到：</p>
+<ul>
+<li>worker 启动</li>
+<li>连接 RabbitMQ</li>
+<li>声明 exchange &#x2F; queue</li>
+<li>等待任务</li>
+</ul>
+<hr>
+<p><strong>5.4 提交任务（Producer）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># call.py</span></span><br><span class="line"><span class="keyword">from</span> tasks <span class="keyword">import</span> add</span><br><span class="line"></span><br><span class="line">r = add.delay(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;task id:&quot;</span>, r.<span class="built_in">id</span>)</span><br></pre></td></tr></table></figure>
+
+<p>你会观察到：</p>
+<ul>
+<li><code>call.py</code> 立刻返回</li>
+<li>worker 进程中执行 <code>add</code></li>
+<li>2 秒后完成</li>
+</ul>
+<p>📌 这就是 <strong>“函数 → 分布式异步任务” 的最小闭环</strong>。</p>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结-1"><a href="#6️⃣-📒-本章笔记总结-1" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li>Celery 是 <strong>分布式异步任务执行框架</strong></li>
+<li>它解决的是：<ul>
+<li>任务定义</li>
+<li>任务投递</li>
+<li>并发执行</li>
+<li>重试&#x2F;失败处理</li>
+<li>路由与结果管理</li>
+</ul>
+</li>
+<li>RabbitMQ vs Celery 分工：<ul>
+<li>RabbitMQ：消息存储 + 路由</li>
+<li>Celery：任务语义 + 执行调度</li>
+</ul>
+</li>
+<li><code>task.delay()</code> ≠ 本地函数调用<ul>
+<li>它是一次 <strong>消息发送</strong></li>
+</ul>
+</li>
+<li>Worker 才是真正执行任务的地方</li>
+<li>如果你用 pika 手写任务系统，本质是在“重复造 Celery 的轮子”</li>
+</ul>
+<hr>
+<hr>
+<h2 id="【第-5-章：Celery-架构全景解析（Producer-Broker-Worker-Result-Backend）】"><a href="#【第-5-章：Celery-架构全景解析（Producer-Broker-Worker-Result-Backend）】" class="headerlink" title="【第 5 章：Celery 架构全景解析（Producer &#x2F; Broker &#x2F; Worker &#x2F; Result Backend）】"></a>【第 5 章：Celery 架构全景解析（Producer &#x2F; Broker &#x2F; Worker &#x2F; Result Backend）】</h2><blockquote>
+<p>到这一章，我们要完成一个<strong>关键跃迁</strong>：<br><strong>从“会用 Celery” → “看懂 Celery 的整体架构与设计取舍”</strong></p>
+<p>这一章结束后，你脑子里应该能自动浮现一张图：<br>👉 <em>一个任务，从 Web 出发，如何穿过 RabbitMQ，被 Worker 执行，并最终（可选）返回结果。</em></p>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-4"><a href="#1️⃣-本章要解决什么问题（Why）-4" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>在第 4 章，你已经知道：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add.delay(<span class="number">1</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这行代码会：</p>
+<ul>
+<li>不阻塞当前进程</li>
+<li>把任务交给别的进程&#x2F;机器执行</li>
+</ul>
+<p>但工程上，真正重要的问题是：</p>
+<ol>
+<li><strong>任务是谁发起的？</strong></li>
+<li><strong>消息到底存在哪？</strong></li>
+<li><strong>Worker 如何拉任务？</strong></li>
+<li><strong>任务结果放哪里？</strong></li>
+<li><strong>如果 Worker 挂了&#x2F;重启，系统还能不能继续？</strong></li>
+</ol>
+<p>如果你搞不清这些边界：</p>
+<ul>
+<li>你会乱配 broker &#x2F; backend</li>
+<li>不知道该不该开 result backend</li>
+<li>不敢改并发、prefetch、ack</li>
+<li>出问题时完全不知道从哪查</li>
+</ul>
+<p>👉 所以这一章的目标是：<br><strong>把 Celery 的“角色分工 + 数据流 + 责任边界”一次性讲清楚。</strong></p>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-4"><a href="#2️⃣-核心概念与角色（What）-4" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>Celery 的整体架构由 <strong>4 个核心角色</strong>组成（必须全部记住）：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>名称</th>
+<th>本质职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Producer</td>
+<td>任务生产者</td>
+<td>提交任务（通常是 Web&#x2F;API）</td>
+</tr>
+<tr>
+<td>Broker</td>
+<td>消息中间件</td>
+<td>存任务、投递任务</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td>执行者</td>
+<td>拉任务并执行</td>
+</tr>
+<tr>
+<td>Result Backend</td>
+<td>结果存储</td>
+<td>保存任务状态&#x2F;结果（可选）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>这 4 个角色彼此解耦，各司其职，是 Celery 架构稳定性的核心。</strong></p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-4"><a href="#3️⃣-工作原理（How）-4" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们从“一个任务的完整生命周期”来拆。</p>
+<hr>
+<p><strong>3.1 全景架构图（一定要能背出来）</strong></p>
+<pre class="mermaid">flowchart LR
+    P[Producer<br/>Web / API] -->|send task| B[(Broker<br/>RabbitMQ)]
+    B -->|deliver task| W[Worker]
+    W -->|execute task| W
+    W -->|store result| R[(Result Backend)]</pre>
+
+<blockquote>
+<p>注意：<strong>Producer 从不直接和 Worker 通信</strong>。</p>
+</blockquote>
+<hr>
+<p><strong>3.2 Producer（任务生产者）</strong></p>
+<p><strong>它是谁？</strong></p>
+<ul>
+<li>Web 服务</li>
+<li>管理后台</li>
+<li>定时任务（beat）</li>
+<li>CLI 脚本</li>
+</ul>
+<p><strong>它做什么？</strong></p>
+<ul>
+<li>把“函数调用”转换成“任务消息”</li>
+<li>序列化：<ul>
+<li>task 名</li>
+<li>参数</li>
+<li>路由信息</li>
+<li>重试策略等元数据</li>
+</ul>
+</li>
+<li>发送给 Broker</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add.delay(<span class="number">3</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>📌 关键认知</p>
+<blockquote>
+<p>Producer 的生命周期极短：<br><strong>“发出去就不管了”</strong>（是否关心结果取决于你）。</p>
+</blockquote>
+<hr>
+<p><strong>3.3 Broker（RabbitMQ）</strong></p>
+<p><strong>Broker 只做 3 件事：</strong></p>
+<ol>
+<li>接收任务消息</li>
+<li>按 Exchange &#x2F; Queue &#x2F; Binding 路由</li>
+<li>把消息交给某个 Worker</li>
+</ol>
+<p><strong>Broker 不知道：</strong></p>
+<ul>
+<li>任务是什么函数</li>
+<li>是否执行成功</li>
+<li>是否需要重试</li>
+</ul>
+<p>📌 重要结论</p>
+<blockquote>
+<p><strong>Broker ≠ 调度器 ≠ 执行器</strong><br>它只是一个<strong>可靠的消息中转站</strong>。</p>
+</blockquote>
+<hr>
+<p><strong>3.4 Worker（任务执行者）</strong></p>
+<p><strong>Worker 是 Celery 的“重心”</strong>。</p>
+<p>它的职责包括：</p>
+<ul>
+<li>从 Broker 拉任务</li>
+<li>反序列化任务</li>
+<li>调用真正的 Python 函数</li>
+<li>管理并发（进程&#x2F;线程&#x2F;协程）</li>
+<li>捕获异常</li>
+<li>决定：<ul>
+<li>ack</li>
+<li>retry</li>
+<li>fail</li>
+</ul>
+</li>
+</ul>
+<pre class="mermaid">sequenceDiagram
+    participant W as Worker
+    participant B as Broker
+
+    W->>B: 请求任务
+    B-->>W: 投递任务
+    W->>W: 执行函数
+    W->>B: ack / reject</pre>
+
+<p>📌 <strong>非常重要</strong></p>
+<blockquote>
+<p>Worker 是<strong>有状态的进程</strong>，<br>而 Producer 和 Broker 都是“相对无状态”的。</p>
+</blockquote>
+<hr>
+<p><strong>3.5 Result Backend（结果存储）</strong></p>
+<p>这是最容易被误解的一块。</p>
+<p><strong>Result Backend 是干什么的？</strong></p>
+<ul>
+<li>存任务状态：<ul>
+<li>PENDING</li>
+<li>STARTED</li>
+<li>SUCCESS</li>
+<li>FAILURE</li>
+</ul>
+</li>
+<li>存返回值或异常信息</li>
+</ul>
+<p><strong>常见实现：</strong></p>
+<ul>
+<li>Redis</li>
+<li>数据库</li>
+<li>RPC backend（少见）</li>
+</ul>
+<pre class="mermaid">flowchart LR
+    W[Worker] -->|update state/result| R[(Result Backend)]
+    P[Producer] -->|query task result| R</pre>
+
+<p>📌 关键点（必记）</p>
+<ul>
+<li><strong>Result Backend ≠ Broker</strong></li>
+<li>Broker 存“任务消息”</li>
+<li>Backend 存“任务结果”</li>
+</ul>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系（边界再次强调）"><a href="#4️⃣-与-RabbitMQ-Celery-的关系（边界再次强调）" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界再次强调）"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界再次强调）</h3><p><strong>4.1 RabbitMQ 在架构中的位置</strong></p>
+<ul>
+<li>RabbitMQ &#x3D; <strong>Broker</strong></li>
+<li>它只负责：<ul>
+<li>任务消息的可靠投递</li>
+</ul>
+</li>
+<li>它不参与：<ul>
+<li>执行</li>
+<li>状态管理</li>
+<li>重试决策</li>
+</ul>
+</li>
+</ul>
+<p><strong>4.2 Celery 在架构中的职责</strong></p>
+<p>Celery 横跨：</p>
+<ul>
+<li>Producer SDK</li>
+<li>Worker Runtime</li>
+<li>路由&#x2F;重试&#x2F;并发&#x2F;超时策略</li>
+<li>Result Backend 接口</li>
+</ul>
+<p>📌 架构总结一句话</p>
+<blockquote>
+<p><strong>RabbitMQ 是“运输系统”，Celery 是“任务执行与调度系统”。</strong></p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-2"><a href="#5️⃣-最小可运行示例（Practice）-2" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>目标：<strong>把 4 个角色都跑起来并“看到它们协作”</strong>。</p>
+<hr>
+<p><strong>5.1 tasks.py（定义 Celery + 任务）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">    backend=<span class="string">&quot;redis://localhost:6379/0&quot;</span>,  <span class="comment"># Result Backend</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">slow_add</span>(<span class="params">self, x, y</span>):</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.2 启动 Worker</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">celery -A tasks worker --loglevel=info</span><br></pre></td></tr></table></figure>
+
+<p>你会看到：</p>
+<ul>
+<li>连接 broker</li>
+<li>注册任务</li>
+<li>启动并发池</li>
+</ul>
+<hr>
+<p><strong>5.3 提交任务并查询结果</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tasks <span class="keyword">import</span> slow_add</span><br><span class="line"></span><br><span class="line">r = slow_add.delay(<span class="number">10</span>, <span class="number">20</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;task id:&quot;</span>, r.<span class="built_in">id</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;result:&quot;</span>, r.get())  <span class="comment"># 阻塞等待（只用于 demo）</span></span><br></pre></td></tr></table></figure>
+
+<p>📌 注意</p>
+<blockquote>
+<p>在 Web 服务中 **不要随便用 <code>get()</code>**，这里只是演示 Result Backend 的作用。</p>
+</blockquote>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结-2"><a href="#6️⃣-📒-本章笔记总结-2" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li>Celery 架构四角色：<ul>
+<li><strong>Producer</strong>：提交任务</li>
+<li><strong>Broker</strong>：存储并投递任务（RabbitMQ）</li>
+<li><strong>Worker</strong>：执行任务</li>
+<li><strong>Result Backend</strong>：存任务状态&#x2F;结果（可选）</li>
+</ul>
+</li>
+<li>Producer 永远不直接找 Worker</li>
+<li>Broker 永远不知道任务是否成功</li>
+<li>Worker 决定 ack &#x2F; retry &#x2F; fail</li>
+<li>Result Backend 用于：<ul>
+<li>查询结果</li>
+<li>任务编排（chain&#x2F;chord）</li>
+</ul>
+</li>
+<li><strong>Broker ≠ Result Backend</strong></li>
+<li>Worker 是系统中最“重”的组件（并发、状态、资源消耗）</li>
+</ul>
+<hr>
+<h2 id="【第-6-章：RabbitMQ-Celery-如何协同工作（完整任务生命周期）】"><a href="#【第-6-章：RabbitMQ-Celery-如何协同工作（完整任务生命周期）】" class="headerlink" title="【第 6 章：RabbitMQ + Celery 如何协同工作（完整任务生命周期）】"></a>【第 6 章：RabbitMQ + Celery 如何协同工作（完整任务生命周期）】</h2><blockquote>
+<p>到这一章，我们要做一件<strong>极其重要的事</strong>：<br><strong>把前 1～5 章的所有“零件”，组装成一条“能在你脑中自动播放的任务时间线”。</strong></p>
+<p>看完这一章，你应该能做到：</p>
+<ul>
+<li>看一条 Celery 日志，就知道任务走到哪一步</li>
+<li>出问题时，知道该查 RabbitMQ 还是 Celery Worker</li>
+<li>明白 <em>“为什么 Celery 要这样设计”</em>，而不是死记配置项</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-5"><a href="#1️⃣-本章要解决什么问题（Why）-5" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>前面我们已经分别理解了：</p>
+<ul>
+<li>RabbitMQ：Exchange &#x2F; Queue &#x2F; Binding &#x2F; routing</li>
+<li>Celery：Producer &#x2F; Broker &#x2F; Worker &#x2F; Result Backend</li>
+</ul>
+<p>但工程中真正让人迷糊的是：</p>
+<blockquote>
+<p><strong>“它们是怎么在时间上、责任上配合的？”</strong></p>
+</blockquote>
+<p>常见困惑包括：</p>
+<ul>
+<li>Celery 什么时候创建 Exchange &#x2F; Queue？</li>
+<li>routing_key 到底在哪一步生效？</li>
+<li>Worker 是主动推还是被动拉？</li>
+<li>ack 在什么时候发？</li>
+<li>任务失败后，消息发生了什么？</li>
+</ul>
+<p>👉 本章目标：<br><strong>从“调用 <code>delay()</code>”开始，到“任务成功&#x2F;失败结束”为止，完整拆解一次任务的生命周期。</strong></p>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-5"><a href="#2️⃣-核心概念与角色（What）-5" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>在这一章里，你只需要抓住 <strong>5 个关键实体</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>实体</th>
+<th>属于</th>
+<th>核心职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Task</td>
+<td>Celery</td>
+<td>任务定义（函数 + 元数据）</td>
+</tr>
+<tr>
+<td>Producer</td>
+<td>Celery</td>
+<td>序列化并发送任务</td>
+</tr>
+<tr>
+<td>Broker</td>
+<td>RabbitMQ</td>
+<td>存储 &amp; 路由任务消息</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td>Celery</td>
+<td>拉取、执行、确认任务</td>
+</tr>
+<tr>
+<td>Result Backend</td>
+<td>Celery</td>
+<td>保存任务状态&#x2F;结果（可选）</td>
+</tr>
+</tbody></table>
+<p>📌 <strong>关键认知</strong></p>
+<blockquote>
+<p>RabbitMQ 只负责“消息”；<br>Celery 负责“任务语义 + 执行控制”。</p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-5"><a href="#3️⃣-工作原理（How）-5" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>下面是<strong>完整任务生命周期的 8 个阶段</strong>。<br>我会先给总览图，再逐步拆解。</p>
+<hr>
+<p><strong>3.1 完整任务生命周期（总览图）</strong></p>
+<pre class="mermaid">sequenceDiagram
+    participant P as Producer (Web)
+    participant B as Broker (RabbitMQ)
+    participant W as Worker (Celery)
+    participant R as Result Backend
+
+    P->>B: 1. publish task message
+    B-->>W: 2. deliver via queue
+    W->>W: 3. deserialize task
+    W->>W: 4. execute function
+    W->>B: 5. ack / reject
+    W->>R: 6. store state/result</pre>
+
+<hr>
+<p><strong>3.2 阶段 1：Producer 调用 <code>delay()</code></strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">send_email.delay(user_id=<span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Celery Producer 做了什么？</p>
+<ol>
+<li>找到 task 名（如 <code>tasks.send_email</code>）</li>
+<li>序列化：<ul>
+<li>task 名</li>
+<li>参数</li>
+<li>routing_key &#x2F; queue</li>
+<li>retry &#x2F; countdown &#x2F; ETA 等元数据</li>
+</ul>
+</li>
+<li>构造一条 <strong>消息</strong></li>
+<li>发送给 RabbitMQ（Exchange）</li>
+</ol>
+<p>📌 注意</p>
+<blockquote>
+<p><strong>此时任务“还没开始执行”</strong>，只是“被投递”。</p>
+</blockquote>
+<hr>
+<p><strong>3.3 阶段 2：RabbitMQ 路由消息</strong></p>
+<p>RabbitMQ 做的事情非常“冷静”：</p>
+<ol>
+<li>Exchange 收到消息</li>
+<li>用 routing_key 匹配 binding</li>
+<li>把消息放进一个或多个 Queue</li>
+<li>等待 Worker 来取</li>
+</ol>
+<pre class="mermaid">flowchart LR
+    P --> E[Exchange]
+    E --> Q[Queue]</pre>
+
+<p>📌 RabbitMQ <strong>不知道</strong>：</p>
+<ul>
+<li>这是 Celery 任务</li>
+<li>任务是否重要</li>
+<li>任务是否会失败</li>
+</ul>
+<hr>
+<p><strong>3.4 阶段 3：Worker 拉取任务（pull 模型）</strong></p>
+<p>Worker 启动后会：</p>
+<ul>
+<li>连接 Broker</li>
+<li>声明自己关心的 Queue</li>
+<li><strong>主动从 Queue 拉任务</strong></li>
+</ul>
+<pre class="mermaid">sequenceDiagram
+    W->>B: basic.consume(queue)
+    B-->>W: deliver message</pre>
+
+<p>📌 关键点（必记）</p>
+<blockquote>
+<p><strong>RabbitMQ 不“推任务”，Worker 是主动拉的</strong><br>（这是背压、限速、稳定性的基础）</p>
+</blockquote>
+<hr>
+<p><strong>3.5 阶段 4：Worker 反序列化 &amp; 执行任务</strong></p>
+<p>Worker 收到消息后：</p>
+<ol>
+<li>反序列化消息 → 找到 task 函数</li>
+<li>放入执行池（进程 &#x2F; 线程 &#x2F; 协程）</li>
+<li>执行 Python 函数</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">message → task name → function → run</span><br></pre></td></tr></table></figure>
+
+<p>📌 工程视角</p>
+<blockquote>
+<p>这一步才是真正“消耗 CPU &#x2F; IO”的地方。</p>
+</blockquote>
+<hr>
+<p><strong>3.6 阶段 5：ACK &#x2F; REJECT（非常关键）</strong></p>
+<p>执行完成后，Worker 决定：</p>
+<ul>
+<li>✅ <strong>成功</strong> → <code>ACK</code></li>
+<li>❌ <strong>失败但可重试</strong> → <code>REJECT + requeue</code></li>
+<li>❌ <strong>失败不可重试</strong> → <code>REJECT</code>（丢弃或死信）</li>
+</ul>
+<pre class="mermaid">flowchart LR
+    W -->|success| ACK
+    W -->|retry| REQUEUE
+    W -->|fail| DROP</pre>
+
+<p>📌 核心结论</p>
+<blockquote>
+<p><strong>ACK 是 Worker 发的，不是 RabbitMQ 自动的</strong><br>这也是 Celery 能保证“至少一次执行”的基础。</p>
+</blockquote>
+<hr>
+<p><strong>3.7 阶段 6：写入 Result Backend（可选）</strong></p>
+<p>如果你配置了 Result Backend：</p>
+<ul>
+<li>Worker 会写：<ul>
+<li>状态（STARTED &#x2F; SUCCESS &#x2F; FAILURE）</li>
+<li>返回值 &#x2F; 异常信息</li>
+</ul>
+</li>
+</ul>
+<p>Producer 或其他任务可以：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AsyncResult(task_id).status</span><br><span class="line">AsyncResult(task_id).get()</span><br></pre></td></tr></table></figure>
+
+<p>📌 注意</p>
+<blockquote>
+<p><strong>Result Backend 和 Broker 完全是两条线</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.8 阶段 7：任务生命周期结束</strong></p>
+<p>此时：</p>
+<ul>
+<li>RabbitMQ 中：消息已被 ACK（消失）</li>
+<li>Worker：释放资源</li>
+<li>Backend：保留结果（直到过期）</li>
+</ul>
+<p>整个任务正式结束。</p>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系（再次拉清边界）"><a href="#4️⃣-与-RabbitMQ-Celery-的关系（再次拉清边界）" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（再次拉清边界）"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（再次拉清边界）</h3><p><strong>4.1 RabbitMQ 的责任边界</strong></p>
+<ul>
+<li>接收消息</li>
+<li>路由消息</li>
+<li>存储消息</li>
+<li>投递消息</li>
+</ul>
+<p><strong>不做</strong>：</p>
+<ul>
+<li>执行</li>
+<li>重试决策</li>
+<li>状态管理</li>
+</ul>
+<p><strong>4.2 Celery 的责任边界</strong></p>
+<ul>
+<li>定义任务</li>
+<li>控制并发</li>
+<li>执行函数</li>
+<li>重试策略</li>
+<li>ACK &#x2F; REJECT</li>
+<li>结果管理</li>
+</ul>
+<p>📌 一句话</p>
+<blockquote>
+<p><strong>RabbitMQ &#x3D; 运输系统</strong><br><strong>Celery &#x3D; 任务执行与控制系统</strong></p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-3"><a href="#5️⃣-最小可运行示例（Practice）-3" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>目标：<strong>用日志亲眼看到“生命周期”</strong>。</p>
+<hr>
+<p><strong>5.1 任务定义</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tasks.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span>, autoretry_for=(<span class="params">Exception,</span>), retry_backoff=<span class="number">5</span>, retry_kwargs=&#123;<span class="string">&quot;max_retries&quot;</span>: <span class="number">3</span>&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">unreliable_task</span>(<span class="params">self, x</span>):</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;fail on odd&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.2 启动 Worker</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">celery -A tasks worker --loglevel=info</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.3 发送任务</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tasks <span class="keyword">import</span> unreliable_task</span><br><span class="line"></span><br><span class="line">unreliable_task.delay(<span class="number">3</span>)</span><br><span class="line">unreliable_task.delay(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<p>观察：</p>
+<ul>
+<li>奇数任务 → fail → retry → 最终失败</li>
+<li>偶数任务 → 成功 → ACK</li>
+</ul>
+<p>📌 结合日志，你能清楚看到：</p>
+<ul>
+<li>消息被重新入队</li>
+<li>重试间隔生效</li>
+<li>ACK 只在成功后发送</li>
+</ul>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结（可直接记录）"><a href="#6️⃣-📒-本章笔记总结（可直接记录）" class="headerlink" title="6️⃣ 📒 本章笔记总结（可直接记录）"></a>6️⃣ 📒 本章笔记总结（可直接记录）</h3><ul>
+<li>Celery + RabbitMQ 协同的本质：<strong>消息 + 任务语义分离</strong></li>
+<li>完整生命周期：<ol>
+<li>Producer 序列化任务 → 发消息</li>
+<li>RabbitMQ 路由 → Queue</li>
+<li>Worker 主动拉任务</li>
+<li>Worker 执行函数</li>
+<li>Worker 决定 ACK &#x2F; RETRY &#x2F; FAIL</li>
+<li>（可选）写 Result Backend</li>
+</ol>
+</li>
+<li>RabbitMQ 不知道任务是否成功</li>
+<li>ACK 由 Worker 决定</li>
+<li>Worker 是系统中最关键、最“重”的组件</li>
+<li>pull 模型是系统稳定性的关键（背压）</li>
+</ul>
+<hr>
+<hr>
+<h2 id="【第-7-章：Celery-任务执行流程深度拆解】"><a href="#【第-7-章：Celery-任务执行流程深度拆解】" class="headerlink" title="【第 7 章：Celery 任务执行流程深度拆解】"></a>【第 7 章：Celery 任务执行流程深度拆解】</h2><blockquote>
+<p>这一章我们要把 Celery Worker 从“黑盒”拆成“管线”。<br>你会真正理解：</p>
+<ul>
+<li>任务消息进 Worker 后经历了哪些内部阶段</li>
+<li><code>concurrency</code>、<code>prefetch</code>、<code>acks_late</code> 这些配置为什么会改变可靠性&#x2F;吞吐</li>
+<li>为什么新手最容易在“并发 + ACK + 重试”上踩坑</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-6"><a href="#1️⃣-本章要解决什么问题（Why）-6" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>当系统上线后，你很快会遇到这些“工程真实问题”：</p>
+<ol>
+<li><strong>为什么我设置了并发 20，吞吐却上不去？</strong></li>
+<li><strong>为什么偶尔会出现任务重复执行？</strong></li>
+<li><strong>为什么 Worker 重启后，有些任务丢了&#x2F;有些任务又被重跑？</strong></li>
+<li><strong>prefetch 是什么？为什么它会导致队列看起来“空了但任务还在跑”？</strong></li>
+<li><strong>IO 任务该用协程还是进程？CPU 任务怎么配？</strong></li>
+</ol>
+<p>这些问题都指向同一件事：</p>
+<blockquote>
+<p>你需要看懂 Worker 内部的执行流程与关键开关，否则只能靠“玄学调参”。</p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-6"><a href="#2️⃣-核心概念与角色（What）-6" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>本章聚焦 Worker 内部的几个关键模块（不背源码名，也能理解）：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>作用</th>
+<th>你要记住什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Consumer（消费循环）</td>
+<td>从 Broker 拉消息</td>
+<td>pull + prefetch 发生在这里</td>
+</tr>
+<tr>
+<td>Prefetch（预取）</td>
+<td>先拉一批消息到本地缓存</td>
+<td>吞吐↑，公平性↓，内存占用↑</td>
+</tr>
+<tr>
+<td>QoS（质量控制）</td>
+<td>控制最多“在途未确认”消息数</td>
+<td><code>prefetch_count</code> 的本质</td>
+</tr>
+<tr>
+<td>Pool（执行池）</td>
+<td>实际跑任务的并发单元</td>
+<td>进程&#x2F;线程&#x2F;协程，决定性能模型</td>
+</tr>
+<tr>
+<td>ACK 时机</td>
+<td>什么时候告诉 broker “我处理完了”</td>
+<td>可靠性与重复执行的核心开关</td>
+</tr>
+<tr>
+<td>Retry（重试）</td>
+<td>失败后再投递</td>
+<td>由 Worker&#x2F;Celery 决策，不是 RabbitMQ</td>
+</tr>
+</tbody></table>
+<p>再补一个非常重要的术语：</p>
+<ul>
+<li><strong>In-flight &#x2F; Unacked 消息</strong>：<br>消息已经投递给 Worker，但还没 ack（RabbitMQ 认为“还没处理完”）</li>
+</ul>
+<hr>
+<h3 id="3️⃣-工作原理（How）-6"><a href="#3️⃣-工作原理（How）-6" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们用“<strong>消息进入 Worker 后的内部管线</strong>”来拆解：<br>从 RabbitMQ 投递给 Worker 的那一刻起，发生什么？</p>
+<hr>
+<p><strong>3.1 Worker 内部任务管线（总览）</strong></p>
+<pre class="mermaid">flowchart LR
+    A[Broker 投递消息] --> B[Worker Consumer 接收]
+    B --> C[本地预取缓冲区<br/>prefetch buffer]
+    C --> D[反序列化 & 定位 Task]
+    D --> E[投递到执行池 Pool]
+    E --> F[执行任务函数]
+    F --> G{成功/失败?}
+    G -->|成功| H[ACK]
+    G -->|失败| I[Retry / Reject / Fail]
+    H --> J[(可选) 写 Result Backend]
+    I --> J</pre>
+
+<p>你只要抓住：</p>
+<blockquote>
+<p><strong>Consumer 拉消息 + Pool 执行 + ACK 确认</strong><br>这三段是 Celery Worker 的核心。</p>
+</blockquote>
+<hr>
+<p><strong>3.2 Prefetch：为什么队列”空了但任务还在跑”？</strong></p>
+<p><strong>prefetch 的本质：</strong><br>Worker 为了提高吞吐，会提前从 RabbitMQ 拉一批消息放在本地缓存里。</p>
+<p>ASCII 示意：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RabbitMQ Queue:  <span class="comment">[m1 m2 m3 m4 m5 m6 ...]</span></span><br><span class="line">Worker buffer:   <span class="comment">[m1 m2 m3 m4]</span>   &lt;- 预取到本地（未必已开始执行）</span><br><span class="line">Pool running:    <span class="comment">[m1 m2]</span>         &lt;- 真正在跑的</span><br></pre></td></tr></table></figure>
+
+<p>因此 RabbitMQ 管理台上看到：</p>
+<ul>
+<li>队列消息变少甚至为 0<br>但实际上：</li>
+<li>Worker 本地还有一批“未开始执行”的消息</li>
+</ul>
+<p>📌 工程结论</p>
+<blockquote>
+<p>队列长度不是系统“还剩多少任务”的真实指标<br>还要看 <strong>in-flight&#x2F;unacked</strong> 和 worker 并发执行情况。</p>
+</blockquote>
+<hr>
+<p><strong>3.3 Prefetch 数 &#x3D; 并发数 × prefetch_multiplier</strong></p>
+<p>Celery 默认（常见情况）：</p>
+<ul>
+<li><code>worker_concurrency = N</code></li>
+<li><code>worker_prefetch_multiplier = M</code></li>
+<li>那么理论预取上限：<code>N * M</code></li>
+</ul>
+<p>例：并发 8，multiplier 4 → 预取 32 个任务到本地。</p>
+<p>📌 影响：</p>
+<ul>
+<li>吞吐更高（减少 broker 往返）</li>
+<li>但会导致：<ul>
+<li><strong>任务分配不公平</strong>（某个 worker 抢太多）</li>
+<li><strong>长任务时拖尾严重</strong>（别的 worker 空闲但任务被抢走）</li>
+</ul>
+</li>
+</ul>
+<p>✅ 建议（经验值）：</p>
+<ul>
+<li><strong>长任务</strong>：<code>worker_prefetch_multiplier = 1</code></li>
+<li><strong>短任务</strong>：可以 &gt;1 追求吞吐</li>
+</ul>
+<hr>
+<p><strong>3.4 ACK 时机：可靠性与重复执行的核心</strong></p>
+<p>这里是最关键的可靠性分水岭。</p>
+<p><strong>方案 A：早 ACK（默认常见：<code>acks_late=False</code>）</strong></p>
+<ul>
+<li>Worker 一拿到任务就 ack</li>
+<li>优点：队列看起来干净、吞吐高</li>
+<li>缺点：任务执行中 worker 崩了 → <strong>任务可能丢失</strong>（broker 以为已处理完）</li>
+</ul>
+<p><strong>方案 B：晚 ACK（<code>acks_late=True</code>）</strong></p>
+<ul>
+<li>Worker 执行完才 ack</li>
+<li>优点：worker 崩了 → RabbitMQ 会重新投递 → <strong>不丢任务</strong></li>
+<li>缺点：可能出现重复执行（至少一次语义），任务必须幂等</li>
+</ul>
+<pre class="mermaid">sequenceDiagram
+    participant B as Broker
+    participant W as Worker
+
+    B-->>W: deliver msg
+    alt acks_late=False
+        W->>B: ACK immediately
+        W->>W: execute task
+    else acks_late=True
+        W->>W: execute task
+        W->>B: ACK after success
+    end</pre>
+
+<p>📌 必背结论</p>
+<blockquote>
+<p><strong>acks_late&#x3D;True → 至少一次（可能重复，但不易丢）</strong><br><strong>acks_late&#x3D;False → 至多一次（不重复，但可能丢）</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.5 Retry：失败后到底发生了什么？</strong></p>
+<p>Celery 的 retry（概念上）通常是：</p>
+<ul>
+<li>任务抛异常</li>
+<li>Celery 捕获后决定：<ul>
+<li>重新发送一条“同任务的新消息”（可能带 countdown&#x2F;eta）</li>
+<li>或 reject&#x2F;requeue（视策略）</li>
+</ul>
+</li>
+</ul>
+<p>重点：</p>
+<blockquote>
+<p>RabbitMQ 只负责“再次投递消息”，<br><strong>是否重试、重试几次、间隔多少，是 Celery 的策略。</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.6 Pool（执行池）：并发模型决定性能上限</strong></p>
+<p>Celery worker 的并发池常见有：</p>
+<ul>
+<li><strong>prefork（多进程，默认常见）</strong>：适合 CPU 任务、隔离好</li>
+<li><strong>threads（多线程）</strong>：适合部分 IO，但受 GIL 影响</li>
+<li><strong>gevent&#x2F;eventlet（协程）</strong>：高并发 IO（但要配合 monkey patch）</li>
+</ul>
+<p>📌 工程建议（简单可靠版）：</p>
+<ul>
+<li>不确定选什么：<strong>prefork</strong>（最稳）</li>
+<li>大量 IO（请求第三方、爬虫）：考虑 <strong>gevent</strong>（但要懂它的限制）</li>
+<li>CPU 密集：prefork + 把并发设为 CPU 核数附近</li>
+</ul>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系-2"><a href="#4️⃣-与-RabbitMQ-Celery-的关系-2" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</h3><p>这一章要把“责任切得更细”：</p>
+<ul>
+<li>RabbitMQ：<ul>
+<li>负责把消息投递给 worker</li>
+<li>维护 unacked 状态</li>
+<li>worker 掉线时重新投递 unacked（取决于 ack 时机）</li>
+</ul>
+</li>
+<li>Celery Worker：<ul>
+<li>决定什么时候 ack（早&#x2F;晚）</li>
+<li>决定 prefetch（一次拉多少）</li>
+<li>决定并发池怎么跑（prefork&#x2F;threads&#x2F;gevent）</li>
+<li>决定失败是否 retry、怎么 retry</li>
+</ul>
+</li>
+</ul>
+<p>📌 最核心边界：</p>
+<blockquote>
+<p>RabbitMQ 只知道“消息是否 ack”。<br>Celery 决定“任务何时算完成”。</p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-4"><a href="#5️⃣-最小可运行示例（Practice）-4" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>目标：用一个 demo 让你“肉眼看到”</p>
+<ul>
+<li>prefetch 的效果</li>
+<li>acks_late 的差异（重启 worker 时）</li>
+</ul>
+<p><strong>5.1 tasks.py</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">    backend=<span class="string">&quot;redis://localhost:6379/0&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sleep_task</span>(<span class="params">self, seconds, tag</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;os.getpid()&#125;</span>] start <span class="subst">&#123;tag&#125;</span>&quot;</span>)</span><br><span class="line">    time.sleep(seconds)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;os.getpid()&#125;</span>] done  <span class="subst">&#123;tag&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> tag</span><br></pre></td></tr></table></figure>
+
+<p><strong>5.2 启动 worker（观察预取）</strong></p>
+<p>建议这样启动（长任务更公平）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">celery -A tasks worker --loglevel=info --concurrency=2</span><br></pre></td></tr></table></figure>
+
+<p>并在配置里设置（你可以临时在 tasks.py 中加）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.conf.worker_prefetch_multiplier = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>5.3 发送一堆任务</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tasks <span class="keyword">import</span> sleep_task</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    sleep_task.delay(<span class="number">5</span>, <span class="string">f&quot;t<span class="subst">&#123;i&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>观察现象：</p>
+<ul>
+<li>multiplier 大时：某个 worker 会“抢走很多任务”，另一个可能闲</li>
+<li>multiplier&#x3D;1 时：任务分配更均匀</li>
+</ul>
+<p><strong>5.4 观察 ack 行为（概念实验）</strong></p>
+<ul>
+<li><code>acks_late=False</code>：任务一到就 ack，worker 执行中崩溃可能丢</li>
+<li><code>acks_late=True</code>：执行完才 ack，worker 中途崩溃会被重新投递（可能重复）</li>
+</ul>
+<p>（生产环境要配合幂等设计，后面第 9 章会系统讲。）</p>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结（可直接记录）-1"><a href="#6️⃣-📒-本章笔记总结（可直接记录）-1" class="headerlink" title="6️⃣ 📒 本章笔记总结（可直接记录）"></a>6️⃣ 📒 本章笔记总结（可直接记录）</h3><ul>
+<li>Worker 内部管线：接收 → 预取缓冲 → 反序列化 → 投递执行池 → 执行 → ACK&#x2F;Retry →（可选）写结果</li>
+<li>Prefetch：<ul>
+<li>预先拉取一批消息到 worker 本地</li>
+<li><code>prefetch_count ≈ concurrency * prefetch_multiplier</code></li>
+<li>长任务建议 <code>prefetch_multiplier=1</code></li>
+</ul>
+</li>
+<li>ACK 时机：<ul>
+<li><code>acks_late=False</code>：早 ACK → 吞吐高但可能丢</li>
+<li><code>acks_late=True</code>：晚 ACK → 不易丢但可能重复（至少一次）</li>
+</ul>
+</li>
+<li>RabbitMQ 只关心消息是否 ACK；Celery 决定任务完成语义</li>
+<li>并发池选择：<ul>
+<li>默认 prefork 最稳</li>
+<li>IO 高并发才考虑 gevent（理解其限制）</li>
+</ul>
+</li>
+<li>调参原则：<ul>
+<li>先保证可靠性（ACK&#x2F;幂等）</li>
+<li>再调公平性（prefetch）</li>
+<li>最后追吞吐（并发&#x2F;池模型）</li>
+</ul>
+</li>
+</ul>
+<h2 id="【第-8-章：常见配置、路由、队列设计策略】"><a href="#【第-8-章：常见配置、路由、队列设计策略】" class="headerlink" title="【第 8 章：常见配置、路由、队列设计策略】"></a>【第 8 章：常见配置、路由、队列设计策略】</h2><blockquote>
+<p>到这一章，你已经<strong>理解原理、看懂流程、知道 Worker 在干什么</strong>。<br>现在我们要解决的是一个<strong>真正决定系统好不好用的问题</strong>：</p>
+<p>👉 <strong>“任务怎么分队列？Worker 怎么分工？配置怎么配才不踩坑？”</strong></p>
+<p>这一章非常工程化，目标是：<br><strong>让你能设计一个“长期可维护、不怕扩展、不怕流量”的任务系统。</strong></p>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-7"><a href="#1️⃣-本章要解决什么问题（Why）-7" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>很多 Celery 系统在“能跑”之后，会逐渐出现这些问题：</p>
+<ol>
+<li><strong>所有任务挤在一个队列</strong></li>
+</ol>
+<ul>
+<li>长任务把短任务全部堵住</li>
+<li>用户体验极不稳定</li>
+</ul>
+<ol start="2">
+<li><strong>CPU 任务和 IO 任务混跑</strong></li>
+</ol>
+<ul>
+<li>IO 任务把进程占满</li>
+<li>CPU 任务拖慢整体吞吐</li>
+</ul>
+<ol start="3">
+<li><strong>高优先级任务被低优先级淹没</strong></li>
+</ol>
+<ul>
+<li>紧急任务等半天</li>
+<li>SLA 无法保障</li>
+</ul>
+<ol start="4">
+<li><strong>Worker 随便加，问题越来越多</strong></li>
+</ol>
+<ul>
+<li>加了 worker 反而更慢</li>
+<li>不知道哪个 worker 在处理什么</li>
+</ul>
+<p>这些问题的根因只有一个：</p>
+<blockquote>
+<p><strong>队列设计和路由策略一开始没想清楚。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-7"><a href="#2️⃣-核心概念与角色（What）-7" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>在本章，你需要牢牢记住 <strong>3 个“设计维度”</strong>：</p>
+<p><strong>2.1 队列（Queue）是”资源隔离单元”</strong></p>
+<ul>
+<li><p>不只是“消息容器”</p>
+</li>
+<li><p>更是：</p>
+<ul>
+<li>负载隔离</li>
+<li>优先级隔离</li>
+<li>资源隔离（CPU &#x2F; IO）</li>
+</ul>
+</li>
+</ul>
+<p><strong>2.2 路由（Routing）是”调度策略”</strong></p>
+<ul>
+<li><p>决定任务：</p>
+<ul>
+<li>进哪个队列</li>
+<li>被哪类 worker 执行</li>
+</ul>
+</li>
+</ul>
+<p><strong>2.3 Worker 是”执行资源池”</strong></p>
+<ul>
+<li>Worker ≠ 队列</li>
+<li>一个 worker 可以监听多个队列</li>
+<li>不同 worker 可以监听不同队列</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Task → Queue → Worker Pool → CPU / IO</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3️⃣-工作原理（How）-7"><a href="#3️⃣-工作原理（How）-7" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们从 <strong>“一个任务如何被路由”</strong> 讲起，再上升到整体设计。</p>
+<hr>
+<p><strong>3.1 任务路由的完整路径</strong></p>
+<pre class="mermaid">flowchart LR
+    T[Task] -->|routing_key / queue| E[Exchange]
+    E --> Q1[queue: cpu_tasks]
+    E --> Q2[queue: io_tasks]
+    Q1 --> W1[CPU Worker Pool]
+    Q2 --> W2[IO Worker Pool]</pre>
+
+<p>Celery 路由本质是三件事：</p>
+<ol>
+<li>给任务打标签（routing_key &#x2F; queue）</li>
+<li>RabbitMQ 根据 binding 规则投递</li>
+<li>Worker 只消费自己负责的队列</li>
+</ol>
+<hr>
+<p><strong>3.2 最重要的队列拆分原则（必背）</strong></p>
+<blockquote>
+<p>❗ <strong>不要按“业务功能”拆队列，而要按“执行特性”拆队列</strong></p>
+</blockquote>
+<p>错误示例 ❌：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue_order</span><br><span class="line">queue_user</span><br><span class="line">queue_payment</span><br></pre></td></tr></table></figure>
+
+<p>正确示例 ✅：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">queue_cpu</span><br><span class="line">queue_io</span><br><span class="line">queue_fast</span><br><span class="line">queue_slow</span><br><span class="line">queue_critical</span><br></pre></td></tr></table></figure>
+
+<p>📌 工程直觉</p>
+<blockquote>
+<p><strong>谁会互相“拖慢”，谁就必须分开。</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.3 一个推荐的基础队列模型（90% 项目适用）</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">queues:</span><br><span class="line">  - fast_tasks      (短、快、用户敏感)</span><br><span class="line">  - slow_tasks      (长任务、后台)</span><br><span class="line">  - cpu_tasks       (CPU 密集)</span><br><span class="line">  - io_tasks        (IO 密集)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>3.4 Worker 分组设计（非常关键）</strong></p>
+<pre class="mermaid">flowchart LR
+    Q1[fast_tasks] --> W1[worker-fast]
+    Q2[slow_tasks] --> W2[worker-slow]
+    Q3[cpu_tasks] --> W3[worker-cpu]
+    Q4[io_tasks] --> W4[worker-io]</pre>
+
+<p><strong>好处：</strong></p>
+<ul>
+<li>各类任务互不影响</li>
+<li>worker 参数可针对性调优</li>
+<li>出问题易定位</li>
+</ul>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系-3"><a href="#4️⃣-与-RabbitMQ-Celery-的关系-3" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</h3><p><strong>4.1 RabbitMQ 在这里负责什么？</strong></p>
+<ul>
+<li>Exchange &#x2F; Queue &#x2F; Binding</li>
+<li>消息可靠投递</li>
+<li>队列级别的隔离</li>
+</ul>
+<p><strong>4.2 Celery 在这里负责什么？</strong></p>
+<ul>
+<li>定义路由规则</li>
+<li>选择 queue &#x2F; routing_key</li>
+<li>控制 worker 并发、prefetch、ack 策略</li>
+</ul>
+<p>📌 <strong>边界总结</strong></p>
+<blockquote>
+<p>RabbitMQ 提供“硬隔离的通道”，<br>Celery 决定“谁走哪条通道”。</p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-5"><a href="#5️⃣-最小可运行示例（Practice）-5" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>目标：<strong>一套清晰、可扩展的路由 + 队列配置模板</strong>。</p>
+<hr>
+<p><strong>5.1 Celery 基础配置（强烈推荐这样写）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># celery_app.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">from</span> kombu <span class="keyword">import</span> Queue</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">app.conf.task_queues = (</span><br><span class="line">    Queue(<span class="string">&quot;fast_tasks&quot;</span>),</span><br><span class="line">    Queue(<span class="string">&quot;slow_tasks&quot;</span>),</span><br><span class="line">    Queue(<span class="string">&quot;cpu_tasks&quot;</span>),</span><br><span class="line">    Queue(<span class="string">&quot;io_tasks&quot;</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">app.conf.task_default_queue = <span class="string">&quot;slow_tasks&quot;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.2 任务路由规则（task_routes）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.conf.task_routes = &#123;</span><br><span class="line">    <span class="string">&quot;tasks.send_email&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;io_tasks&quot;</span>&#125;,</span><br><span class="line">    <span class="string">&quot;tasks.resize_image&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;cpu_tasks&quot;</span>&#125;,</span><br><span class="line">    <span class="string">&quot;tasks.generate_report&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;slow_tasks&quot;</span>&#125;,</span><br><span class="line">    <span class="string">&quot;tasks.quick_check&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fast_tasks&quot;</span>&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>📌 好处：</p>
+<ul>
+<li>路由集中管理</li>
+<li>新增 worker 不用改任务代码</li>
+</ul>
+<hr>
+<p><strong>5.3 Worker 启动方式（按职责启动）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 快任务</span></span><br><span class="line">celery -A celery_app worker -Q fast_tasks -c 8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 慢任务</span></span><br><span class="line">celery -A celery_app worker -Q slow_tasks -c 2</span><br><span class="line"></span><br><span class="line"><span class="comment"># CPU 任务</span></span><br><span class="line">celery -A celery_app worker -Q cpu_tasks -c 4</span><br><span class="line"></span><br><span class="line"><span class="comment"># IO 任务</span></span><br><span class="line">celery -A celery_app worker -Q io_tasks -c 50 -P gevent</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结-3"><a href="#6️⃣-📒-本章笔记总结-3" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li><p>队列是 <strong>资源隔离单元</strong>，不是简单分类</p>
+</li>
+<li><p>拆队列要按：</p>
+<ul>
+<li>执行时间</li>
+<li>CPU &#x2F; IO 特性</li>
+<li>SLA 优先级</li>
+</ul>
+</li>
+<li><p>避免“一个队列跑所有任务”</p>
+</li>
+<li><p>路由规则集中在 <code>task_routes</code></p>
+</li>
+<li><p>Worker 按队列分组启动</p>
+</li>
+<li><p>CPU &#x2F; IO &#x2F; 快慢任务尽量分离</p>
+</li>
+<li><p>设计目标：<br><strong>一个队列出问题，不拖垮整个系统</strong></p>
+</li>
+</ul>
+<hr>
+<hr>
+<h2 id="【第-9-章：失败重试、幂等性、任务可靠性】"><a href="#【第-9-章：失败重试、幂等性、任务可靠性】" class="headerlink" title="【第 9 章：失败重试、幂等性、任务可靠性】"></a>【第 9 章：失败重试、幂等性、任务可靠性】</h2><blockquote>
+<p>这一章是<strong>真正决定你系统“敢不敢上生产”</strong>的一章。</p>
+<p>前面你已经学会：</p>
+<ul>
+<li>怎么投递任务</li>
+<li>怎么并发执行</li>
+<li>怎么拆队列、配 worker</li>
+</ul>
+<p>但如果你回答不了下面这几个问题，系统一出故障就会失控：</p>
+<ul>
+<li>任务失败后<strong>会不会丢？会不会重复？</strong></li>
+<li>Worker 挂了、网络抖了，<strong>会发生什么？</strong></li>
+<li><strong>为什么 Celery 一定会“可能重复执行”？</strong></li>
+<li>那我怎么保证 <strong>业务数据不被搞乱</strong>？</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-8"><a href="#1️⃣-本章要解决什么问题（Why）-8" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>现实世界里的任务失败是<strong>常态</strong>，不是异常：</p>
+<ul>
+<li>网络超时</li>
+<li>第三方 API 5xx</li>
+<li>Worker 进程被 OOM Kill</li>
+<li>容器&#x2F;节点重启</li>
+<li>代码 Bug</li>
+</ul>
+<p>如果你<strong>不提前设计失败与重试</strong>，系统会出现三种灾难之一：</p>
+<ol>
+<li>❌ <strong>任务丢失</strong>（业务数据缺失）</li>
+<li>❌ <strong>任务重复但不可控</strong>（数据被写多次、扣钱多次）</li>
+<li>❌ <strong>失败雪崩</strong>（重试风暴，把系统打死）</li>
+</ol>
+<p>👉 本章目标：<br><strong>建立一套“可预期的失败模型 + 可控的重试策略 + 业务级幂等设计”。</strong></p>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-8"><a href="#2️⃣-核心概念与角色（What）-8" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>你需要掌握 5 个关键概念（这是可靠性的“骨架”）：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ACK 语义</td>
+<td>什么时候告诉 Broker “任务完成了”</td>
+</tr>
+<tr>
+<td>投递语义</td>
+<td>至少一次 &#x2F; 至多一次 &#x2F; 恰好一次</td>
+</tr>
+<tr>
+<td>Retry</td>
+<td>失败后是否重新执行</td>
+</tr>
+<tr>
+<td>幂等性</td>
+<td>重复执行是否安全</td>
+</tr>
+<tr>
+<td>死信</td>
+<td>永远失败的任务怎么处理</td>
+</tr>
+</tbody></table>
+<p>📌 <strong>核心事实（必须接受）</strong></p>
+<blockquote>
+<p><strong>Celery + MQ 天然只能保证“至少一次执行”</strong><br>“恰好一次”必须靠<strong>业务幂等</strong>来兜底。</p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-8"><a href="#3️⃣-工作原理（How）-8" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>我们从“失败发生的时间点”来拆解系统行为。</p>
+<hr>
+<p><strong>3.1 失败可能发生在哪些阶段？</strong></p>
+<pre class="mermaid">flowchart LR
+    A[消息在 Broker] --> B[Worker 拉取]
+    B --> C[任务执行中]
+    C --> D[ACK 之前]
+    D --> E[ACK 之后]</pre>
+
+<ul>
+<li>A&#x2F;B 阶段失败：消息还在 MQ → <strong>可重投</strong></li>
+<li>C&#x2F;D 阶段失败：Worker 挂了但未 ACK → <strong>会被重新投递</strong></li>
+<li>E 阶段失败：已经 ACK → <strong>任务对 MQ 来说“结束了”</strong></li>
+</ul>
+<p>📌 关键点</p>
+<blockquote>
+<p><strong>ACK 之前失败 &#x3D; 可能重试</strong><br><strong>ACK 之后失败 &#x3D; MQ 无能为力</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.2 投递语义：至少一次 vs 至多一次</strong></p>
+<p><strong>✅ 至少一次（Celery 的默认可靠模型）</strong></p>
+<ul>
+<li><code>acks_late=True</code></li>
+<li>Worker 执行完才 ACK</li>
+<li>Worker 崩溃 → RabbitMQ 重投</li>
+</ul>
+<p><strong>结果</strong>：</p>
+<ul>
+<li>任务<strong>不会轻易丢</strong></li>
+<li>但<strong>可能重复执行</strong></li>
+</ul>
+<p><strong>⚠️ 至多一次（性能优先，慎用）</strong></p>
+<ul>
+<li><code>acks_late=False</code></li>
+<li>一收到就 ACK</li>
+<li>执行中崩溃 → 任务丢失</li>
+</ul>
+<p>📌 选择原则</p>
+<blockquote>
+<p><strong>能重复 ≫ 能丢</strong><br>所以生产环境通常选择：<strong>至少一次 + 幂等</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.3 Retry 是怎么发生的？</strong></p>
+<p>Celery 的 retry 本质上是：</p>
+<blockquote>
+<p><strong>重新发送一条“新任务消息”</strong></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span>, autoretry_for=(<span class="params">Exception,</span>), retry_backoff=<span class="number">5</span>, retry_kwargs=&#123;<span class="string">&quot;max_retries&quot;</span>: <span class="number">3</span>&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fragile_task</span>(<span class="params">self</span>):</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>背后发生的是：</p>
+<ol>
+<li>捕获异常</li>
+<li>生成新任务（同 task_id 或新 task_id）</li>
+<li>设置 ETA &#x2F; countdown</li>
+<li>再次发送给 Broker</li>
+</ol>
+<p>📌 RabbitMQ 不知道“这是重试”，</p>
+<blockquote>
+<p><strong>重试完全是 Celery 的决策。</strong></p>
+</blockquote>
+<hr>
+<p><strong>3.4 重试风暴（生产大坑）</strong></p>
+<p>如果你写成这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span>, autoretry_for=(<span class="params">Exception,</span>), retry_kwargs=&#123;<span class="string">&quot;max_retries&quot;</span>: <span class="literal">None</span>&#125;</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>一旦下游服务挂了：</p>
+<ul>
+<li>所有任务同时失败</li>
+<li>同时重试</li>
+<li>Broker&#x2F;Worker 被瞬间打爆</li>
+</ul>
+<p>📌 工程防护手段：</p>
+<ul>
+<li>限制 <code>max_retries</code></li>
+<li>使用 <code>retry_backoff</code>（指数退避）</li>
+<li>区分“可重试”和“不可重试”的异常</li>
+<li>必要时熔断（业务层）</li>
+</ul>
+<hr>
+<p><strong>3.5 幂等性：真正的”保险丝”</strong></p>
+<p><strong>幂等性定义</strong>：</p>
+<blockquote>
+<p>同一个任务 <strong>执行 1 次和执行 N 次，业务结果一致</strong></p>
+</blockquote>
+<p>这是 Celery 系统<strong>必须由你实现的部分</strong>。</p>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系（边界极其重要）"><a href="#4️⃣-与-RabbitMQ-Celery-的关系（边界极其重要）" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界极其重要）"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界极其重要）</h3><p><strong>4.1 RabbitMQ 能保证什么？</strong></p>
+<ul>
+<li>消息不轻易丢（持久化 + ACK）</li>
+<li>Worker 挂了会重新投递未 ACK 消息</li>
+</ul>
+<p><strong>RabbitMQ 不能保证：</strong></p>
+<ul>
+<li>消息只被执行一次</li>
+<li>任务业务语义正确</li>
+</ul>
+<p><strong>4.2 Celery 能保证什么？</strong></p>
+<ul>
+<li>自动重试</li>
+<li>失败感知</li>
+<li>延迟重试</li>
+<li>至少一次执行模型</li>
+</ul>
+<p><strong>Celery 不能保证：</strong></p>
+<ul>
+<li>你的业务不会被重复执行破坏</li>
+</ul>
+<p>📌 核心结论</p>
+<blockquote>
+<p><strong>“恰好一次”是业务设计问题，不是 MQ 能解决的问题。</strong></p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-6"><a href="#5️⃣-最小可运行示例（Practice）-6" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>目标：<strong>展示“失败 → 重试 → 幂等保护”的完整链路</strong>。</p>
+<hr>
+<p><strong>5.1 幂等保护示例（数据库 &#x2F; Redis）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tasks.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app = Celery(</span><br><span class="line">    <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    broker=<span class="string">&quot;amqp://guest:guest@localhost:5672//&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">rds = redis.Redis(host=<span class="string">&quot;localhost&quot;</span>, port=<span class="number">6379</span>, db=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.task(<span class="params">bind=<span class="literal">True</span>, autoretry_for=(<span class="params">Exception,</span>), retry_backoff=<span class="number">3</span>, retry_kwargs=&#123;<span class="string">&quot;max_retries&quot;</span>: <span class="number">5</span>&#125;</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pay_order</span>(<span class="params">self, order_id</span>):</span><br><span class="line">    key = <span class="string">f&quot;order_paid:<span class="subst">&#123;order_id&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 幂等检查</span></span><br><span class="line">    <span class="keyword">if</span> rds.exists(key):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;already processed, skip&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 模拟不稳定下游</span></span><br><span class="line">    <span class="keyword">if</span> time.time() % <span class="number">2</span> &lt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">&quot;payment gateway error&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 关键业务操作（只能执行一次）</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;do payment&quot;</span>)</span><br><span class="line">    rds.<span class="built_in">set</span>(key, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;paid&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>📌 即使任务被重复执行：</p>
+<ul>
+<li>只有第一次会真正“扣钱”</li>
+<li>后续直接跳过</li>
+</ul>
+<hr>
+<p><strong>5.2 死信（Dead Letter）的概念用法</strong></p>
+<p>当任务：</p>
+<ul>
+<li>超过最大重试次数</li>
+<li>或被 reject 且不 requeue</li>
+</ul>
+<p>你应该：</p>
+<ul>
+<li>记录到 DB</li>
+<li>发告警</li>
+<li>人工介入 &#x2F; 补偿</li>
+</ul>
+<blockquote>
+<p><strong>永远失败的任务 ≠ 应该无限重试的任务</strong></p>
+</blockquote>
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结-4"><a href="#6️⃣-📒-本章笔记总结-4" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li><p>失败是常态，必须提前设计</p>
+</li>
+<li><p>Celery + MQ 的可靠模型是：<strong>至少一次执行</strong></p>
+</li>
+<li><p>ACK 决定任务是否会被重投</p>
+</li>
+<li><p><code>acks_late=True</code> 是生产常用配置</p>
+</li>
+<li><p>Retry 是 Celery 重新发消息，不是 RabbitMQ 魔法</p>
+</li>
+<li><p>必须防止重试风暴：</p>
+<ul>
+<li>限次数</li>
+<li>退避</li>
+<li>区分异常</li>
+</ul>
+</li>
+<li><p><strong>幂等性是任务可靠性的最后防线</strong></p>
+</li>
+<li><p>MQ&#x2F;Celery 无法保证“恰好一次”，只能由业务保证</p>
+</li>
+<li><p>永久失败任务要进入“死信&#x2F;人工处理”流程</p>
+</li>
+</ul>
+<hr>
+<hr>
+<h2 id="【第-10-章：生产环境架构设计与最佳实践】"><a href="#【第-10-章：生产环境架构设计与最佳实践】" class="headerlink" title="【第 10 章：生产环境架构设计与最佳实践】"></a>【第 10 章：生产环境架构设计与最佳实践】</h2><blockquote>
+<p>这是<strong>收官章</strong>。<br>到这里，我们不再讲“功能怎么用”，而是回答一个更难的问题：</p>
+<p>👉 <strong>如何把 RabbitMQ + Celery 变成一个“能长期稳定运行、可扩展、可观测、可恢复”的生产系统？</strong></p>
+<p>本章目标：<br><strong>给你一套可以直接画进架构图、写进设计文档、落地上线的参考范式。</strong></p>
+</blockquote>
+<hr>
+<h3 id="1️⃣-本章要解决什么问题（Why）-9"><a href="#1️⃣-本章要解决什么问题（Why）-9" class="headerlink" title="1️⃣ 本章要解决什么问题（Why）"></a>1️⃣ 本章要解决什么问题（Why）</h3><p>很多系统在测试环境看起来“挺好”，一到生产就出问题，常见症状：</p>
+<ol>
+<li><p>流量一高就<strong>排队失控</strong></p>
+</li>
+<li><p>Worker 一挂，<strong>任务行为不可预测</strong></p>
+</li>
+<li><p>出问题时：</p>
+<ul>
+<li>不知道是 MQ、Worker 还是代码 Bug</li>
+</ul>
+</li>
+<li><p>任务失败没人管，<strong>数据慢慢腐烂</strong></p>
+</li>
+<li><p>随着业务增长，<strong>不敢改、不敢扩</strong></p>
+</li>
+</ol>
+<p>根因只有一个：</p>
+<blockquote>
+<p><strong>缺少“生产级架构意识”——没有从一开始就把可靠性、扩展性、可观测性放进设计里。</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心概念与角色（What）-9"><a href="#2️⃣-核心概念与角色（What）-9" class="headerlink" title="2️⃣ 核心概念与角色（What）"></a>2️⃣ 核心概念与角色（What）</h3><p>生产环境里，你要把系统看成 <strong>5 层结构</strong>（而不是一个 Celery 进程）：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>角色</th>
+<th>关注点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>接入层</td>
+<td>Web &#x2F; API &#x2F; Cron</td>
+<td>快速返回、限流</td>
+</tr>
+<tr>
+<td>调度层</td>
+<td>Celery Producer</td>
+<td>路由、延迟、失败感知</td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>RabbitMQ</td>
+<td>稳定投递、削峰</td>
+</tr>
+<tr>
+<td>执行层</td>
+<td>Celery Worker</td>
+<td>并发、资源隔离</td>
+</tr>
+<tr>
+<td>可观测层</td>
+<td>Logs &#x2F; Metrics &#x2F; Alerts</td>
+<td>可定位、可恢复</td>
+</tr>
+</tbody></table>
+<p>📌 <strong>关键认知</strong></p>
+<blockquote>
+<p>生产架构不是“多加机器”，而是<strong>把职责切清楚</strong>。</p>
+</blockquote>
+<hr>
+<h3 id="3️⃣-工作原理（How）-9"><a href="#3️⃣-工作原理（How）-9" class="headerlink" title="3️⃣ 工作原理（How）"></a>3️⃣ 工作原理（How）</h3><p>下面给你一套<strong>典型生产架构参考图</strong>，可以直接照着画。</p>
+<hr>
+<p><strong>3.1 标准生产架构（推荐起点）</strong></p>
+<pre class="mermaid">flowchart LR
+    Client --> API[Web/API Server]
+
+    API -->|delay/apply_async| C[Celery Producer]
+
+    C -->|publish| MQ[(RabbitMQ Cluster)]
+
+    MQ -->|queue: fast| WF[Worker Fast]
+    MQ -->|queue: io| WIO[Worker IO]
+    MQ -->|queue: cpu| WCPU[Worker CPU]
+    MQ -->|queue: slow| WS[Worker Slow]
+
+    WF --> R[(Result Backend)]
+    WIO --> R
+    WCPU --> R
+    WS --> R
+
+    WF --> LOG[Logs/Metrics]
+    WIO --> LOG
+    WCPU --> LOG
+    WS --> LOG</pre>
+
+<hr>
+<p><strong>3.2 从”单机”到”集群”的演进路径（非常重要）</strong></p>
+<p><strong>阶段 1：单机起步（可用）</strong></p>
+<ul>
+<li>1 个 RabbitMQ</li>
+<li>1~2 个 Worker</li>
+<li>分 2~3 个队列</li>
+</ul>
+<p><strong>阶段 2：水平扩展（常见）</strong></p>
+<ul>
+<li>RabbitMQ 升级为集群</li>
+<li>Worker 按队列横向扩</li>
+<li>Web &#x2F; Worker 完全解耦</li>
+</ul>
+<p><strong>阶段 3：资源隔离（成熟）</strong></p>
+<ul>
+<li>CPU &#x2F; IO &#x2F; 快慢任务彻底分离</li>
+<li>不同队列跑在不同节点</li>
+<li>单队列故障不拖全局</li>
+</ul>
+<p>📌 经验</p>
+<blockquote>
+<p><strong>扩展的是 Worker，不是 Producer，也不是 MQ 逻辑。</strong></p>
+</blockquote>
+<hr>
+<h3 id="4️⃣-与-RabbitMQ-Celery-的关系（生产级边界）"><a href="#4️⃣-与-RabbitMQ-Celery-的关系（生产级边界）" class="headerlink" title="4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（生产级边界）"></a>4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（生产级边界）</h3><p><strong>4.1 RabbitMQ：稳、少动</strong></p>
+<ul>
+<li>集群化</li>
+<li>开启持久化</li>
+<li>设置合理的内存&#x2F;磁盘水位</li>
+<li>队列数量受控（避免百万级）</li>
+</ul>
+<p>RabbitMQ 的原则：</p>
+<blockquote>
+<p><strong>少而稳，不要当计算系统用。</strong></p>
+</blockquote>
+<hr>
+<p><strong>4.2 Celery Worker：可变、可控</strong></p>
+<ul>
+<li><p>Worker 是最常扩缩的部分</p>
+</li>
+<li><p>按队列、按资源类型拆</p>
+</li>
+<li><p>配置：</p>
+<ul>
+<li><code>concurrency</code></li>
+<li><code>prefetch_multiplier</code></li>
+<li><code>acks_late</code></li>
+<li>pool 类型</li>
+</ul>
+</li>
+</ul>
+<p>Celery 的原则：</p>
+<blockquote>
+<p><strong>Worker 是“消耗资源”的地方，必须被严格管理。</strong></p>
+</blockquote>
+<hr>
+<h3 id="5️⃣-最小可运行示例（Practice）-7"><a href="#5️⃣-最小可运行示例（Practice）-7" class="headerlink" title="5️⃣ 最小可运行示例（Practice）"></a>5️⃣ 最小可运行示例（Practice）</h3><p>这里给你的是 <strong>“生产可直接用的配置模板”</strong>（简化但不玩具）。</p>
+<hr>
+<p><strong>5.1 Celery 全局配置（推荐）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># celeryconfig.py</span></span><br><span class="line">task_acks_late = <span class="literal">True</span></span><br><span class="line">worker_prefetch_multiplier = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">task_reject_on_worker_lost = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">task_default_queue = <span class="string">&quot;slow_tasks&quot;</span></span><br><span class="line"></span><br><span class="line">task_routes = &#123;</span><br><span class="line">    <span class="string">&quot;tasks.quick_*&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fast_tasks&quot;</span>&#125;,</span><br><span class="line">    <span class="string">&quot;tasks.io_*&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;io_tasks&quot;</span>&#125;,</span><br><span class="line">    <span class="string">&quot;tasks.cpu_*&quot;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;cpu_tasks&quot;</span>&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task_track_started = <span class="literal">True</span></span><br><span class="line">result_expires = <span class="number">3600</span></span><br><span class="line"></span><br><span class="line">broker_connection_retry_on_startup = <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>5.2 Worker 启动策略（示例）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 快任务</span></span><br><span class="line">celery -A app worker -Q fast_tasks -c 8</span><br><span class="line"></span><br><span class="line"><span class="comment"># IO 密集</span></span><br><span class="line">celery -A app worker -Q io_tasks -P gevent -c 100</span><br><span class="line"></span><br><span class="line"><span class="comment"># CPU 密集</span></span><br><span class="line">celery -A app worker -Q cpu_tasks -c 4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 慢后台</span></span><br><span class="line">celery -A app worker -Q slow_tasks -c 2</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6️⃣-📒-本章笔记总结-5"><a href="#6️⃣-📒-本章笔记总结-5" class="headerlink" title="6️⃣ 📒 本章笔记总结"></a>6️⃣ 📒 本章笔记总结</h3><ul>
+<li><p>生产环境核心目标：</p>
+<ul>
+<li><strong>不丢</strong></li>
+<li><strong>可控</strong></li>
+<li><strong>可扩</strong></li>
+<li><strong>可观测</strong></li>
+</ul>
+</li>
+<li><p>架构要点：</p>
+<ul>
+<li>Producer 快速返回</li>
+<li>RabbitMQ 稳定投递、削峰</li>
+<li>Worker 按资源&#x2F;优先级分组</li>
+</ul>
+</li>
+<li><p>队列设计是长期维护成本的决定因素</p>
+</li>
+<li><p>Worker 是最“重”的组件，也是最容易横向扩展的</p>
+</li>
+<li><p>至少一次执行 + 业务幂等是现实世界的正确选择</p>
+</li>
+<li><p>日志 &#x2F; 指标 &#x2F; 告警 ≠ 可选项，是系统的一部分</p>
+</li>
+<li><p><strong>Celery + RabbitMQ 是一套“工程系统”，不是一个库</strong></p>
+</li>
+</ul>
+<hr>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://chongwenz.cn/tech/Basic-Knowledge/Celery_RabbitMQ/Celery_RabbitMQ_1/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://chongwenz.cn/tech/Basic-Knowledge/Celery_RabbitMQ/Celery_RabbitMQ_1/&title=任务队列 Celery+RabbitMQ - ChongWen&summary=【第 1 章：为什么需要异步任务与消息队列】1️⃣ 本章要解决什么问题（Why）你在做一个 Web 服务（比如下单、注册、生成报告、发邮件、图片处理）。典型的“天真写法”是：
+
+用户请求来了 → 服务器把所有事情都做完 → 最后再返回..."><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=任务队列 Celery+RabbitMQ - ChongWen&amp;body=https://chongwenz.cn/tech/Basic-Knowledge/Celery_RabbitMQ/Celery_RabbitMQ_1/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://chongwenz.cn/tech/Basic-Knowledge/Celery_RabbitMQ/Celery_RabbitMQ_1/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/tech/AI/ai-vibe-coding-02-tuomin/">脱敏平台产品介绍与交互展示</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/tech/AI/ai_Vibe_kanban/">AI编程任务管理新思路：Vibe Kanban 体验</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="BytePioneer-AI/LifeNotes" data-repo-id="R_kgDON54egw" data-category="Announcements" data-category-id="DIC_kwDON54eg84Cm_Na" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><center>
+</br>
+</br>
+<script type="text/javascript">
+function show_runtime() {
+   window.setTimeout("show_runtime()", 1000);
+   X = new Date("2/15/2025 00:00:00 ");
+   Y = new Date();
+   T = (Y.getTime() - X.getTime());
+   M = 24 * 60 * 60 * 1000;
+   a = T / M;
+   A = Math.floor(a);
+   b = (a - A) * 24;
+   B = Math.floor(b);
+   c = (b - B) * 60;
+   C = Math.floor((b - B) * 60);
+   D = Math.floor((c - C) * 60);
+   runtime_span.innerHTML = "<span style='font-size: 1rem'>✨ 本站已运行 " + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒 ✨</span>"
+}
+show_runtime();
+</script>
+<span id="runtime_span"> </span>
+</center>
+<style>
+.stats-row {
+  margin: 0.6rem auto 0.2rem;
+  max-width: 720px;
+  padding: 0.5rem 0.8rem;
+  color: #2a2f2f;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.stats-item {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.stats-icon {
+  font-size: 1rem;
+  color: #586064;
+}
+.stats-label {
+  color: #586064;
+}
+.stats-value {
+  font-weight: 700;
+}
+</style>
+<div class="stats-row" role="status" aria-live="polite">
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:bar-chart-2"></span>
+    <span class="stats-label">本站总访问量</span>
+    <span class="stats-value" id="busuanzi_site_pv">10000</span>
+    <span class="stats-label">次</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:user"></span>
+    <span class="stats-label">本站总访客数</span>
+    <span class="stats-value" id="busuanzi_site_uv">500</span>
+    <span class="stats-label">人</span>
+  </div>
+  <div class="stats-item">
+    <span class="stats-icon iconify" data-icon="lucide:file-text"></span>
+    <span class="stats-label">本页总访客数</span>
+    <span class="stats-value" id="busuanzi_page_uv">加载中...</span>
+    <span class="stats-label">人</span>
+  </div>
+</div>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js" defer></script>
+<script defer src="https://jsd.dusays.com/npm/penndu@17.0.0/bsz.js"></script>
+<script>
+(function () {
+  var pvBase = 10000;
+  var siteUvBase = 500;
+  var retry = 0;
+  var maxRetry = 60;
+  var timer = setInterval(function () {
+    var done = 0;
+    var sitePvEl = document.getElementById('busuanzi_site_pv');
+    if (sitePvEl) {
+      var sitePvRaw = (sitePvEl.textContent || '').trim();
+      var sitePv = parseInt(sitePvRaw || '0', 10);
+      if (sitePv > 0 && sitePvRaw !== String(pvBase)) {
+        sitePvEl.textContent = sitePv + pvBase;
+        done++;
+      }
+    }
+    var siteUvEl = document.getElementById('busuanzi_site_uv');
+    if (siteUvEl) {
+      var siteUvRaw = (siteUvEl.textContent || '').trim();
+      var siteUv = parseInt(siteUvRaw || '0', 10);
+      if (siteUv > 0 && siteUvRaw !== String(siteUvBase)) {
+        siteUvEl.textContent = siteUv + siteUvBase;
+        done++;
+      }
+    }
+    if (done >= 2) {
+      clearInterval(timer);
+    }
+    retry++;
+    if (retry >= maxRetry) {
+      clearInterval(timer);
+    }
+  }, 200);
+})();
+</script>
+<div style="font-size: 1rem;text-align: center; margin: 0.2rem 0; ">发表了 42 篇文章 🔸 总计 130.3k 字</div></div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-1-%E7%AB%A0%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E4%B8%8E%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E3%80%91"><span class="toc-text">【第 1 章：为什么需要异步任务与消息队列】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1-MQ-%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93"><span class="toc-text">7️⃣ 📒 异步任务 &amp; MQ 问题总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-2-%E7%AB%A0%EF%BC%9ARabbitMQ-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%9E%8B%E3%80%91"><span class="toc-text">【第 2 章：RabbitMQ 是什么？核心思想与工作模型】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-1"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-1"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D"><span class="toc-text">⚠️ 非常重要的一句话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-1"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">4️⃣ 与 Celery 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93"><span class="toc-text">5️⃣ 📒 本章笔记总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E7%AC%AC-2-%E7%AB%A0%E7%9B%B8%E5%85%B3%E7%96%91%E9%97%AE"><span class="toc-text">6️⃣ 📒 第 2 章相关疑问</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-3-%E7%AB%A0%EF%BC%9ARabbitMQ-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3%EF%BC%88Exchange-Queue-Binding%EF%BC%89%E3%80%91"><span class="toc-text">【第 3 章：RabbitMQ 核心组件详解（Exchange &#x2F; Queue &#x2F; Binding）】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-2"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-2"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-2"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB-1"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-1"><span class="toc-text">5️⃣ 📒 本章笔记总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-4-%E7%AB%A0%EF%BC%9ACelery-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%E3%80%91"><span class="toc-text">【第 4 章：Celery 是什么？它解决了什么问题】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-3"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-3"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-3"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88%E8%BE%B9%E7%95%8C%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界非常重要）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-1"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-1"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-5-%E7%AB%A0%EF%BC%9ACelery-%E6%9E%B6%E6%9E%84%E5%85%A8%E6%99%AF%E8%A7%A3%E6%9E%90%EF%BC%88Producer-Broker-Worker-Result-Backend%EF%BC%89%E3%80%91"><span class="toc-text">【第 5 章：Celery 架构全景解析（Producer &#x2F; Broker &#x2F; Worker &#x2F; Result Backend）】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-4"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-4"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-4"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88%E8%BE%B9%E7%95%8C%E5%86%8D%E6%AC%A1%E5%BC%BA%E8%B0%83%EF%BC%89"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界再次强调）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-2"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-2"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-6-%E7%AB%A0%EF%BC%9ARabbitMQ-Celery-%E5%A6%82%E4%BD%95%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%EF%BC%88%E5%AE%8C%E6%95%B4%E4%BB%BB%E5%8A%A1%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%EF%BC%89%E3%80%91"><span class="toc-text">【第 6 章：RabbitMQ + Celery 如何协同工作（完整任务生命周期）】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-5"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-5"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-5"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88%E5%86%8D%E6%AC%A1%E6%8B%89%E6%B8%85%E8%BE%B9%E7%95%8C%EF%BC%89"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（再次拉清边界）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-3"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93%EF%BC%88%E5%8F%AF%E7%9B%B4%E6%8E%A5%E8%AE%B0%E5%BD%95%EF%BC%89"><span class="toc-text">6️⃣ 📒 本章笔记总结（可直接记录）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-7-%E7%AB%A0%EF%BC%9ACelery-%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3%E3%80%91"><span class="toc-text">【第 7 章：Celery 任务执行流程深度拆解】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-6"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-6"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-6"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB-2"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-4"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93%EF%BC%88%E5%8F%AF%E7%9B%B4%E6%8E%A5%E8%AE%B0%E5%BD%95%EF%BC%89-1"><span class="toc-text">6️⃣ 📒 本章笔记总结（可直接记录）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-8-%E7%AB%A0%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E3%80%81%E8%B7%AF%E7%94%B1%E3%80%81%E9%98%9F%E5%88%97%E8%AE%BE%E8%AE%A1%E7%AD%96%E7%95%A5%E3%80%91"><span class="toc-text">【第 8 章：常见配置、路由、队列设计策略】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-7"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-7"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-7"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB-3"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-5"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-3"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-9-%E7%AB%A0%EF%BC%9A%E5%A4%B1%E8%B4%A5%E9%87%8D%E8%AF%95%E3%80%81%E5%B9%82%E7%AD%89%E6%80%A7%E3%80%81%E4%BB%BB%E5%8A%A1%E5%8F%AF%E9%9D%A0%E6%80%A7%E3%80%91"><span class="toc-text">【第 9 章：失败重试、幂等性、任务可靠性】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-8"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-8"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-8"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88%E8%BE%B9%E7%95%8C%E6%9E%81%E5%85%B6%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（边界极其重要）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-6"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-4"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E7%AC%AC-10-%E7%AB%A0%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E3%80%91"><span class="toc-text">【第 10 章：生产环境架构设计与最佳实践】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%9C%AC%E7%AB%A0%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%88Why%EF%BC%89-9"><span class="toc-text">1️⃣ 本章要解决什么问题（Why）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%A7%92%E8%89%B2%EF%BC%88What%EF%BC%89-9"><span class="toc-text">2️⃣ 核心概念与角色（What）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How%EF%BC%89-9"><span class="toc-text">3️⃣ 工作原理（How）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%8E-RabbitMQ-Celery-%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88%E7%94%9F%E4%BA%A7%E7%BA%A7%E8%BE%B9%E7%95%8C%EF%BC%89"><span class="toc-text">4️⃣ 与 RabbitMQ &#x2F; Celery 的关系（生产级边界）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%EF%B8%8F%E2%83%A3-%E6%9C%80%E5%B0%8F%E5%8F%AF%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B%EF%BC%88Practice%EF%BC%89-7"><span class="toc-text">5️⃣ 最小可运行示例（Practice）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%EF%B8%8F%E2%83%A3-%F0%9F%93%92-%E6%9C%AC%E7%AB%A0%E7%AC%94%E8%AE%B0%E6%80%BB%E7%BB%93-5"><span class="toc-text">6️⃣ 📒 本章笔记总结</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a><a  href="https://github.com/BytePioneer-AI/blog/edit/main/source/_posts/tech/Basic-Knowledge/Celery_RabbitMQ/Celery_RabbitMQ_1.md" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.943 1.25H13.5a.75.75 0 0 1 0 1.5H12c-2.378 0-4.086.002-5.386.176c-1.279.172-2.05.5-2.62 1.069c-.569.57-.896 1.34-1.068 2.619c-.174 1.3-.176 3.008-.176 5.386s.002 4.086.176 5.386c.172 1.279.5 2.05 1.069 2.62c.57.569 1.34.896 2.619 1.068c1.3.174 3.008.176 5.386.176s4.086-.002 5.386-.176c1.279-.172 2.05-.5 2.62-1.069c.569-.57.896-1.34 1.068-2.619c.174-1.3.176-3.008.176-5.386v-1.5a.75.75 0 0 1 1.5 0v1.557c0 2.309 0 4.118-.19 5.53c-.194 1.444-.6 2.584-1.494 3.479c-.895.895-2.035 1.3-3.48 1.494c-1.411.19-3.22.19-5.529.19h-.114c-2.309 0-4.118 0-5.53-.19c-1.444-.194-2.584-.6-3.479-1.494c-.895-.895-1.3-2.035-1.494-3.48c-.19-1.411-.19-3.22-.19-5.529v-.114c0-2.309 0-4.118.19-5.53c.194-1.444.6-2.584 1.494-3.479c.895-.895 2.035-1.3 3.48-1.494c1.411-.19 3.22-.19 5.529-.19m4.827 1.026a3.503 3.503 0 0 1 4.954 4.953l-6.648 6.649c-.371.37-.604.604-.863.806a5.34 5.34 0 0 1-.987.61c-.297.141-.61.245-1.107.411l-2.905.968a1.492 1.492 0 0 1-1.887-1.887l.968-2.905c.166-.498.27-.81.411-1.107c.167-.35.372-.68.61-.987c.202-.26.435-.492.806-.863zm3.893 1.06a2.003 2.003 0 0 0-2.832 0l-.376.377c.022.096.054.21.098.338c.143.413.415.957.927 1.469a3.875 3.875 0 0 0 1.807 1.025l.376-.376a2.003 2.003 0 0 0 0-2.832m-1.558 4.391a5.397 5.397 0 0 1-1.686-1.146a5.395 5.395 0 0 1-1.146-1.686L11.218 9.95c-.417.417-.58.582-.72.76a3.84 3.84 0 0 0-.437.71c-.098.203-.172.423-.359.982l-.431 1.295l1.032 1.033l1.295-.432c.56-.187.779-.261.983-.358c.251-.12.49-.267.71-.439c.177-.139.342-.302.759-.718z" clip-rule="evenodd"/></svg><span>编辑本页</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, true);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script defer type="text/javascript" src="https://cdn.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "true" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+<script type="text/javascript" src="/js/custom.js?1"></script><script src="/js/custom.js?1"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24f04947aeb2f3270094b862a85ee670";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</div></body></html>
